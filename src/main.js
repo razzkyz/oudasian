@@ -6,22 +6,37 @@ import { cek } from './pages/cek.js'
 import { admin } from './pages/admin.js'
 import { contact } from './pages/contact.js'
 
-// Mobile menu toggle
+// Mobile menu toggle - Setup globally
 const setupMenu=()=>{
  const menuToggle=document.getElementById('menuToggle')
  const navLinks=document.getElementById('navLinks')
+ 
  if(!menuToggle||!navLinks)return
  
- menuToggle.addEventListener('click',()=>{
-  menuToggle.classList.toggle('active')
-  navLinks.classList.toggle('active')
+ // Remove old listeners to prevent duplicates
+ menuToggle.replaceWith(menuToggle.cloneNode(true))
+ const newMenuToggle=document.getElementById('menuToggle')
+ const newNavLinks=document.getElementById('navLinks')
+ 
+ newMenuToggle.addEventListener('click',()=>{
+  newMenuToggle.classList.toggle('active')
+  newNavLinks.classList.toggle('active')
  })
  
- navLinks.querySelectorAll('a').forEach(a=>{
+ // Close menu when clicking a link
+ newNavLinks.querySelectorAll('a').forEach(a=>{
   a.addEventListener('click',()=>{
-   menuToggle.classList.remove('active')
-   navLinks.classList.remove('active')
+   newMenuToggle.classList.remove('active')
+   newNavLinks.classList.remove('active')
   })
+ })
+ 
+ // Close menu when clicking outside
+ document.addEventListener('click',(e)=>{
+  if(!newMenuToggle.contains(e.target)&&!newNavLinks.contains(e.target)){
+   newMenuToggle.classList.remove('active')
+   newNavLinks.classList.remove('active')
+  }
  })
 }
 
@@ -41,7 +56,8 @@ const route=async()=>{
   home()
  }
  
- setupMenu()
+ // Re-setup menu after route change
+ setTimeout(setupMenu,100)
 }
 
 addEventListener('hashchange',route)
@@ -49,4 +65,5 @@ addEventListener('hashchange',route)
 // Initialize
 load().then(()=>{
  route()
+ setupMenu()
 })
