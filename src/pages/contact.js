@@ -1,35 +1,60 @@
-const app=document.getElementById('app')
+import { I } from '../lib/icons.js'
 
-export const contact=()=>{
- app.innerHTML=`
-  <h1 class="title">GET IN TOUCH</h1>
-  <p class="sub">Have questions? We're here to help you plan your journey</p>
-  
-  <div class="box" style="max-width:600px;margin:30px auto">
-   <h3 style="color:var(--gold);font-family:Cinzel;margin-top:0">Contact Information</h3>
-   <p><strong>Email:</strong> <a href="mailto:info@aseantravel.com" style="color:var(--gold)">info@aseantravel.com</a></p>
-   <p><strong>WhatsApp:</strong> <a href="https://wa.me/628123456789" style="color:var(--gold)" target="_blank">+62 812-3456-789</a></p>
-   <p><strong>Instagram:</strong> <a href="https://instagram.com/aseantravel" style="color:var(--gold)" target="_blank">@aseantravel</a></p>
-   
-   <hr style="border:none;border-top:1px solid #2a2a2a;margin:24px 0">
-   
-   <h3 style="color:var(--gold);font-family:Cinzel">Send Message</h3>
-   <form id="contactForm">
-    <input type="text" placeholder="Your Name" required>
-    <input type="email" placeholder="Your Email" required>
-    <textarea rows="5" placeholder="Your Message" required></textarea>
-    <button type="submit" class="btn">Send Message</button>
-   </form>
+const app = document.getElementById('app')
+
+export const contact = () => {
+  app.innerHTML = `
+  <div class="page-banner">
+    <div class="banner-badge">${I.Message(13)} LAYANAN KONSULTASI 24/7</div>
+    <h1 class="banner-title">HUBUNGI TIM TOUR KAMI</h1>
+    <p class="banner-subtitle">Konsultasikan rencana perjalanan, custom itinerary, atau pertanyaan seputar destinasi wisata dengan konsultan tour kami.</p>
   </div>
   
-  <div style="text-align:center;margin-top:40px">
-   <a href="#/" class="back">← Back to Home</a>
+  <div class="box" style="max-width:680px; margin:36px auto; padding:32px; background:rgba(20,20,20,0.8); border:1px solid rgba(212,175,55,0.2); border-radius:16px;">
+    <h3 style="color:var(--gold); font-family:Cinzel; margin-top:0; display:flex; align-items:center; gap:8px;">
+      ${I.MapPin(18)} Informasi Kontak Resmi
+    </h3>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin:20px 0;">
+      <div style="background:#151515; padding:16px; border-radius:10px; border:1px solid #282828;">
+        <div style="color:var(--gold); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+          ${I.Mail(16)} <strong>Email CS</strong>
+        </div>
+        <a href="mailto:info@oudasean.com" style="color:#ddd; text-decoration:none; font-size:14px;">info@oudasean.com</a>
+      </div>
+      <div style="background:#151515; padding:16px; border-radius:10px; border:1px solid #282828;">
+        <div style="color:var(--gold); display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+          ${I.Phone(16)} <strong>WhatsApp Hotline</strong>
+        </div>
+        <a href="https://wa.me/6281234567890" style="color:#ddd; text-decoration:none; font-size:14px;" target="_blank">+62 812-3456-7890</a>
+      </div>
+    </div>
+    
+    <hr style="border:none; border-top:1px solid rgba(255,255,255,0.08); margin:24px 0">
+    
+    <h3 style="color:var(--gold); font-family:Cinzel; display:flex; align-items:center; gap:8px;">
+      ${I.Ticket(18)} Kirim Pesan / Tanya Koleksi
+    </h3>
+    <form id="contactForm" style="display:flex; flex-direction:column; gap:14px; margin-top:16px;">
+      <input type="text" placeholder="Nama Lengkap Anda" required style="padding:12px; background:#121212; border:1px solid #333; color:#fff; border-radius:8px;">
+      <input type="email" placeholder="Alamat Email Aktif" required style="padding:12px; background:#121212; border:1px solid #333; color:#fff; border-radius:8px;">
+      <textarea rows="4" placeholder="Tuliskan pertanyaan Anda seputar koleksi OUD ASEAN..." required style="padding:12px; background:#121212; border:1px solid #333; color:#fff; border-radius:8px;"></textarea>
+      <button type="submit" class="btn" style="display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:14px;">
+        <span>Kirim Pesan Sekarang</span>
+        ${I.ArrowRight(16)}
+      </button>
+    </form>
   </div>
- `
- 
- document.getElementById('contactForm').onsubmit=(e)=>{
-  e.preventDefault()
-  alert('Thank you! Your message has been received. We will contact you soon.')
-  contact()
- }
+  
+  <div style="text-align:center; margin:36px 0;">
+    <a href="#/" class="back" style="display:inline-flex; align-items:center; gap:6px;">
+      ${I.ArrowLeft(14)} Kembali ke Katalog Destinasi
+    </a>
+  </div>
+  `
+  
+  document.getElementById('contactForm').onsubmit = (e) => {
+    e.preventDefault()
+    alert('Terima kasih! Pesan Anda telah kami terima. Tim reservasi akan segera menghubungi via WhatsApp / Email.')
+    contact()
+  }
 }

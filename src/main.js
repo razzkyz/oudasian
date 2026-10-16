@@ -6,43 +6,59 @@ import { cek } from './pages/cek.js'
 import { admin } from './pages/admin.js'
 import { contact } from './pages/contact.js'
 
-// Mobile menu toggle - Setup globally
-const setupMenu=()=>{
- const menuToggle=document.getElementById('menuToggle')
- const navLinks=document.getElementById('navLinks')
- 
- if(!menuToggle||!navLinks)return
- 
- // Remove old listeners to prevent duplicates
- menuToggle.replaceWith(menuToggle.cloneNode(true))
- const newMenuToggle=document.getElementById('menuToggle')
- const newNavLinks=document.getElementById('navLinks')
- 
- newMenuToggle.addEventListener('click',()=>{
-  newMenuToggle.classList.toggle('active')
-  newNavLinks.classList.toggle('active')
- })
- 
- // Close menu when clicking a link
- newNavLinks.querySelectorAll('a').forEach(a=>{
-  a.addEventListener('click',()=>{
-   newMenuToggle.classList.remove('active')
-   newNavLinks.classList.remove('active')
-  })
- })
- 
- // Close menu when clicking outside
- document.addEventListener('click',(e)=>{
-  if(!newMenuToggle.contains(e.target)&&!newNavLinks.contains(e.target)){
-   newMenuToggle.classList.remove('active')
-   newNavLinks.classList.remove('active')
+// Mobile sidebar drawer setup
+const setupMenu = () => {
+  const menuToggle = document.getElementById('menuToggle')
+  const sidebar = document.getElementById('mobileSidebar')
+  const overlay = document.getElementById('navOverlay')
+  const closeBtn = document.getElementById('sidebarCloseBtn')
+  
+  if (!menuToggle || !sidebar) return
+  
+  const openMenu = () => {
+    sidebar.classList.add('open')
+    if (overlay) overlay.classList.add('open')
+    document.body.style.overflow = 'hidden'
   }
- })
+  
+  const closeMenu = () => {
+    sidebar.classList.remove('open')
+    if (overlay) overlay.classList.remove('open')
+    document.body.style.overflow = ''
+  }
+  
+  menuToggle.onclick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    openMenu()
+  }
+  
+  if (closeBtn) {
+    closeBtn.onclick = (e) => {
+      e.preventDefault()
+      closeMenu()
+    }
+  }
+  
+  if (overlay) {
+    overlay.onclick = closeMenu
+  }
+  
+  sidebar.querySelectorAll('a').forEach(a => {
+    a.onclick = closeMenu
+  })
 }
 
-const route=async()=>{
- const [,p,c,id]=location.hash.split('/')
- window.scrollTo(0,0)
+const route = async () => {
+  // Pastikan menu tertutup saat navigasi
+  const sidebar = document.getElementById('mobileSidebar')
+  const overlay = document.getElementById('navOverlay')
+  if (sidebar) sidebar.classList.remove('open')
+  if (overlay) overlay.classList.remove('open')
+  document.body.style.overflow = ''
+
+  const [,p,c,id] = location.hash.split('/')
+  window.scrollTo(0,0)
  
  if(p==='oud'&&c&&id){
   detail(c,id)
@@ -62,8 +78,17 @@ const route=async()=>{
 
 addEventListener('hashchange',route)
 
-// Initialize
+// Initialize immediately (0ms instant paint from cache/defaults)
+route()
+setupMenu()
+
+// Background sync from Supabase (updates CMS changes seamlessly)
 load().then(()=>{
- route()
- setupMenu()
+ const [,p]=location.hash.split('/')
+ if(!p || p==='oud'){
+  route()
+ }
+}).catch(err=>{
+ console.warn('Background sync error:', err)
 })
+

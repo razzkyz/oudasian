@@ -10,8 +10,10 @@ create table if not exists orders(
   id bigint generated always as identity primary key,
   oud_country text, oud_id int, oud_name text,
   nama text not null, email text not null, phone text not null, gender text,
+  alamat text,
   status text default 'Baru', created_at timestamptz default now());
 alter table orders add column if not exists ip text;
+alter table orders add column if not exists alamat text;
 create table if not exists ouds(country text, slot int, name text, sub text, descr text, img text, primary key(country,slot));
 create table if not exists site(key text primary key, value text);
 create table if not exists settings(key text primary key, value text);
@@ -42,6 +44,7 @@ alter table orders add constraint orders_valid check (
   char_length(nama) between 2 and 100 and char_length(email) <= 150
   and email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$'
   and phone ~ '^[0-9]{8,15}$' and gender in ('Laki-laki','Perempuan')
+  and (alamat is null or char_length(alamat) <= 1000)
   and oud_country in ('Thailand','Cambodia','Vietnam','Malaysia','Indonesia','Laos')
   and oud_id between 1 and 8 and char_length(oud_name) <= 150
   and status in ('Baru','Diproses','Dikirim','Selesai')) not valid;
@@ -52,7 +55,7 @@ alter table ouds add constraint ouds_valid check (
   and (img is null or char_length(img) <= 900000)) not valid;
 alter table site drop constraint if exists site_valid;
 alter table site add constraint site_valid check (
-  key in ('brand','eyebrow','title','subtitle','footer') and char_length(value) <= 300) not valid;
+  char_length(key) <= 80 and char_length(value) <= 10000) not valid;
 
 -- 4. RLS + HAK AKSES (anon hanya boleh yang perlu) -----------------------
 alter table orders enable row level security;
@@ -63,7 +66,7 @@ alter table admin_sessions enable row level security;
 alter table rate_log enable row level security;
 revoke all on orders, ouds, site, settings, admin_sessions, rate_log from anon, authenticated;
 grant select on ouds, site to anon, authenticated;
-grant insert (oud_country,oud_id,oud_name,nama,email,phone,gender) on orders to anon, authenticated;
+grant insert (oud_country,oud_id,oud_name,nama,email,phone,gender,alamat) on orders to anon, authenticated;
 drop policy if exists "anon insert" on orders;
 drop policy if exists "order insert" on orders;
 create policy "order insert" on orders for insert to anon, authenticated with check (true);
@@ -109,7 +112,7 @@ begin
     perform net.http_post(url := 'https://api.telegram.org/bot'||t||'/sendMessage',
       headers := '{"Content-Type":"application/json"}'::jsonb,
       body := jsonb_build_object('chat_id', c, 'text',
-        E'🛎 PESANAN BARU #'||new.id||E'\n\n🪵 '||new.oud_name||E'\n👤 '||new.nama||E'\n📧 '||new.email||E'\n📞 '||new.phone||E'\n⚧ '||coalesce(new.gender,'-')));
+        E'🛎 PESANAN BARU #'||new.id||E'\n\n🪵 '||new.oud_name||E'\n👤 '||new.nama||E'\n📧 '||new.email||E'\n📞 '||new.phone||E'\n⚧ '||coalesce(new.gender,'-')||E'\n📍 '||coalesce(new.alamat,'-')));
   exception when others then null;
   end;
   return new;
@@ -121,7 +124,7 @@ create trigger on_order_tg after insert on orders for each row execute function 
 -- dibatasi 15 cek / 10 menit per IP, email disamarkan, IP tidak dibocorkan
 drop function if exists cek_pesanan(text);
 create function cek_pesanan(p_phone text)
-returns table(id bigint, oud_name text, nama text, email text, phone text, gender text, status text, created_at timestamptz)
+returns table(id bigint, oud_name text, nama text, email text, phone text, gender text, status text, created_at timestamptz, alamat text)
 language plpgsql security definer set search_path = public, extensions as $$
 declare v_ip text := _ip();
 begin
@@ -131,7 +134,7 @@ begin
   if random() < 0.05 then delete from rate_log r where r.ts < now() - interval '1 day'; end if;
   insert into rate_log(kind, ip) values('cek', v_ip);
   return query select o.id, o.oud_name, o.nama, regexp_replace(o.email,'^(.).*(@.*)$','\1***\2'),
-                      o.phone, o.gender, o.status, o.created_at
+                      o.phone, o.gender, o.status, o.created_at, o.alamat
                from orders o where o.phone = p_phone order by o.created_at desc;
 end $$;
 
@@ -180,7 +183,8 @@ create or replace function admin_save_site(p_pin text, p_key text, p_value text)
 language plpgsql security definer set search_path = public, extensions as $$
 begin
   perform _admin_ok(p_pin);
-  if p_key not in ('brand','eyebrow','title','subtitle','footer') then raise exception 'Kunci tidak valid'; end if;
+  if p_key is null or char_length(trim(p_key)) < 1 or char_length(p_key) > 80 then raise exception 'Kunci tidak valid'; end if;
+  if char_length(coalesce(p_value,'')) > 10000 then raise exception 'Nilai terlalu panjang (maks 10000 karakter)'; end if;
   insert into site values(p_key, p_value) on conflict(key) do update set value = excluded.value;
 end $$;
 
