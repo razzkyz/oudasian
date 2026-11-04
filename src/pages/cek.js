@@ -4,18 +4,18 @@ import { esc, norm } from '../lib/utils.js'
 const app = document.getElementById('app')
 
 const statusConfig = {
-  'Baru':      { color: '#3498db', bg: 'rgba(52, 152, 219, 0.15)', step: 1, label: 'Booking Diterima',    desc: 'Reservasi jadwal tour Anda telah masuk ke sistem dan menunggu verifikasi tim admin.' },
-  'Diproses':  { color: '#f39c12', bg: 'rgba(243, 156, 18, 0.15)', step: 2, label: 'Verifikasi & Reservasi', desc: 'Jadwal perjalanan, kamar hotel pilihan, dan armada transportasi sedang dikonfirmasi.' },
-  'Dikirim':   { color: '#9b59b6', bg: 'rgba(155, 89, 182, 0.15)', step: 3, label: 'E-Tiket Terbit',       desc: 'E-Tiket, voucher hotel, dan kontak tour leader telah diterbitkan dan dikirimkan via WA/Email.' },
-  'Selesai':   { color: '#2ecc71', bg: 'rgba(46, 204, 113, 0.15)', step: 4, label: 'Tour Selesai',          desc: 'Perjalanan wisata telah sukses dilaksanakan. Semoga liburan Anda sangat menyenangkan!' }
+  'Baru':      { color: '#3498db', bg: 'rgba(52, 152, 219, 0.15)', step: 1, label: 'Order Diterima',       desc: 'Pesanan Agarwood Anda telah masuk ke sistem dan menunggu verifikasi admin.' },
+  'Diproses':  { color: '#f39c12', bg: 'rgba(243, 156, 18, 0.15)', step: 2, label: 'Quality Check & Packing', desc: 'Produk sedang melewati seleksi kualitas, penimbangan, dan pengemasan kedap udara aman.' },
+  'Dikirim':   { color: '#9b59b6', bg: 'rgba(155, 89, 182, 0.15)', step: 3, label: 'Sedang Dikirim',        desc: 'Paket telah diserahkan ke kurir/ekspedisi. Resi dan update pengiriman dikirim via WhatsApp.' },
+  'Selesai':   { color: '#2ecc71', bg: 'rgba(46, 204, 113, 0.15)', step: 4, label: 'Pesanan Selesai',       desc: 'Produk telah diterima oleh pemesan. Terima kasih atas kepercayaan Anda pada ASIAN OUD.' }
 }
 
 const renderTimeline = (status) => {
   const currentStep = statusConfig[status]?.step || 1
   const steps = [
     { num: 1, name: 'Diterima' },
-    { num: 2, name: 'Verifikasi' },
-    { num: 3, name: 'E-Tiket Terbit' },
+    { num: 2, name: 'Diproses' },
+    { num: 3, name: 'Dikirim' },
     { num: 4, name: 'Selesai' }
   ]
 
@@ -41,33 +41,43 @@ const renderOrderResults = (orders, phoneSearched) => {
     return `
       <div class="empty-state-card">
         <div class="empty-icon-circle">?</div>
-        <h3>Tidak Ditemukan Riwayat Booking</h3>
-        <p>Tidak ada riwayat reservasi yang terdaftar dengan nomor telepon <strong>${esc(phoneSearched)}</strong>.</p>
+        <h3>Tidak Ditemukan Riwayat Order</h3>
+        <p>Tidak ada riwayat pesanan yang terdaftar dengan nomor telepon <strong>${esc(phoneSearched)}</strong>.</p>
+        <p class="empty-subnote">Pastikan nomor yang Anda ketik sesuai saat pengisian formulir pemesanan, atau hubungi tim customer service kami untuk bantuan pencarian manual.</p>
         <div class="empty-actions">
-          <a href="#/" class="btn-empty-cta">Jelajahi Koleksi</a>
-          <a href="https://wa.me/6281234567890?text=${encodeURIComponent('Halo Admin OUD ASEAN, saya ingin menanyakan status pesanan untuk nomor HP ' + phoneSearched)}" target="_blank" class="btn-empty-wa">Hubungi Admin CS</a>
+          <a href="#/" class="btn-empty-cta">Jelajahi Katalog</a>
+          <a href="https://wa.me/6281234567890?text=${encodeURIComponent('Halo Admin ASIAN OUD, saya ingin menanyakan status pesanan untuk nomor HP ' + phoneSearched)}" target="_blank" class="btn-empty-wa">Hubungi Admin CS</a>
         </div>
       </div>
     `
   }
 
+  const trackUrl = `${window.location.origin}${window.location.pathname}#/cek?phone=${encodeURIComponent(phoneSearched)}`
+
   return `
     <div class="results-wrapper">
       <div class="results-header">
-        <div class="results-count-badge">Ditemukan <strong>${orders.length}</strong> Riwayat Booking</div>
-        <p class="results-sub">Berikut adalah daftar lengkap paket wisata yang Anda booking beserta status jadwal perjalanannya:</p>
+        <div class="results-header-left">
+          <div class="results-count-badge">Ditemukan <strong>${orders.length}</strong> Riwayat Order</div>
+          <p class="results-sub">Nomor Telepon: <strong style="color:var(--gold);">${esc(phoneSearched)}</strong></p>
+        </div>
+        <div class="results-header-right">
+          <button id="btnCopyTrackLink" class="btn-copy-link" type="button" data-url="${esc(trackUrl)}">
+            Salin Link Pelacakan
+          </button>
+        </div>
       </div>
 
-      <!-- TABEL RINGKASAN BOOKING -->
+      <!-- TABEL RINGKASAN ORDER -->
       <div class="table-responsive-box">
         <table class="order-table">
           <thead>
             <tr>
-              <th>No. Booking</th>
-              <th>Waktu Reservasi</th>
-              <th>Paket Wisata yang Dipilih</th>
-              <th>Nama Traveler</th>
-              <th>Status Tour</th>
+              <th>No. Order</th>
+              <th>Waktu Order</th>
+              <th>Produk Agarwood</th>
+              <th>Nama Pemesan</th>
+              <th>Status</th>
               <th>Rincian</th>
             </tr>
           </thead>
@@ -85,7 +95,7 @@ const renderOrderResults = (orders, phoneSearched) => {
                   </td>
                   <td class="cell-date">${dateStr} WIB</td>
                   <td class="cell-product">
-                    <div class="table-prod-name">${esc(r.oud_name || 'Paket Wisata ASEAN')}</div>
+                    <div class="table-prod-name">${esc(r.oud_name || 'Produk Agarwood')}</div>
                     ${r.oud_country ? `<span class="table-prod-country">${esc(r.oud_country)}</span>` : ''}
                   </td>
                   <td class="cell-customer">
@@ -109,10 +119,10 @@ const renderOrderResults = (orders, phoneSearched) => {
         </table>
       </div>
 
-      <!-- DETAIL CARD LENGKAP TIAP BOOKING -->
+      <!-- DETAIL CARD LENGKAP TIAP ORDER -->
       <div class="details-cards-heading">
-        <h3>Rincian Lengkap Paket &amp; Pemesanan</h3>
-        <p>Detail reservasi dan informasi perjalanan Anda</p>
+        <h3>Rincian Lengkap Produk &amp; Pengiriman</h3>
+        <p>Detail pesanan dan informasi alamat pengiriman Anda</p>
       </div>
 
       <div class="order-details-stack">
@@ -122,7 +132,7 @@ const renderOrderResults = (orders, phoneSearched) => {
             dateStyle: 'full', timeStyle: 'medium'
           })
           const waMessage = encodeURIComponent(
-            `Halo Admin OUD ASEAN, saya ingin konfirmasi status pesanan #${r.id} (${r.oud_name}) atas nama ${r.nama}.`
+            `Halo Admin ASIAN OUD, saya ingin konfirmasi status pesanan #${r.id} (${r.oud_name}) atas nama ${r.nama}.`
           )
 
           return `
@@ -143,30 +153,30 @@ const renderOrderResults = (orders, phoneSearched) => {
               <div class="card-stepper-box">
                 ${renderTimeline(r.status)}
                 <div class="status-desc-text">
-                  <strong>Status Perjalanan:</strong> ${cfg.desc}
+                  <strong>Status Pesanan:</strong> ${cfg.desc}
                 </div>
               </div>
 
               <div class="detail-split-grid">
-                <!-- Kolom Paket Wisata -->
+                <!-- Kolom Produk -->
                 <div class="detail-section-block">
-                  <h5 class="block-title">Paket Wisata yang Dipesan</h5>
+                  <h5 class="block-title">Produk yang Dipesan</h5>
                   <div class="item-ordered-card">
                     <div class="item-bullet">✓</div>
                     <div class="item-text">
-                      <div class="item-main-name">${esc(r.oud_name || 'Paket Wisata ASEAN')}</div>
-                      <div class="item-sub-meta">Destinasi: <strong>${esc(r.oud_country || 'ASEAN')}</strong></div>
-                      <div class="item-note">Termasuk akomodasi hotel, transportasi ber-AC/speedboat, tiket masuk, dan pemandu lokal.</div>
+                      <div class="item-main-name">${esc(r.oud_name || 'Produk Agarwood ASIAN OUD')}</div>
+                      <div class="item-sub-meta">Asal Produk: <strong>${esc(r.oud_country || 'Asia')}</strong></div>
+                      <div class="item-note">Koleksi 100% autentik dengan jaminan kualitas grade premium dari ASIAN OUD.</div>
                     </div>
                   </div>
                 </div>
 
                 <!-- Kolom Detail Pemesan -->
                 <div class="detail-section-block">
-                  <h5 class="block-title">Data Traveler</h5>
+                  <h5 class="block-title">Data Pemesan &amp; Alamat Pengiriman</h5>
                   <div class="info-list">
                     <div class="info-item">
-                      <span class="info-label">Nama Traveler:</span>
+                      <span class="info-label">Nama Pemesan:</span>
                       <span class="info-val">${esc(r.nama)}</span>
                     </div>
                     <div class="info-item">
@@ -178,7 +188,7 @@ const renderOrderResults = (orders, phoneSearched) => {
                       <span class="info-val">${esc(r.email)}</span>
                     </div>
                     <div class="info-item">
-                      <span class="info-label">Kategori / Titel:</span>
+                      <span class="info-label">Titel / Panggilan:</span>
                       <span class="info-val">${esc(r.gender || '-')}</span>
                     </div>
                     ${r.alamat ? `
@@ -193,7 +203,7 @@ const renderOrderResults = (orders, phoneSearched) => {
 
               <div class="card-bottom-actions">
                 <a href="https://wa.me/6281234567890?text=${waMessage}" target="_blank" class="btn-card-wa">
-                  <span>Hubungi Tour Coordinator via WhatsApp</span>
+                  <span>Hubungi Admin ASIAN OUD via WhatsApp</span>
                 </a>
               </div>
             </div>
@@ -213,42 +223,60 @@ export const cek = () => {
       const sp = new URLSearchParams(hash.substring(qIdx))
       prefillPhone = sp.get('phone') || ''
     }
+    if (!prefillPhone) {
+      const s = new URLSearchParams(window.location.search || '')
+      prefillPhone = s.get('phone') || ''
+    }
   } catch (e) {}
 
   app.innerHTML = `
-    <!-- Header Banner -->
-    <div class="page-banner">
-      <div class="banner-badge">PELACAKAN RESERVASI RESMI</div>
-      <h1 class="banner-title">CEK STATUS BOOKING TOUR</h1>
-      <p class="banner-subtitle">Pantau status reservasi, rincian paket wisata, jadwal keberangkatan cukup dengan nomor telepon Anda.</p>
+    <!-- Hero Header -->
+    <div class="cek-page-hero">
+      <div class="luxury-pill-badge">PELACAKAN PESANAN RESMI</div>
+      <h1 class="cek-hero-title">CEK STATUS ORDER</h1>
+      <p class="cek-hero-subtitle">Pantau status pesanan produk Agarwood Anda, rincian produk, dan proses pengiriman cukup dengan nomor telepon yang terdaftar.</p>
     </div>
     
+    <!-- Search Form Card -->
+    <div class="cek-search-wrapper">
+      <form id="f" class="cek-search-card">
+        <div class="search-card-top">
+          <label class="search-card-label" for="phoneInput">Nomor Handphone / WhatsApp Saat Order</label>
+          <span class="search-badge-pill">Verifikasi Online</span>
+        </div>
+
+        <div class="search-bar-integrated">
+          <span class="search-prefix">+62</span>
+          <input 
+            id="phoneInput"
+            name="p" 
+            type="tel" 
+            class="search-main-input"
+            placeholder="Ketik nomor HP (contoh: 081234567890)" 
+            value="${esc(prefillPhone)}"
+            required 
+            autocomplete="tel"
+            pattern="[0-9]{8,15}"
+            title="Nomor telepon harus berupa 8-15 digit angka"
+          />
+          <button class="btn-search-trigger" type="submit">
+            <span>Lacak Pesanan →</span>
+          </button>
+        </div>
+
+        <div class="search-card-footer">
+          <span class="search-hint-text">
+            Ketik nomor handphone yang Anda cantumkan saat mengisi formulir pemesanan.
+          </span>
+          <a href="https://wa.me/6281234567890" target="_blank" class="search-cs-link">
+            Bantuan CS WhatsApp ↗
+          </a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Container Hasil & Panduan -->
     <div class="cek-container">
-      <div class="search-box-card">
-        <form id="f" class="cek-form">
-          <label class="search-label" for="phoneInput">Masukkan Nomor Telepon / WhatsApp Saat Booking:</label>
-          <div class="form-group-inline">
-            <div class="input-with-icon">
-              <input 
-                id="phoneInput"
-                name="p" 
-                type="tel" 
-                placeholder="Contoh: 081234567890" 
-                value="${esc(prefillPhone)}"
-                required 
-                autocomplete="tel"
-                pattern="[0-9]{8,15}"
-                title="Nomor telepon harus berupa 8-15 digit angka"
-              />
-            </div>
-            <button class="btn btn-cek" type="submit">
-              <span>Cek Booking</span>
-            </button>
-          </div>
-          <p class="form-hint">Cukup ketik nomor handphone yang Anda gunakan saat mengisi formulir booking.</p>
-        </form>
-      </div>
-      
       <div id="out" class="orders-container">
         <!-- Default State / Placeholder before search -->
         <div class="cek-initial-guide">
@@ -256,32 +284,33 @@ export const cek = () => {
             <span class="guide-icon-badge">1</span>
             <div>
               <strong>Ketik Nomor HP</strong>
-              <p>Gunakan nomor kontak yang terdaftar saat melakukan reservasi tour.</p>
+              <p>Gunakan nomor kontak yang Anda cantumkan saat memesan produk.</p>
             </div>
           </div>
           <div class="guide-item">
             <span class="guide-icon-badge">2</span>
             <div>
-              <strong>Lihat Tabel Booking</strong>
-              <p>Tabel ringkasan otomatis menampilkan semua paket wisata yang Anda pesan.</p>
+              <strong>Lihat Ringkasan Order</strong>
+              <p>Sistem menampilkan daftar produk Agarwood dan status pengerjaan.</p>
             </div>
           </div>
           <div class="guide-item">
             <span class="guide-icon-badge">3</span>
             <div>
-              <strong>Pantau Status &amp; E-Tiket</strong>
-              <p>Status diperbarui real-time oleh tim reservasi &amp; tour leader kami.</p>
+              <strong>Pantau Pengiriman</strong>
+              <p>Status diperbarui real-time oleh tim admin &amp; kurir ASIAN OUD.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
     
+    <!-- Help Box -->
     <div class="cek-help">
       <div class="help-inner">
         <div class="help-header">
           <h3>Butuh Bantuan Mengenai Pesanan Anda?</h3>
-          <p>Tim customer support OUD ASEAN siap melayani kebutuhan informasi Anda.</p>
+          <p>Tim customer support ASIAN OUD siap melayani kebutuhan informasi Anda.</p>
         </div>
         <div class="help-grid">
           <div class="help-item">
@@ -295,7 +324,7 @@ export const cek = () => {
             <div class="help-icon help-icon-num">WA</div>
             <div>
               <strong>Layanan Pelanggan WhatsApp 24/7</strong>
-              <p>Hubungi Customer Service kami di <a href="https://wa.me/6281234567890" target="_blank" style="color:var(--gold); font-weight:700;">+62 812-3456-7890</a> (Setiap Hari 24 Jam)</p>
+              <p>Hubungi Customer Service ASIAN OUD di <a href="https://wa.me/6281234567890" target="_blank" style="color:var(--gold); font-weight:700;">+62 812-3456-7890</a> (Setiap Hari 24 Jam)</p>
             </div>
           </div>
         </div>
@@ -311,7 +340,7 @@ export const cek = () => {
     outEl.innerHTML = `
       <div class="loading-state">
         <div class="loading-spinner"></div>
-        <p>Sedang memeriksa riwayat booking tour untuk nomor ${esc(phone)}...</p>
+        <p>Sedang memeriksa riwayat order untuk nomor ${esc(phone)}...</p>
       </div>
     `
     
@@ -323,12 +352,28 @@ export const cek = () => {
         outEl.innerHTML = `
           <div class="error-state">
             <div class="error-icon">!</div>
-            <h4>Gagal Memeriksa Booking</h4>
+            <h4>Gagal Memeriksa Order</h4>
             <p>${esc(error.message || 'Terjadi kesalahan saat mengambil data. Silakan coba beberapa saat lagi.')}</p>
           </div>
         `
       } else {
         outEl.innerHTML = renderOrderResults(data, phoneVal)
+        const copyBtn = document.getElementById('btnCopyTrackLink')
+        if (copyBtn) {
+          copyBtn.onclick = () => {
+            const url = copyBtn.dataset.url
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(url).then(() => {
+                copyBtn.textContent = 'Link Berhasil Disalin!'
+                setTimeout(() => { copyBtn.textContent = 'Salin Link Pelacakan' }, 2000)
+              }).catch(() => {
+                prompt('Salin tautan ini:', url)
+              })
+            } else {
+              prompt('Salin tautan ini:', url)
+            }
+          }
+        }
       }
     } catch (err) {
       outEl.innerHTML = `
@@ -340,18 +385,21 @@ export const cek = () => {
     }
   }
   
-  document.getElementById('f').onsubmit = async (e) => {
-    e.preventDefault()
-    const btn = e.target.querySelector('.btn-cek')
-    const originalText = btn.innerHTML
-    btn.disabled = true
-    btn.innerHTML = `<span>Mencari Data...</span>`
-    
-    const rawPhone = e.target.p.value
-    await doSearch(rawPhone)
-    
-    btn.disabled = false
-    btn.innerHTML = originalText
+  const formEl = document.getElementById('f')
+  if (formEl) {
+    formEl.onsubmit = async (e) => {
+      e.preventDefault()
+      const btn = e.target.querySelector('.btn-search-trigger')
+      const originalText = btn.innerHTML
+      btn.disabled = true
+      btn.innerHTML = `<span>Mencari Data...</span>`
+      
+      const rawPhone = e.target.p.value
+      await doSearch(rawPhone)
+      
+      btn.disabled = false
+      btn.innerHTML = originalText
+    }
   }
 
   if (prefillPhone) {

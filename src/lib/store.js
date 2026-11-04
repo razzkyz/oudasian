@@ -1,7 +1,40 @@
 import { supabase } from './supabase.js'
-import { getOuds as defaults } from '../data/oud.js'
+import { getOuds as defaults, COUNTRIES as DEFAULT_COUNTRIES } from '../data/oud.js'
 
-const CACHE_KEY = 'oud_asean_store_v1'
+const CACHE_KEY = 'asian_oud_store_v3'
+
+export const COUNTRY_META_DEFAULTS = {
+  Indonesia: {
+    flag: '🇮🇩',
+    label: 'Nusantara Wild Agarwood',
+    desc: 'Koleksi Gaharu pedalaman Kalimantan, Papua, dan Sumatra dengan kandungan resin hitam pekat dan mutu aroma legendaris terbaik dunia.'
+  },
+  Cambodia: {
+    flag: '🇰🇭',
+    label: 'Pursat Royal Agarwood',
+    desc: 'Gaharu langka hutan Pursat dan Koh Kong yang termasyhur dengan karakter aroma manis madu, buah matang, dan kayu kuno.'
+  },
+  Thailand: {
+    flag: '🇹🇭',
+    label: 'Siam Heritage Agarwood',
+    desc: 'Gaharu hutan Trat dan Prachinburi dengan aroma manis hangat menyegarkan serta hasil distilasi minyak murni berkualitas tinggi.'
+  },
+  Vietnam: {
+    flag: '🇻🇳',
+    label: 'Nha Trang Kinam Agarwood',
+    desc: 'Gaharu legendaris Khanh Hoa & Nha Trang dengan tingkatan resin Kyara/Kinam langka berkarakter aroma dingin surgawi.'
+  },
+  Malaysia: {
+    flag: '🇲🇾',
+    label: 'Malacca & Borneo Agarwood',
+    desc: 'Gaharu hutan hujan Semenanjung dan Sarawak berdensitas tinggi dengan wangi herbal balsamic aromatik yang tahan lama.'
+  },
+  Laos: {
+    flag: '🇱🇦',
+    label: 'Champasak Forest Agarwood',
+    desc: 'Gaharu murni hutan purba Champasak & Attapeu di sepanjang aliran sungai Mekong beraroma damai dan wangi lembut.'
+  }
+}
 
 const loadCache = () => {
   try {
@@ -27,46 +60,70 @@ export const persistSite = () => {
   } catch (e) {}
 }
 
+// Mengambil daftar negara secara dinamis dari database (DB.ouds)
+export const getCountries = () => {
+  if (DB.ouds && DB.ouds.length > 0) {
+    const set = new Set()
+    DB.ouds.forEach(item => {
+      if (item.country) set.add(item.country)
+    })
+    const list = Array.from(set)
+    if (list.length > 0) return list
+  }
+  return DEFAULT_COUNTRIES
+}
+
+// Mengambil metadata negara (flag, label, deskripsi)
+export const getCountryMeta = country => {
+  return COUNTRY_META_DEFAULTS[country] || {
+    flag: '🌏',
+    label: `${country} Agarwood Collection`,
+    desc: `Koleksi produk Agarwood pilihan bermutu tinggi dari ${country}.`
+  }
+}
+
+// Mengambil daftar produk untuk negara tertentu langsung dari DB
+export const getOuds = country => {
+  const fromDb = (DB.ouds || []).filter(x => x.country === country).sort((a, b) => (a.slot || 0) - (b.slot || 0))
+  if (fromDb.length > 0) {
+    return fromDb.map((item, idx) => ({
+      id: item.slot || (idx + 1),
+      slot: item.slot || (idx + 1),
+      country: item.country,
+      name: item.name || `Koleksi #${idx + 1}`,
+      sub: item.sub || `${country} Agarwood`,
+      desc: item.descr || '',
+      img: item.img || 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80',
+      badge: item.slot <= 2 ? 'Super Sinking' : 'Premium Grade',
+      custom: true
+    }))
+  }
+  return defaults(country)
+}
+
+// Load data real-time dari Supabase
 export const load = async () => {
   try {
     const [o, s] = await Promise.all([
-      supabase.from('ouds').select('*'),
+      supabase.from('ouds').select('*').order('slot', { ascending: true }),
       supabase.from('site').select('*')
     ])
 
-    if (o.data) DB.ouds = o.data
-    if (s.data) DB.site = Object.fromEntries(s.data.map(r => [r.key, r.value]))
+    if (o.data && o.data.length > 0) {
+      DB.ouds = o.data
+    }
+    if (s.data) {
+      DB.site = Object.fromEntries(s.data.map(r => [r.key, r.value]))
+    }
 
     persistSite()
 
-    // Live DOM patch for brand & footer
-    const footerEl = document.querySelector('.footer-tagline')
-    if (footerEl && DB.site['lp_footer_tagline']) {
-      footerEl.textContent = DB.site['lp_footer_tagline']
-    }
+    // Live DOM patch for brand
     const brandEl = document.getElementById('brand')
     if (brandEl) {
-      let b = (DB.site['lp_brand'] || 'OUD ASEAN').replace(/^[✈️\s]+/, '').trim()
-      if (b.toLowerCase().includes('asean travel')) b = 'OUD ASEAN'
-      const span = brandEl.querySelector('span')
-      if (span) span.textContent = b
+      brandEl.innerHTML = `<span class="brand-asian">ASIAN</span> <span class="brand-oud">OUD</span>`
     }
   } catch (err) {
     console.warn('Supabase sync notice:', err)
   }
 }
-
-export const getOuds = c => defaults(c).map((d, i) => {
-  const r = DB.ouds.find(x => x.country === c && x.slot === i + 1) || {}
-  const hasCustomEdit = r.name || r.sub || r.descr || r.img
-  return {
-    ...d,
-    name: r.name || d.name,
-    sub: r.sub || d.sub,
-    desc: r.descr || d.desc,
-    img: r.img || d.img,
-    price: d.price || 'Rp 3.850.000 / Pax',
-    badge: d.badge || 'Verified Tour',
-    custom: !!hasCustomEdit
-  }
-})

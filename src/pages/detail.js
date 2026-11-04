@@ -1,6 +1,5 @@
 import { supabase } from '../lib/supabase.js'
-import { getOuds } from '../lib/store.js'
-import { COUNTRY_META } from '../data/oud.js'
+import { getOuds, getCountryMeta } from '../lib/store.js'
 import { esc, norm, toast } from '../lib/utils.js'
 import { home } from './home.js'
 
@@ -10,7 +9,7 @@ export const detail = (c, id) => {
   const o = getOuds(c)[id - 1]
   if (!o) return home()
 
-  const meta = COUNTRY_META[c] || { flag: '🌏', label: 'Destinasi Asia Tenggara' }
+  const meta = getCountryMeta(c)
 
   const galleryImages = [
     o.img,
@@ -24,7 +23,7 @@ export const detail = (c, id) => {
 
   app.innerHTML = `
   <div class="breadcrumb-nav">
-    <a class="back-link" href="#/">← Kembali ke Katalog Destinasi</a>
+    <a class="back-link" href="#/">← Kembali ke Katalog Produk</a>
     <span class="breadcrumb-separator">/</span>
     <span class="breadcrumb-current">${meta.flag} ${c} · ${esc(o.sub || o.name)}</span>
   </div>
@@ -53,14 +52,14 @@ export const detail = (c, id) => {
       <div class="detail-badge-top">
         <span class="badge-flag">${meta.flag}</span>
         <span class="badge-origin">${c}</span>
-        <span class="badge-highlight">${esc(o.badge || 'Verified Tour')}</span>
+        <span class="badge-highlight">${esc(o.badge || 'Premium Agarwood')}</span>
       </div>
 
       <h1 class="detail-title">${esc(o.sub || o.name)}</h1>
-      <div class="detail-subtitle">${esc(o.name)} · ${meta.label}</div>
+      <div class="detail-subtitle">${esc(o.name)} · Asal: ${meta.label}</div>
 
       <div class="detail-desc-box">
-        <h3>Rencana Perjalanan &amp; Fasilitas Tour</h3>
+        <h3>Spesifikasi &amp; Karakteristik Produk</h3>
         <p class="detail-desc">${esc(o.desc)}</p>
       </div>
 
@@ -68,34 +67,34 @@ export const detail = (c, id) => {
         <div class="detail-feature-card">
           <span class="feature-icon feature-num">01</span>
           <div>
-            <strong>Destinasi Terbaik</strong>
-            <small>Rute ikonik &amp; spot foto eksotis</small>
+            <strong>100% Autentik</strong>
+            <small>Dipilih langsung dari sumber terverifikasi</small>
           </div>
         </div>
         <div class="detail-feature-card">
           <span class="feature-icon feature-num">02</span>
           <div>
-            <strong>Transport Nyaman</strong>
-            <small>Armada AC &amp; Driver ramah</small>
+            <strong>Grade Premium</strong>
+            <small>Kualitas terstandarisasi &amp; aroma otentik</small>
           </div>
         </div>
         <div class="detail-feature-card">
           <span class="feature-icon feature-num">03</span>
           <div>
-            <strong>Jaminan Aman</strong>
-            <small>Asuransi perjalanan &amp; tim 24/7</small>
+            <strong>Garansi Supplier</strong>
+            <small>Pengemasan aman &amp; pengiriman terpercaya</small>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Booking Form -->
+  <!-- Order Form -->
   <div class="booking-section-wrapper">
     <div class="booking-header">
-      <div class="booking-tag">FORMULIR RESERVASI &amp; BOOKING RESMI</div>
-      <h2 class="booking-title">Booking Paket: ${esc(o.sub || o.name)}</h2>
-      <p class="booking-subtitle">Mohon lengkapi formulir di bawah ini dengan data diri dan alamat lengkap untuk proses verifikasi dan konfirmasi jadwal tour.</p>
+      <div class="booking-tag">FORMULIR PESANAN RESMI ASIAN OUD</div>
+      <h2 class="booking-title">Order Produk: ${esc(o.sub || o.name)}</h2>
+      <p class="booking-subtitle">Mohon lengkapi formulir di bawah ini dengan data diri dan alamat lengkap untuk proses verifikasi dan konfirmasi pengiriman pesanan Anda.</p>
     </div>
 
     <form id="f" class="booking-form-card">
@@ -105,7 +104,7 @@ export const detail = (c, id) => {
           <input name="nama" type="text" placeholder="Contoh: Rian Pratama" required minlength="2" maxlength="100"/>
         </div>
         <div class="form-group">
-          <label>Email Aktif (Pengiriman E-Tiket) <span class="required">*</span></label>
+          <label>Email Aktif (Konfirmasi Order) <span class="required">*</span></label>
           <input name="email" type="email" placeholder="contoh@email.com" required maxlength="150"/>
         </div>
       </div>
@@ -114,21 +113,21 @@ export const detail = (c, id) => {
         <div class="form-group">
           <label>Nomor WhatsApp / Telepon <span class="required">*</span></label>
           <input name="phone" type="tel" placeholder="Contoh: 081234567890" required pattern="[0-9]{8,15}" title="Nomor telepon 8–15 digit angka"/>
-          <small class="form-hint">Digunakan untuk koordinasi tour &amp; cek status pemesanan.</small>
+          <small class="form-hint">Digunakan untuk koordinasi order &amp; cek status pengiriman.</small>
         </div>
         <div class="form-group">
-          <label>Titel / Jenis Kelamin <span class="required">*</span></label>
+          <label>Titel / Panggilan <span class="required">*</span></label>
           <select name="gender" required>
             <option value="">-- Pilih Titel --</option>
-            <option value="Laki-laki">Laki-laki (Tuan / Mr)</option>
-            <option value="Perempuan">Perempuan (Nyonya / Nona / Ms)</option>
+            <option value="Laki-laki">Bapak / Tuan (Mr)</option>
+            <option value="Perempuan">Ibu / Nyonya (Ms/Mrs)</option>
           </select>
         </div>
       </div>
 
       <!-- Alamat Lengkap -->
       <div class="form-group full-width">
-        <label>Alamat Lengkap <span class="required">*</span></label>
+        <label>Alamat Lengkap Pengiriman <span class="required">*</span></label>
         <textarea
           name="alamat"
           rows="3"
@@ -137,12 +136,12 @@ export const detail = (c, id) => {
           minlength="10"
           maxlength="500"
         ></textarea>
-        <small class="form-hint">Pastikan alamat ditulis selengkap mungkin agar admin dapat mengonfirmasi dengan mudah.</small>
+        <small class="form-hint">Pastikan alamat ditulis selengkap mungkin agar tim supplier dapat memproses pengiriman dengan tepat.</small>
       </div>
 
       <div class="order-summary-box">
         <div class="summary-line">
-          <span>Paket yang Dipilih:</span>
+          <span>Produk yang Dipilih:</span>
           <strong>${esc(o.sub || o.name)} (${c})</strong>
         </div>
       </div>
@@ -150,16 +149,16 @@ export const detail = (c, id) => {
       <button class="btn btn-booking" type="submit">
         <span>Konfirmasi &amp; Kirim Pesanan →</span>
       </button>
-      <p class="order-security-note">Data Anda aman dan terenkripsi. Tim OUD ASEAN akan segera menghubungi via WhatsApp untuk konfirmasi pesanan Anda.</p>
+      <p class="order-security-note">Data Anda aman dan terenkripsi. Tim ASIAN OUD akan segera menghubungi via WhatsApp untuk konfirmasi detail pesanan Anda.</p>
     </form>
   </div>
 
-  <!-- Related Tours -->
+  <!-- Related Products -->
   ${relatedOuds.length > 0 ? `
   <div class="related-section">
     <div class="related-header">
-      <h3>Pilihan Destinasi Lainnya di ${c}</h3>
-      <p>Paket tour alternatif dengan keindahan alam dan pengalaman unik</p>
+      <h3>Pilihan Koleksi Lainnya dari ${c}</h3>
+      <p>Koleksi produk Agarwood alternatif dengan mutu dan karakter aroma unik</p>
     </div>
     <div class="related-grid">
       ${relatedOuds.map(ro => `
@@ -168,11 +167,11 @@ export const detail = (c, id) => {
             <img src="${ro.img}" alt="${esc(ro.sub || ro.name)}" loading="lazy"
               onerror="this.onerror=null;this.src='${o.img}'"/>
             <div class="related-img-overlay"></div>
-            <span class="related-badge">${esc(ro.badge || 'Verified Tour')}</span>
+            <span class="related-badge">${esc(ro.badge || 'Premium Grade')}</span>
           </div>
           <div class="related-info">
             <h4>${esc(ro.sub || ro.name)}</h4>
-            <p>Paket Tour #${ro.id} · ${meta.label}</p>
+            <p>Produk #${ro.id} · Asal: ${meta.label}</p>
             <span class="related-cta">Lihat Detail →</span>
           </div>
         </a>
@@ -226,7 +225,7 @@ export const detail = (c, id) => {
     }
   }
 
-  // --- Booking Form Submit ---
+  // --- Order Form Submit ---
   const form = document.getElementById('f')
   if (form) {
     form.onsubmit = async e => {
@@ -234,7 +233,7 @@ export const detail = (c, id) => {
       const btn = form.querySelector('button[type="submit"]')
       const origHTML = btn.innerHTML
       btn.disabled = true
-      btn.innerHTML = `<span>Memproses Booking...</span>`
+      btn.innerHTML = `<span>Memproses Pesanan...</span>`
 
       const rawPhone = form.phone.value
       const cleanPhone = norm(rawPhone)
@@ -261,24 +260,24 @@ export const detail = (c, id) => {
 
       if (error) {
         btn.disabled = false; btn.innerHTML = origHTML
-        return toast('Gagal mengirim booking: ' + (error.message || 'Periksa koneksi Anda'), true)
+        return toast('Gagal mengirim pesanan: ' + (error.message || 'Periksa koneksi Anda'), true)
       }
 
-      const orderId = data?.[0]?.id || 'RES-' + Math.floor(1000 + Math.random() * 9000)
+      const orderId = data?.[0]?.id || 'ORD-' + Math.floor(1000 + Math.random() * 9000)
 
       document.querySelector('.booking-section-wrapper').innerHTML = `
         <div class="booking-success-card">
           <div class="success-icon-badge">✓</div>
-          <h2 class="success-title">Booking Tour Berhasil Diterima!</h2>
-          <p class="success-subtitle">Terima kasih <strong>${esc(payload.nama)}</strong>. Reservasi untuk paket <strong>${esc(o.sub || o.name)}</strong> telah tersimpan di sistem kami.</p>
+          <h2 class="success-title">Pesanan Berhasil Diterima!</h2>
+          <p class="success-subtitle">Terima kasih <strong>${esc(payload.nama)}</strong>. Permintaan order untuk produk <strong>${esc(o.sub || o.name)}</strong> telah tersimpan di sistem ASIAN OUD.</p>
 
           <div class="success-info-box">
             <div class="info-row">
-              <span>Nomor Booking:</span>
+              <span>Nomor Order:</span>
               <strong class="gold-text">#${orderId}</strong>
             </div>
             <div class="info-row">
-              <span>Destinasi:</span>
+              <span>Asal Produk:</span>
               <span>${meta.flag} ${c}</span>
             </div>
             <div class="info-row">
@@ -286,16 +285,16 @@ export const detail = (c, id) => {
               <span>${esc(cleanPhone)}</span>
             </div>
             <div class="info-row">
-              <span>Alamat:</span>
+              <span>Alamat Pengiriman:</span>
               <span>${esc(payload.alamat)}</span>
             </div>
           </div>
 
           <div class="success-actions">
             <a href="#/cek?phone=${encodeURIComponent(cleanPhone)}" class="btn-primary-action">
-              Lacak Status Pemesanan
+              Lacak Status Pesanan
             </a>
-            <a href="https://wa.me/6281234567890?text=${encodeURIComponent('Halo Admin OUD ASEAN, saya ingin konfirmasi pesanan paket ' + (o.sub || o.name) + ' — No. Booking #' + orderId)}" target="_blank" class="btn-wa-confirm">
+            <a href="https://wa.me/6281234567890?text=${encodeURIComponent('Halo Admin ASIAN OUD, saya ingin konfirmasi pesanan produk ' + (o.sub || o.name) + ' — No. Order #' + orderId)}" target="_blank" class="btn-wa-confirm">
               Konfirmasi via WhatsApp CS
             </a>
             <a href="#/" class="btn-secondary-action">
@@ -305,7 +304,7 @@ export const detail = (c, id) => {
         </div>
       `
       document.querySelector('.booking-section-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' })
-      toast('Booking berhasil dikirim! Silakan cek status di menu Cek Pemesanan.')
+      toast('Pesanan berhasil dikirim! Silakan cek status di menu Cek Order.')
     }
   }
 }

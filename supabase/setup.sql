@@ -34,8 +34,9 @@ begin
   -- PIN disimpan sebagai hash (bukan teks biasa); PIN lama otomatis dimigrasi
   insert into settings values('admin_pin_hash',
     extensions.crypt(coalesce((select value from settings where key='admin_pin'), v_pin), extensions.gen_salt('bf')))
-  on conflict(key) do nothing;
+  on conflict(key) do update set value = excluded.value;
   delete from settings where key='admin_pin';
+  delete from rate_log where kind = 'login';
 end $$;
 
 -- 3. VALIDASI DATA (tolak data sampah) -----------------------------------
@@ -170,6 +171,30 @@ begin
   update orders set status = p_status where id = p_id;
 end $$;
 
+create or replace function admin_update_order(
+  p_pin text,
+  p_id bigint,
+  p_nama text,
+  p_phone text,
+  p_email text,
+  p_gender text default null,
+  p_alamat text default null,
+  p_status text default 'Baru'
+) returns void
+language plpgsql security definer set search_path = public, extensions as $$
+begin
+  perform _admin_ok(p_pin);
+  if p_status not in ('Baru','Diproses','Dikirim','Selesai') then raise exception 'Status tidak valid'; end if;
+  update orders
+  set nama = coalesce(nullif(trim(p_nama),''), nama),
+      phone = coalesce(nullif(trim(p_phone),''), phone),
+      email = coalesce(nullif(trim(p_email),''), email),
+      gender = p_gender,
+      alamat = p_alamat,
+      status = p_status
+  where id = p_id;
+end $$;
+
 create or replace function admin_save_oud(p_pin text, p_country text, p_slot int, p_name text, p_sub text, p_descr text, p_img text)
 returns void language plpgsql security definer set search_path = public, extensions as $$
 begin
@@ -200,6 +225,8 @@ end $$;
 -- 8. HAK EKSEKUSI FUNGSI --------------------------------------------------
 revoke all on function _ip(), _admin_ok(text), orders_guard(), notify_tg() from public, anon, authenticated;
 revoke all on function cek_pesanan(text), admin_login(text), admin_list(text), admin_status(text,bigint,text),
+  admin_update_order(text,bigint,text,text,text,text,text,text),
   admin_save_oud(text,text,int,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) from public;
 grant execute on function cek_pesanan(text), admin_login(text), admin_list(text), admin_status(text,bigint,text),
+  admin_update_order(text,bigint,text,text,text,text,text,text),
   admin_save_oud(text,text,int,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) to anon, authenticated;
