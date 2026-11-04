@@ -3,7 +3,6 @@ import { getOuds } from '../lib/store.js'
 import { COUNTRY_META } from '../data/oud.js'
 import { esc, norm, toast } from '../lib/utils.js'
 import { home } from './home.js'
-import { I } from '../lib/icons.js'
 
 const app = document.getElementById('app')
 
@@ -25,7 +24,7 @@ export const detail = (c, id) => {
 
   app.innerHTML = `
   <div class="breadcrumb-nav">
-    <a class="back-link" href="#/">${I.ArrowLeft(14)} Kembali ke Katalog Destinasi</a>
+    <a class="back-link" href="#/">← Kembali ke Katalog Destinasi</a>
     <span class="breadcrumb-separator">/</span>
     <span class="breadcrumb-current">${meta.flag} ${c} · ${esc(o.sub || o.name)}</span>
   </div>
@@ -36,9 +35,9 @@ export const detail = (c, id) => {
     <div class="detail-gallery">
       <div class="gallery-main">
         <img id="mainImage" src="${galleryImages[0]}" alt="${esc(o.sub || o.name)}" onerror="this.src='${o.img}'"/>
-        <button class="gallery-prev" id="prevBtn" type="button" aria-label="Foto Sebelumnya">${I.ChevronLeft(22)}</button>
-        <button class="gallery-next" id="nextBtn" type="button" aria-label="Foto Berikutnya">${I.ChevronRight(22)}</button>
-        <div class="gallery-zoom-badge">${I.Camera(13)} Klik untuk memperbesar</div>
+        <button class="gallery-prev" id="prevBtn" type="button" aria-label="Foto Sebelumnya">‹</button>
+        <button class="gallery-next" id="nextBtn" type="button" aria-label="Foto Berikutnya">›</button>
+        <div class="gallery-zoom-badge">Klik untuk memperbesar</div>
       </div>
       <div class="gallery-thumbs">
         ${galleryImages.map((img, i) => `
@@ -54,37 +53,37 @@ export const detail = (c, id) => {
       <div class="detail-badge-top">
         <span class="badge-flag">${meta.flag}</span>
         <span class="badge-origin">${c}</span>
-        <span class="badge-highlight">${I.BadgeCheck(12)} ${esc(o.badge || 'Verified Tour')}</span>
+        <span class="badge-highlight">${esc(o.badge || 'Verified Tour')}</span>
       </div>
 
       <h1 class="detail-title">${esc(o.sub || o.name)}</h1>
       <div class="detail-subtitle">${esc(o.name)} · ${meta.label}</div>
 
       <div class="detail-desc-box">
-        <h3>${I.Map(16)} Rencana Perjalanan & Fasilitas Tour</h3>
+        <h3>Rencana Perjalanan &amp; Fasilitas Tour</h3>
         <p class="detail-desc">${esc(o.desc)}</p>
       </div>
 
       <div class="detail-features-grid">
         <div class="detail-feature-card">
-          <span class="feature-icon">${I.Compass(20)}</span>
+          <span class="feature-icon feature-num">01</span>
           <div>
             <strong>Destinasi Terbaik</strong>
-            <small>Rute ikonik & spot foto eksotis</small>
+            <small>Rute ikonik &amp; spot foto eksotis</small>
           </div>
         </div>
         <div class="detail-feature-card">
-          <span class="feature-icon">${I.Bus(20)}</span>
+          <span class="feature-icon feature-num">02</span>
           <div>
             <strong>Transport Nyaman</strong>
-            <small>Armada AC & Driver ramah</small>
+            <small>Armada AC &amp; Driver ramah</small>
           </div>
         </div>
         <div class="detail-feature-card">
-          <span class="feature-icon">${I.Shield(20)}</span>
+          <span class="feature-icon feature-num">03</span>
           <div>
             <strong>Jaminan Aman</strong>
-            <small>Asuransi perjalanan & tim 24/7</small>
+            <small>Asuransi perjalanan &amp; tim 24/7</small>
           </div>
         </div>
       </div>
@@ -94,7 +93,7 @@ export const detail = (c, id) => {
   <!-- Booking Form -->
   <div class="booking-section-wrapper">
     <div class="booking-header">
-      <div class="booking-tag">${I.Ticket(13)} FORMULIR RESERVASI & BOOKING RESMI</div>
+      <div class="booking-tag">FORMULIR RESERVASI &amp; BOOKING RESMI</div>
       <h2 class="booking-title">Booking Paket: ${esc(o.sub || o.name)}</h2>
       <p class="booking-subtitle">Mohon lengkapi formulir di bawah ini dengan data diri dan alamat lengkap untuk proses verifikasi dan konfirmasi jadwal tour.</p>
     </div>
@@ -102,23 +101,23 @@ export const detail = (c, id) => {
     <form id="f" class="booking-form-card">
       <div class="form-grid-2">
         <div class="form-group">
-          <label>${I.Users(14)} Nama Lengkap Pemesan <span class="required">*</span></label>
+          <label>Nama Lengkap Pemesan <span class="required">*</span></label>
           <input name="nama" type="text" placeholder="Contoh: Rian Pratama" required minlength="2" maxlength="100"/>
         </div>
         <div class="form-group">
-          <label>${I.Mail(14)} Email Aktif (Pengiriman E-Tiket) <span class="required">*</span></label>
+          <label>Email Aktif (Pengiriman E-Tiket) <span class="required">*</span></label>
           <input name="email" type="email" placeholder="contoh@email.com" required maxlength="150"/>
         </div>
       </div>
 
       <div class="form-grid-2">
         <div class="form-group">
-          <label>${I.Phone(14)} Nomor WhatsApp / Telepon <span class="required">*</span></label>
+          <label>Nomor WhatsApp / Telepon <span class="required">*</span></label>
           <input name="phone" type="tel" placeholder="Contoh: 081234567890" required pattern="[0-9]{8,15}" title="Nomor telepon 8–15 digit angka"/>
-          <small class="form-hint">Digunakan untuk koordinasi tour & cek status pemesanan.</small>
+          <small class="form-hint">Digunakan untuk koordinasi tour &amp; cek status pemesanan.</small>
         </div>
         <div class="form-group">
-          <label>${I.Users(14)} Titel / Jenis Kelamin <span class="required">*</span></label>
+          <label>Titel / Jenis Kelamin <span class="required">*</span></label>
           <select name="gender" required>
             <option value="">-- Pilih Titel --</option>
             <option value="Laki-laki">Laki-laki (Tuan / Mr)</option>
@@ -129,7 +128,7 @@ export const detail = (c, id) => {
 
       <!-- Alamat Lengkap -->
       <div class="form-group full-width">
-        <label>${I.MapPin(14)} Alamat Lengkap <span class="required">*</span></label>
+        <label>Alamat Lengkap <span class="required">*</span></label>
         <textarea
           name="alamat"
           rows="3"
@@ -149,10 +148,9 @@ export const detail = (c, id) => {
       </div>
 
       <button class="btn btn-booking" type="submit">
-        <span>Konfirmasi & Kirim Pesanan</span>
-        ${I.ArrowRight(18)}
+        <span>Konfirmasi &amp; Kirim Pesanan →</span>
       </button>
-      <p class="order-security-note">${I.Shield(13)} Data Anda aman dan terenkripsi. Tim OUD ASEAN akan segera menghubungi via WhatsApp untuk konfirmasi pesanan Anda.</p>
+      <p class="order-security-note">Data Anda aman dan terenkripsi. Tim OUD ASEAN akan segera menghubungi via WhatsApp untuk konfirmasi pesanan Anda.</p>
     </form>
   </div>
 
@@ -175,7 +173,7 @@ export const detail = (c, id) => {
           <div class="related-info">
             <h4>${esc(ro.sub || ro.name)}</h4>
             <p>Paket Tour #${ro.id} · ${meta.label}</p>
-            <span class="related-cta">Lihat Detail ${I.ArrowRight(13)}</span>
+            <span class="related-cta">Lihat Detail →</span>
           </div>
         </a>
       `).join('')}
@@ -214,7 +212,7 @@ export const detail = (c, id) => {
         <div class="lightbox-overlay"></div>
         <div class="lightbox-content">
           <img src="${galleryImages[currentImage]}" alt="Full Preview"/>
-          <button class="lightbox-close">${I.Close(20)}</button>
+          <button class="lightbox-close">✕</button>
         </div>
       `
       document.body.appendChild(modal)
@@ -270,7 +268,7 @@ export const detail = (c, id) => {
 
       document.querySelector('.booking-section-wrapper').innerHTML = `
         <div class="booking-success-card">
-          <div class="success-icon-badge">${I.CheckCircle(52)}</div>
+          <div class="success-icon-badge">✓</div>
           <h2 class="success-title">Booking Tour Berhasil Diterima!</h2>
           <p class="success-subtitle">Terima kasih <strong>${esc(payload.nama)}</strong>. Reservasi untuk paket <strong>${esc(o.sub || o.name)}</strong> telah tersimpan di sistem kami.</p>
 
@@ -295,13 +293,13 @@ export const detail = (c, id) => {
 
           <div class="success-actions">
             <a href="#/cek?phone=${encodeURIComponent(cleanPhone)}" class="btn-primary-action">
-              ${I.Ticket(16)} Lacak Status Pemesanan
+              Lacak Status Pemesanan
             </a>
             <a href="https://wa.me/6281234567890?text=${encodeURIComponent('Halo Admin OUD ASEAN, saya ingin konfirmasi pesanan paket ' + (o.sub || o.name) + ' — No. Booking #' + orderId)}" target="_blank" class="btn-wa-confirm">
-              ${I.Message(16)} Konfirmasi via WhatsApp CS
+              Konfirmasi via WhatsApp CS
             </a>
             <a href="#/" class="btn-secondary-action">
-              ${I.ArrowLeft(16)} Kembali ke Beranda
+              ← Kembali ke Beranda
             </a>
           </div>
         </div>

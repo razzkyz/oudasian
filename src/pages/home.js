@@ -42,13 +42,13 @@ export const home = () => {
   let rawBrand = S('lp_brand', 'OUD ASEAN').replace(/^[✈️\s]+/, '').trim()
   if (rawBrand.toLowerCase().includes('asean travel')) rawBrand = 'OUD ASEAN'
   const brandEl = document.getElementById('brand')
-  if (brandEl) brandEl.innerHTML = `${I.Crown(20)} <span>${esc(rawBrand || 'OUD ASEAN')}</span>`
+  if (brandEl) brandEl.innerHTML = `<span>${esc(rawBrand || 'OUD ASEAN')}</span>`
 
   app.innerHTML = `
   <!-- Hero -->
   <section class="hero-clean">
     <div class="hero-clean-content">
-      <div class="luxury-pill-badge">${I.Sparkles(14)} ${esc(badge)}</div>
+      <div class="luxury-pill-badge">${esc(badge)}</div>
       <h1 class="hero-clean-title">${esc(headline)}</h1>
       <p class="hero-clean-subtitle">${esc(subtext)}</p>
       <div class="hero-stats-row">
@@ -73,7 +73,7 @@ export const home = () => {
   <!-- Country Selector -->
   <section class="country-selector">
     <div class="selector-header">
-      <span class="selector-label">${I.MapPin(12)} ${esc(selLabel)}</span>
+      <span class="selector-label">${esc(selLabel)}</span>
       <h2 class="selector-title">${esc(selTitle)}</h2>
     </div>
     <div class="country-pills">
@@ -104,7 +104,7 @@ export const home = () => {
   <!-- Tour Packages Grid -->
   <section class="products-clean">
     <div class="products-header-clean">
-      <div class="section-tag">${I.Map(12)} ${esc(catTag)}</div>
+      <div class="section-tag">${esc(catTag)}</div>
       <h2>${esc(catTitle.replace('${selectedCountry}', selectedCountry))}</h2>
       <p>${esc(catSub.replace('${ouds.length}', ouds.length))}</p>
     </div>
@@ -126,7 +126,7 @@ export const home = () => {
           <div class="product-info-clean">
             <div class="product-meta-row">
               <span class="product-code">PAKET #${o.id}</span>
-              <span class="product-rating">${I.Star(12)} 4.9</span>
+              <span class="product-rating">★ 4.9</span>
             </div>
             <h3 class="product-title-text">${esc(o.sub || o.name)}</h3>
             <div class="product-sub-text">${meta.label}</div>
@@ -134,7 +134,7 @@ export const home = () => {
             <div class="product-footer-clean">
               <div class="product-action-btn">
                 <span>Lihat Detail</span>
-                ${I.ArrowRight(14)}
+                <span class="btn-arrow-text">→</span>
               </div>
             </div>
           </div>
@@ -146,28 +146,28 @@ export const home = () => {
   <!-- Features -->
   <section class="features-clean">
     <div class="feature-clean-item">
-      <div class="feature-clean-icon">${I.Compass(22)}</div>
+      <div class="feature-clean-icon feature-icon-num">01</div>
       <div>
         <h4>${esc(feat1title)}</h4>
         <p>${esc(feat1desc)}</p>
       </div>
     </div>
     <div class="feature-clean-item">
-      <div class="feature-clean-icon">${I.Hotel(22)}</div>
+      <div class="feature-clean-icon feature-icon-num">02</div>
       <div>
         <h4>${esc(feat2title)}</h4>
         <p>${esc(feat2desc)}</p>
       </div>
     </div>
     <div class="feature-clean-item">
-      <div class="feature-clean-icon">${I.Users(22)}</div>
+      <div class="feature-clean-icon feature-icon-num">03</div>
       <div>
         <h4>${esc(feat3title)}</h4>
         <p>${esc(feat3desc)}</p>
       </div>
     </div>
     <div class="feature-clean-item">
-      <div class="feature-clean-icon">${I.Shield(22)}</div>
+      <div class="feature-clean-icon feature-icon-num">04</div>
       <div>
         <h4>${esc(feat4title)}</h4>
         <p>${esc(feat4desc)}</p>

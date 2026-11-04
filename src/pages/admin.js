@@ -1,8 +1,7 @@
-import { supabase } from '../lib/supabase.js'
+﻿import { supabase } from '../lib/supabase.js'
 import { COUNTRIES } from '../data/oud.js'
 import { getOuds, S, load, DB, persistSite } from '../lib/store.js'
 import { esc, toast, resize } from '../lib/utils.js'
-import { I } from '../lib/icons.js'
 
 const app = document.getElementById('app')
 let pin = '', atab = 'orders', acountry = COUNTRIES[0], ORD = []
@@ -12,8 +11,8 @@ const login = () => {
   app.innerHTML = `
   <div class="admin-login">
     <div class="login-card">
-      <div class="login-icon" style="color:var(--gold); display:flex; justify-content:center; margin-bottom:12px;">
-        ${I.Lock(44)}
+      <div class="login-icon" style="color:var(--gold); display:flex; justify-content:center; margin-bottom:12px; font-family:Cinzel,serif; font-size:48px; font-weight:800; letter-spacing:2px;">
+        OUD
       </div>
       <h1>Portal Admin Tour</h1>
       <p>Masukkan PIN untuk mengakses manajemen reservasi & CMS</p>
@@ -53,32 +52,32 @@ export const admin = async () => {
     <aside class="admin-sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo">
-          <span class="logo-icon" style="color:var(--gold); display:inline-flex; align-items:center;">${I.Crown(22)}</span>
+          <span class="logo-icon" style="color:var(--gold); display:inline-flex; align-items:center;"></span>
           <span class="logo-text">Admin OUD ASEAN</span>
         </div>
       </div>
       <nav class="sidebar-nav">
         <button class="nav-item ${atab === 'orders' ? 'active' : ''}" data-t="orders">
-          <span class="nav-icon" style="display:inline-flex; align-items:center;">${I.FileText(18)}</span>
+          <span class="nav-icon" style="display:inline-flex; align-items:center;">📋</span>
           <span class="nav-text">Reservasi Tour</span>
           ${newBadge > 0 ? `<span class="nav-badge">${newBadge}</span>` : ''}
         </button>
         <button class="nav-item ${atab === 'ouds' ? 'active' : ''}" data-t="ouds">
-          <span class="nav-icon" style="display:inline-flex; align-items:center;">${I.Palmtree(18)}</span>
+          <span class="nav-icon" style="display:inline-flex; align-items:center;">🌴</span>
           <span class="nav-text">Kelola Paket Wisata</span>
         </button>
         <button class="nav-item ${atab === 'cms' ? 'active' : ''}" data-t="cms">
-          <span class="nav-icon" style="display:inline-flex; align-items:center;">${I.Palette(18)}</span>
+          <span class="nav-icon" style="display:inline-flex; align-items:center;">🎨</span>
           <span class="nav-text">CMS Landing Page</span>
         </button>
         <button class="nav-item ${atab === 'site' ? 'active' : ''}" data-t="site">
-          <span class="nav-icon" style="display:inline-flex; align-items:center;">${I.Settings(18)}</span>
+          <span class="nav-icon" style="display:inline-flex; align-items:center;">⚙</span>
           <span class="nav-text">Pengaturan Situs</span>
         </button>
       </nav>
       <div class="sidebar-footer">
         <button class="nav-item logout-btn" id="out">
-          <span class="nav-icon" style="display:inline-flex; align-items:center;">${I.LogOut(18)}</span>
+          <span class="nav-icon" style="display:inline-flex; align-items:center;">←</span>
           <span class="nav-text">Keluar</span>
         </button>
       </div>
@@ -87,10 +86,10 @@ export const admin = async () => {
     <main class="admin-main">
       <div class="admin-header">
         <h1 class="admin-title" style="display:inline-flex; align-items:center; gap:10px;">${{
-          orders: `${I.FileText(22)} Manajemen Reservasi Tour`,
-          ouds:   `${I.Palmtree(22)} Manajemen Paket Wisata`,
-          cms:    `${I.Palette(22)} CMS Landing Page`,
-          site:   `${I.Settings(22)} Pengaturan Situs`
+          orders: `Manajemen Reservasi Tour`,
+          ouds:   `Manajemen Paket Wisata`,
+          cms:    `CMS Landing Page`,
+          site:   `Pengaturan Situs`
         }[atab]}</h1>
       </div>
       <div id="body" class="admin-body"></div>
@@ -113,25 +112,25 @@ const tabOrders = async el => {
   el.innerHTML = `
   <div class="stats-grid">
     <div class="stat-card">
-      <div class="stat-icon" style="color:var(--gold); display:flex; align-items:center; justify-content:center;">${I.FileText(24)}</div>
+      <div class="stat-icon" style="color:var(--gold); display:flex; align-items:center; justify-content:center;"></div>
       <div class="stat-content"><div class="stat-value">${ORD.length}</div><div class="stat-label">Total Booking</div></div>
     </div>
     <div class="stat-card stat-new">
-      <div class="stat-icon" style="color:#3498db; display:flex; align-items:center; justify-content:center;">${I.Sparkles(24)}</div>
+      <div class="stat-icon" style="color:#3498db; display:flex; align-items:center; justify-content:center;"></div>
       <div class="stat-content"><div class="stat-value">${n('Baru')}</div><div class="stat-label">Booking Baru</div></div>
     </div>
     <div class="stat-card stat-process">
-      <div class="stat-icon" style="color:#f39c12; display:flex; align-items:center; justify-content:center;">${I.Clock(24)}</div>
+      <div class="stat-icon" style="color:#f39c12; display:flex; align-items:center; justify-content:center;"></div>
       <div class="stat-content"><div class="stat-value">${n('Diproses') + n('Dikirim')}</div><div class="stat-label">Jadwal Berjalan</div></div>
     </div>
     <div class="stat-card stat-done">
-      <div class="stat-icon" style="color:#2ecc71; display:flex; align-items:center; justify-content:center;">${I.CheckCircle(24)}</div>
+      <div class="stat-icon" style="color:#2ecc71; display:flex; align-items:center; justify-content:center;"></div>
       <div class="stat-content"><div class="stat-value">${n('Selesai')}</div><div class="stat-label">Tour Selesai</div></div>
     </div>
   </div>
   <div class="filter-bar">
     <div class="search-box">
-      <span class="search-icon" style="display:inline-flex; align-items:center;">${I.Search(16)}</span>
+      <span class="search-icon" style="display:inline-flex; align-items:center;"></span>
       <input id="q" placeholder="Cari nama, WhatsApp, email, paket tour..."/>
     </div>
     <div class="filter-actions">
@@ -140,7 +139,7 @@ const tabOrders = async el => {
         <option>Baru</option><option>Diproses</option><option>Dikirim</option><option>Selesai</option>
       </select>
       <button class="btn btn-export" id="csv" style="display:inline-flex; align-items:center; gap:6px;">
-        ${I.Download(15)} <span>Unduh CSV</span>
+        <span>Unduh CSV</span>
       </button>
     </div>
   </div>
@@ -160,20 +159,20 @@ const tabOrders = async el => {
         <div class="order-header">
           <div class="order-id-section">
             <span class="order-badge">#${r.id}</span>
-            <span class="order-product">${I.Palmtree(14)} ${esc(r.oud_name || 'Paket Tour')} ${r.oud_country ? `<small>(${esc(r.oud_country)})</small>` : ''}</span>
+            <span class="order-product">${esc(r.oud_name || 'Paket Tour')} ${r.oud_country ? `<small>(${esc(r.oud_country)})</small>` : ''}</span>
           </div>
           <span class="order-status badge-${(r.status || 'baru').toLowerCase()}">${esc(r.status)}</span>
         </div>
         <div class="order-content">
           <div class="order-details">
             <div class="order-meta">
-              <span style="display:inline-flex; align-items:center; gap:5px;">${I.Users(14)} ${esc(r.nama)}</span>
-              <span style="display:inline-flex; align-items:center; gap:5px;">${I.Mail(14)} ${esc(r.email)}</span>
-              <span style="display:inline-flex; align-items:center; gap:5px;">${I.Phone(14)} ${esc(r.phone)}</span>
-              <span style="display:inline-flex; align-items:center; gap:5px;">${I.BadgeCheck(14)} ${esc(r.gender)}</span>
+              <span style="display:inline-flex; align-items:center; gap:5px;">${esc(r.nama)}</span>
+              <span style="display:inline-flex; align-items:center; gap:5px;">${esc(r.email)}</span>
+              <span style="display:inline-flex; align-items:center; gap:5px;">${esc(r.phone)}</span>
+              <span style="display:inline-flex; align-items:center; gap:5px;">${esc(r.gender)}</span>
             </div>
-            ${r.alamat ? `<div class="order-address" style="display:flex; align-items:flex-start; gap:6px;">${I.MapPin(15)} <div><strong>Titik Jemput:</strong> ${esc(r.alamat)}</div></div>` : ''}
-            <div class="order-date" style="display:inline-flex; align-items:center; gap:5px;">${I.Clock(14)} ${new Date(r.created_at).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}</div>
+            ${r.alamat ? `<div class="order-address" style="display:flex; align-items:flex-start; gap:6px;"><div><strong>Titik Jemput:</strong> ${esc(r.alamat)}</div></div>` : ''}
+            <div class="order-date" style="display:inline-flex; align-items:center; gap:5px;">${new Date(r.created_at).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}</div>
           </div>
           <div class="order-actions">
             <select class="status-select" data-id="${r.id}">
@@ -182,7 +181,7 @@ const tabOrders = async el => {
           </div>
         </div>
       </div>
-    `).join('') : `<div class="empty-state"><div class="empty-icon" style="color:var(--text-muted); display:flex; justify-content:center; margin-bottom:10px;">${I.Info(36)}</div><h3>Tidak ada reservasi</h3><p>Belum ada data yang sesuai</p></div>`
+    `).join('') : `<div class="empty-state"><div class="empty-icon" style="color:var(--text-muted); display:flex; justify-content:center; margin-bottom:10px;"></div><h3>Tidak ada reservasi</h3><p>Belum ada data yang sesuai</p></div>`
 
     el.querySelectorAll('.status-select').forEach(sel => sel.onchange = async () => {
       sel.disabled = true
@@ -217,7 +216,7 @@ const tabOuds = el => {
     </button>`).join('')}
   </div>
   <div class="oud-info-box" style="display:flex; align-items:center; gap:8px;">
-    ${I.Sparkles(16)} <div><strong>Tips:</strong> Upload foto baru untuk mengganti foto default. Kosongkan jika tidak ingin mengubah foto destinasi.</div>
+    <div><strong>Tips:</strong> Upload foto baru untuk mengganti foto default. Kosongkan jika tidak ingin mengubah foto destinasi.</div>
   </div>
   <div class="oud-editor-grid">
     ${list.map(o => `
@@ -245,9 +244,9 @@ const tabOuds = el => {
           </div>
           <div class="oud-actions">
             <button class="btn btn-save" style="display:inline-flex; align-items:center; gap:6px;">
-              ${I.Save(15)} <span>Simpan Paket</span>
+              <span>Simpan Paket</span>
             </button>
-            ${o.custom ? `<button type="button" class="btn btn-reset reset" style="display:inline-flex; align-items:center; gap:6px;">${I.Trash(14)} <span>Reset ke Default</span></button>` : ''}
+            ${o.custom ? `<button type="button" class="btn btn-reset reset" style="display:inline-flex; align-items:center; gap:6px;"><span>Reset ke Default</span></button>` : ''}
           </div>
         </div>
       </form>
@@ -266,7 +265,7 @@ const tabOuds = el => {
         p_pin: pin, p_country: acountry, p_slot: slot,
         p_name: f.name.value, p_sub: f.sub.value, p_descr: f.descr.value, p_img: im
       })
-      if (error) { btn.disabled = false; btn.innerHTML = `${I.Save(15)} <span>Simpan Paket</span>`; return toast(error.message, true) }
+      if (error) { btn.disabled = false; btn.innerHTML = `<span>Simpan Paket</span>`; return toast(error.message, true) }
       await load(); toast('Paket wisata berhasil disimpan'); tabOuds(el)
     }
     f.file.onchange = async () => {
@@ -357,13 +356,13 @@ const tabCms = el => {
   el.innerHTML = `
   <div class="cms-page">
     <div class="cms-intro-bar">
-      <div class="cms-intro-icon" style="color:var(--gold); display:flex; align-items:center;">${I.Palette(30)}</div>
+      <div class="cms-intro-icon" style="color:var(--gold); display:flex; align-items:center;"></div>
       <div>
         <h3 class="cms-intro-title">CMS Landing Page — Edit Konten Website</h3>
         <p class="cms-intro-desc">Ubah semua teks, judul, deskripsi, dan kontak yang tampil di halaman depan website. Perubahan langsung aktif setelah disimpan.</p>
       </div>
       <button class="btn btn-cms-preview" id="cmsPreviewBtn" style="display:inline-flex; align-items:center; gap:6px;">
-        ${I.Compass(15)} <span>Preview di Tab Baru</span>
+        <span>Preview di Tab Baru</span>
       </button>
     </div>
 
@@ -381,9 +380,9 @@ const tabCms = el => {
             <div class="cms-section-actions">
               <span class="cms-field-count">${sec.fields.length} field</span>
               <button type="button" class="cms-save-section btn btn-save" data-sec-id="${sec.id}" style="display:inline-flex; align-items:center; gap:5px;">
-                ${I.Save(13)} <span>Simpan Section</span>
+                <span>Simpan Section</span>
               </button>
-              <span class="cms-toggle-icon" data-icon="${sec.id}">${I.ChevronDown(16)}</span>
+              <span class="cms-toggle-icon" data-icon="${sec.id}"></span>
             </div>
           </div>
           <div class="cms-section-body" id="cms-body-${sec.id}">
@@ -406,7 +405,7 @@ const tabCms = el => {
 
     <div class="cms-save-all-bar">
       <button class="btn btn-cms-save-all" id="cmsSaveAll" style="display:inline-flex; align-items:center; gap:8px;">
-        ${I.CheckCircle(18)} <span>Simpan Semua Perubahan</span>
+        <span>Simpan Semua Perubahan</span>
       </button>
       <button class="btn btn-cms-reset" id="cmsReset">↺ Reset Semua ke Default</button>
     </div>
@@ -432,7 +431,7 @@ const tabCms = el => {
     const sec = sections.find(s => s.id === secId)
     if (!sec) return
     const originalText = btn.innerHTML
-    btn.disabled = true; btn.innerHTML = `${I.Clock(13)} <span>Menyimpan...</span>`
+    btn.disabled = true; btn.innerHTML = `<span>Menyimpan...</span>`
 
     let allOk = true
     for (const f of sec.fields) {
@@ -456,7 +455,7 @@ const tabCms = el => {
   el.querySelector('#cmsSaveAll').onclick = async function () {
     const btn = this
     const originalText = btn.innerHTML
-    btn.disabled = true; btn.innerHTML = `${I.Clock(16)} <span>Menyimpan semua...</span>`
+    btn.disabled = true; btn.innerHTML = `<span>Menyimpan semua...</span>`
 
     let saved = 0, failed = 0
     for (const sec of sections) {
@@ -499,7 +498,7 @@ const tabSite = el => {
   <div class="settings-grid">
     <form id="pf" class="settings-card">
       <h3 class="settings-title" style="display:inline-flex; align-items:center; gap:8px;">
-        <span style="color:var(--gold); display:inline-flex;">${I.Shield(20)}</span>
+        <span style="color:var(--gold); display:inline-flex;">🔒</span>
         <span>Keamanan Akun Admin</span>
       </h3>
       <p class="settings-desc">Ubah PIN admin untuk keamanan portal. Minimal 4 karakter.</p>
@@ -512,13 +511,13 @@ const tabSite = el => {
         <input name="np2" type="password" minlength="4" placeholder="Ulangi PIN baru" required/>
       </div>
       <button class="btn btn-warning" style="display:inline-flex; align-items:center; gap:8px;">
-        ${I.Lock(16)} <span>Ganti PIN Admin</span>
+        <span>Ganti PIN Admin</span>
       </button>
     </form>
 
     <div class="settings-card">
       <h3 class="settings-title" style="display:inline-flex; align-items:center; gap:8px;">
-        <span style="color:var(--gold); display:inline-flex;">${I.Info(20)}</span>
+        <span style="color:var(--gold); display:inline-flex;">ℹ</span>
         <span>Info Sistem</span>
       </h3>
       <p class="settings-desc">Detail teknis platform dan versi data.</p>
@@ -529,7 +528,7 @@ const tabSite = el => {
         <div class="info-item"><span class="info-label">Negara Aktif:</span><span class="info-val">6 (ASEAN)</span></div>
       </div>
       <button class="btn btn-secondary" id="clearCacheBtn" style="margin-top:20px;width:100%; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
-        ${I.Trash(16)} <span>Clear Local Cache</span>
+        <span>Clear Local Cache</span>
       </button>
     </div>
   </div>
@@ -551,3 +550,4 @@ const tabSite = el => {
     toast('Local cache dihapus. Refresh halaman untuk memuat data segar.')
   }
 }
+
