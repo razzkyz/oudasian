@@ -5,6 +5,7 @@ import { detail } from './pages/detail.js'
 import { cek } from './pages/cek.js'
 import { admin } from './pages/admin.js'
 import { contact } from './pages/contact.js'
+import { initShippingSlider } from './lib/shipping-slider.js'
 
 // Parse route cleanly regardless of trailing slash, query params, or hash format
 const parseHash = () => {
@@ -100,6 +101,10 @@ const route = async () => {
   const { page, country, id } = parseHash()
   window.scrollTo(0, 0)
  
+  // Sembunyikan shipping slider di portal admin agar bersih
+  const isPageAdmin = (page === 'admin')
+  document.body.classList.toggle('is-admin-view', isPageAdmin)
+
   if (page === 'oud' && country && id) {
     detail(country, id)
   } else if (page === 'cek') {
@@ -116,6 +121,9 @@ const route = async () => {
   setTimeout(() => {
     setupMenu()
     setupKatalogLinks()
+    if (!isPageAdmin) {
+      initShippingSlider()
+    }
   }, 100)
 }
 
@@ -125,6 +133,7 @@ addEventListener('hashchange', route)
 route()
 setupMenu()
 setupKatalogLinks()
+initShippingSlider()
 
 // Background sync from Supabase (updates CMS changes seamlessly)
 load().then(() => {

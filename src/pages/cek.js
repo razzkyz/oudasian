@@ -4,19 +4,19 @@ import { esc, norm } from '../lib/utils.js'
 const app = document.getElementById('app')
 
 const statusConfig = {
-  'Baru':      { color: '#3498db', bg: 'rgba(52, 152, 219, 0.15)', step: 1, label: 'Order Diterima',       desc: 'Pesanan Agarwood Anda telah masuk ke sistem dan menunggu verifikasi admin.' },
-  'Diproses':  { color: '#f39c12', bg: 'rgba(243, 156, 18, 0.15)', step: 2, label: 'Quality Check & Packing', desc: 'Produk sedang melewati seleksi kualitas, penimbangan, dan pengemasan kedap udara aman.' },
-  'Dikirim':   { color: '#9b59b6', bg: 'rgba(155, 89, 182, 0.15)', step: 3, label: 'Sedang Dikirim',        desc: 'Paket telah diserahkan ke kurir/ekspedisi. Resi dan update pengiriman dikirim via WhatsApp.' },
-  'Selesai':   { color: '#2ecc71', bg: 'rgba(46, 204, 113, 0.15)', step: 4, label: 'Pesanan Selesai',       desc: 'Produk telah diterima oleh pemesan. Terima kasih atas kepercayaan Anda pada ASIAN OUD.' }
+  'Baru':      { color: '#3498db', bg: 'rgba(52, 152, 219, 0.15)', step: 1, label: 'Order Received',         desc: 'Your Agarwood order has been received and is awaiting admin verification.' },
+  'Diproses':  { color: '#f39c12', bg: 'rgba(243, 156, 18, 0.15)', step: 2, label: 'Quality Check & Packing', desc: 'The product is undergoing strict quality inspection, precision weighing, and airtight protective packaging.' },
+  'Dikirim':   { color: '#9b59b6', bg: 'rgba(155, 89, 182, 0.15)', step: 3, label: 'In Transit',              desc: 'Your package has been dispatched with the courier. Tracking and delivery updates sent via WhatsApp.' },
+  'Selesai':   { color: '#2ecc71', bg: 'rgba(46, 204, 113, 0.15)', step: 4, label: 'Order Delivered',         desc: 'The order has been successfully delivered. Thank you for placing your trust in ASIAN OUD.' }
 }
 
 const renderTimeline = (status) => {
   const currentStep = statusConfig[status]?.step || 1
   const steps = [
-    { num: 1, name: 'Diterima' },
-    { num: 2, name: 'Diproses' },
-    { num: 3, name: 'Dikirim' },
-    { num: 4, name: 'Selesai' }
+    { num: 1, name: 'Received' },
+    { num: 2, name: 'Processing' },
+    { num: 3, name: 'Shipped' },
+    { num: 4, name: 'Delivered' }
   ]
 
   return `
@@ -41,12 +41,12 @@ const renderOrderResults = (orders, phoneSearched) => {
     return `
       <div class="empty-state-card">
         <div class="empty-icon-circle">?</div>
-        <h3>Tidak Ditemukan Riwayat Order</h3>
-        <p>Tidak ada riwayat pesanan yang terdaftar dengan nomor telepon <strong>${esc(phoneSearched)}</strong>.</p>
-        <p class="empty-subnote">Pastikan nomor yang Anda ketik sesuai saat pengisian formulir pemesanan, atau hubungi tim customer service kami untuk bantuan pencarian manual.</p>
+        <h3>No Order History Found</h3>
+        <p>No order history was found for phone number <strong>${esc(phoneSearched)}</strong>.</p>
+        <p class="empty-subnote">Please ensure the phone number matches the one provided during checkout, or reach out to our customer support for manual assistance.</p>
         <div class="empty-actions">
-          <a href="#/" class="btn-empty-cta">Jelajahi Katalog</a>
-          <a href="https://wa.me/6281234567890?text=${encodeURIComponent('Halo Admin ASIAN OUD, saya ingin menanyakan status pesanan untuk nomor HP ' + phoneSearched)}" target="_blank" class="btn-empty-wa">Hubungi Admin CS</a>
+          <a href="#/" class="btn-empty-cta">Explore Catalog</a>
+          <a href="https://wa.me/6281234567890?text=${encodeURIComponent('Hello ASIAN OUD Admin, I would like to inquire about my order status for phone number ' + phoneSearched)}" target="_blank" class="btn-empty-wa">Contact Support</a>
         </div>
       </div>
     `
@@ -58,12 +58,12 @@ const renderOrderResults = (orders, phoneSearched) => {
     <div class="results-wrapper">
       <div class="results-header">
         <div class="results-header-left">
-          <div class="results-count-badge">Ditemukan <strong>${orders.length}</strong> Riwayat Order</div>
-          <p class="results-sub">Nomor Telepon: <strong style="color:var(--gold);">${esc(phoneSearched)}</strong></p>
+          <div class="results-count-badge">Found <strong>${orders.length}</strong> Order Record${orders.length > 1 ? 's' : ''}</div>
+          <p class="results-sub">Phone Number: <strong style="color:var(--gold);">${esc(phoneSearched)}</strong></p>
         </div>
         <div class="results-header-right">
           <button id="btnCopyTrackLink" class="btn-copy-link" type="button" data-url="${esc(trackUrl)}">
-            Salin Link Pelacakan
+            Copy Tracking Link
           </button>
         </div>
       </div>
@@ -73,19 +73,19 @@ const renderOrderResults = (orders, phoneSearched) => {
         <table class="order-table">
           <thead>
             <tr>
-              <th>No. Order</th>
-              <th>Waktu Order</th>
-              <th>Produk Agarwood</th>
-              <th>Nama Pemesan</th>
+              <th>Order #</th>
+              <th>Date &amp; Time</th>
+              <th>Agarwood Item</th>
+              <th>Customer Name</th>
               <th>Status</th>
-              <th>Rincian</th>
+              <th>Details</th>
             </tr>
           </thead>
           <tbody>
             ${orders.map((r) => {
               const cfg = statusConfig[r.status] || { color: '#d4af37', bg: 'rgba(212,175,55,0.15)', label: r.status }
-              const dateStr = new Date(r.created_at).toLocaleDateString('id-ID', {
-                day: 'numeric', month: 'short', year: 'numeric',
+              const dateStr = new Date(r.created_at).toLocaleDateString('en-US', {
+                month: 'short', day: 'numeric', year: 'numeric',
                 hour: '2-digit', minute: '2-digit'
               })
               return `
@@ -93,9 +93,9 @@ const renderOrderResults = (orders, phoneSearched) => {
                   <td class="cell-id">
                     <span class="order-id-badge">#${r.id}</span>
                   </td>
-                  <td class="cell-date">${dateStr} WIB</td>
+                  <td class="cell-date">${dateStr}</td>
                   <td class="cell-product">
-                    <div class="table-prod-name">${esc(r.oud_name || 'Produk Agarwood')}</div>
+                    <div class="table-prod-name">${esc(r.oud_name || 'Agarwood Collection')}</div>
                     ${r.oud_country ? `<span class="table-prod-country">${esc(r.oud_country)}</span>` : ''}
                   </td>
                   <td class="cell-customer">
@@ -109,7 +109,7 @@ const renderOrderResults = (orders, phoneSearched) => {
                   </td>
                   <td class="cell-action">
                     <a href="#detail-${r.id}" class="btn-view-detail" onclick="event.preventDefault();document.getElementById('detail-${r.id}').scrollIntoView({behavior:'smooth'});">
-                      Lihat Detail ↓
+                      View Details ↓
                     </a>
                   </td>
                 </tr>
@@ -121,18 +121,18 @@ const renderOrderResults = (orders, phoneSearched) => {
 
       <!-- DETAIL CARD LENGKAP TIAP ORDER -->
       <div class="details-cards-heading">
-        <h3>Rincian Lengkap Produk &amp; Pengiriman</h3>
-        <p>Detail pesanan dan informasi alamat pengiriman Anda</p>
+        <h3>Order Summary &amp; Delivery Details</h3>
+        <p>Detailed item specifications and verified shipping information</p>
       </div>
 
       <div class="order-details-stack">
         ${orders.map((r) => {
           const cfg = statusConfig[r.status] || { color: '#d4af37', bg: 'rgba(212,175,55,0.15)', label: r.status, desc: '' }
-          const formattedDate = new Date(r.created_at).toLocaleString('id-ID', {
+          const formattedDate = new Date(r.created_at).toLocaleString('en-US', {
             dateStyle: 'full', timeStyle: 'medium'
           })
           const waMessage = encodeURIComponent(
-            `Halo Admin ASIAN OUD, saya ingin konfirmasi status pesanan #${r.id} (${r.oud_name}) atas nama ${r.nama}.`
+            `Hello ASIAN OUD Admin, I would like to confirm my order #${r.id} (${r.oud_name}) under the name ${r.nama}.`
           )
 
           return `
@@ -140,8 +140,8 @@ const renderOrderResults = (orders, phoneSearched) => {
               <div class="card-top-bar">
                 <div class="card-id-group">
                   <div>
-                    <h4 class="card-title">Pesanan #${r.id}</h4>
-                    <span class="card-time">Dipesan pada ${formattedDate}</span>
+                    <h4 class="card-title">Order #${r.id}</h4>
+                    <span class="card-time">Placed on ${formattedDate}</span>
                   </div>
                 </div>
                 <div class="card-status-pill" style="color:${cfg.color}; background:${cfg.bg}; border: 1px solid ${cfg.color}">
@@ -153,47 +153,53 @@ const renderOrderResults = (orders, phoneSearched) => {
               <div class="card-stepper-box">
                 ${renderTimeline(r.status)}
                 <div class="status-desc-text">
-                  <strong>Status Pesanan:</strong> ${cfg.desc}
+                  <strong>Current Status:</strong> ${cfg.desc}
                 </div>
               </div>
 
               <div class="detail-split-grid">
                 <!-- Kolom Produk -->
                 <div class="detail-section-block">
-                  <h5 class="block-title">Produk yang Dipesan</h5>
+                  <h5 class="block-title">Ordered Product</h5>
                   <div class="item-ordered-card">
                     <div class="item-bullet">✓</div>
                     <div class="item-text">
-                      <div class="item-main-name">${esc(r.oud_name || 'Produk Agarwood ASIAN OUD')}</div>
-                      <div class="item-sub-meta">Asal Produk: <strong>${esc(r.oud_country || 'Asia')}</strong></div>
-                      <div class="item-note">Koleksi 100% autentik dengan jaminan kualitas grade premium dari ASIAN OUD.</div>
+                      <div class="item-main-name">${esc(r.oud_name || 'ASIAN OUD Agarwood Collection')}</div>
+                      <div class="item-sub-meta">Origin: <strong>${esc(r.oud_country || 'Asia')}</strong></div>
+                      <div class="item-note">100% authentic collection with guaranteed premium grade quality from ASIAN OUD.</div>
                     </div>
                   </div>
                 </div>
 
                 <!-- Kolom Detail Pemesan -->
                 <div class="detail-section-block">
-                  <h5 class="block-title">Data Pemesan &amp; Alamat Pengiriman</h5>
+                  <h5 class="block-title">Customer &amp; Delivery Details</h5>
                   <div class="info-list">
                     <div class="info-item">
-                      <span class="info-label">Nama Pemesan:</span>
+                      <span class="info-label">Customer Name:</span>
                       <span class="info-val">${esc(r.nama)}</span>
                     </div>
                     <div class="info-item">
-                      <span class="info-label">Nomor WhatsApp:</span>
+                      <span class="info-label">WhatsApp Number:</span>
                       <span class="info-val">${esc(r.phone)}</span>
                     </div>
                     <div class="info-item">
-                      <span class="info-label">Alamat Email:</span>
+                      <span class="info-label">Email Address:</span>
                       <span class="info-val">${esc(r.email)}</span>
                     </div>
                     <div class="info-item">
-                      <span class="info-label">Titel / Panggilan:</span>
+                      <span class="info-label">Title / Salutation:</span>
                       <span class="info-val">${esc(r.gender || '-')}</span>
                     </div>
+                    ${(r.negara || r.kode_pos) ? `
+                    <div class="info-item">
+                      <span class="info-label">Destination Country:</span>
+                      <span class="info-val">🌐 ${esc(r.negara || '-')}${r.kode_pos ? ` (ZIP/Postal: ${esc(r.kode_pos)})` : ''}</span>
+                    </div>
+                    ` : ''}
                     ${r.alamat ? `
                     <div class="info-item address-item">
-                      <span class="info-label">Alamat Lengkap:</span>
+                      <span class="info-label">Shipping Address:</span>
                       <span class="info-val address-text">${esc(r.alamat)}</span>
                     </div>
                     ` : ''}
@@ -203,7 +209,7 @@ const renderOrderResults = (orders, phoneSearched) => {
 
               <div class="card-bottom-actions">
                 <a href="https://wa.me/6281234567890?text=${waMessage}" target="_blank" class="btn-card-wa">
-                  <span>Hubungi Admin ASIAN OUD via WhatsApp</span>
+                  <span>Contact ASIAN OUD Support on WhatsApp</span>
                 </a>
               </div>
             </div>
@@ -232,44 +238,44 @@ export const cek = () => {
   app.innerHTML = `
     <!-- Hero Header -->
     <div class="cek-page-hero">
-      <div class="luxury-pill-badge">PELACAKAN PESANAN RESMI</div>
-      <h1 class="cek-hero-title">CEK STATUS ORDER</h1>
-      <p class="cek-hero-subtitle">Pantau status pesanan produk Agarwood Anda, rincian produk, dan proses pengiriman cukup dengan nomor telepon yang terdaftar.</p>
+      <div class="luxury-pill-badge">OFFICIAL ORDER TRACKING</div>
+      <h1 class="cek-hero-title">TRACK YOUR ORDER</h1>
+      <p class="cek-hero-subtitle">Monitor the status of your Agarwood order, product details, and shipment progress using your registered phone number.</p>
     </div>
     
     <!-- Search Form Card -->
     <div class="cek-search-wrapper">
       <form id="f" class="cek-search-card">
         <div class="search-card-top">
-          <label class="search-card-label" for="phoneInput">Nomor Handphone / WhatsApp Saat Order</label>
-          <span class="search-badge-pill">Verifikasi Online</span>
+          <label class="search-card-label" for="phoneInput">Customer Phone / WhatsApp Number</label>
+          <span class="search-badge-pill">Instant Verification</span>
         </div>
 
         <div class="search-bar-integrated">
-          <span class="search-prefix">+62</span>
+          <span class="search-prefix" title="International Phone Number">📞 +</span>
           <input 
             id="phoneInput"
             name="p" 
             type="tel" 
             class="search-main-input"
-            placeholder="Ketik nomor HP (contoh: 081234567890)" 
+            placeholder="Enter complete number (e.g. 62085210017968 or 966501234567)" 
             value="${esc(prefillPhone)}"
             required 
             autocomplete="tel"
-            pattern="[0-9]{8,15}"
-            title="Nomor telepon harus berupa 8-15 digit angka"
+            pattern="[\+]?[0-9\s\-]{8,20}"
+            title="Enter complete phone number with country code (e.g. 62085210017968)"
           />
           <button class="btn-search-trigger" type="submit">
-            <span>Lacak Pesanan →</span>
+            <span>Track Order →</span>
           </button>
         </div>
 
         <div class="search-card-footer">
           <span class="search-hint-text">
-            Ketik nomor handphone yang Anda cantumkan saat mengisi formulir pemesanan.
+            Enter the complete phone number with country code (e.g. <strong>62085210017968</strong>) used during checkout.
           </span>
           <a href="https://wa.me/6281234567890" target="_blank" class="search-cs-link">
-            Bantuan CS WhatsApp ↗
+            WhatsApp CS Support ↗
           </a>
         </div>
       </form>
@@ -283,22 +289,22 @@ export const cek = () => {
           <div class="guide-item">
             <span class="guide-icon-badge">1</span>
             <div>
-              <strong>Ketik Nomor HP</strong>
-              <p>Gunakan nomor kontak yang Anda cantumkan saat memesan produk.</p>
+              <strong>Enter Phone Number</strong>
+              <p>Use the contact number provided during checkout.</p>
             </div>
           </div>
           <div class="guide-item">
             <span class="guide-icon-badge">2</span>
             <div>
-              <strong>Lihat Ringkasan Order</strong>
-              <p>Sistem menampilkan daftar produk Agarwood dan status pengerjaan.</p>
+              <strong>Review Order Summary</strong>
+              <p>Review your agarwood selection, specifications, and processing stage.</p>
             </div>
           </div>
           <div class="guide-item">
             <span class="guide-icon-badge">3</span>
             <div>
-              <strong>Pantau Pengiriman</strong>
-              <p>Status diperbarui real-time oleh tim admin &amp; kurir ASIAN OUD.</p>
+              <strong>Track Shipment</strong>
+              <p>Status is updated in real time by the ASIAN OUD logistics team.</p>
             </div>
           </div>
         </div>
@@ -309,22 +315,22 @@ export const cek = () => {
     <div class="cek-help">
       <div class="help-inner">
         <div class="help-header">
-          <h3>Butuh Bantuan Mengenai Pesanan Anda?</h3>
-          <p>Tim customer support ASIAN OUD siap melayani kebutuhan informasi Anda.</p>
+          <h3>Need Assistance with Your Order?</h3>
+          <p>The ASIAN OUD customer support team is available 24/7 to assist you.</p>
         </div>
         <div class="help-grid">
           <div class="help-item">
             <div class="help-icon help-icon-num">i</div>
             <div>
-              <strong>Lupa Nomor yang Digunakan?</strong>
-              <p>Silakan periksa pesan konfirmasi di email Anda atau hubungi admin dengan menyebutkan nama lengkap pemesan.</p>
+              <strong>Forgotten Your Order Details?</strong>
+              <p>Check your confirmation email or contact support with your full recipient name.</p>
             </div>
           </div>
           <div class="help-item">
             <div class="help-icon help-icon-num">WA</div>
             <div>
-              <strong>Layanan Pelanggan WhatsApp 24/7</strong>
-              <p>Hubungi Customer Service ASIAN OUD di <a href="https://wa.me/6281234567890" target="_blank" style="color:var(--gold); font-weight:700;">+62 812-3456-7890</a> (Setiap Hari 24 Jam)</p>
+              <strong>24/7 WhatsApp Customer Service</strong>
+              <p>Contact ASIAN OUD Customer Support at <a href="https://wa.me/6281234567890" target="_blank" style="color:var(--gold); font-weight:700;">+62 812-3456-7890</a> (Available 24/7)</p>
             </div>
           </div>
         </div>
@@ -333,53 +339,101 @@ export const cek = () => {
   `
 
   const doSearch = async (phoneVal) => {
-    const phone = norm(phoneVal)
+    const rawDigits = String(phoneVal || '').replace(/\D/g, '')
     const outEl = document.getElementById('out')
     if (!outEl) return
+
+    if (!rawDigits || rawDigits.length < 7) {
+      outEl.innerHTML = `
+        <div class="empty-state-card">
+          <div class="empty-icon-circle">!</div>
+          <h3>Invalid Phone Number</h3>
+          <p>Please enter a valid phone number with country code (e.g. <strong>62085210017968</strong> or <strong>966501234567</strong>).</p>
+        </div>
+      `
+      return
+    }
 
     outEl.innerHTML = `
       <div class="loading-state">
         <div class="loading-spinner"></div>
-        <p>Sedang memeriksa riwayat order untuk nomor ${esc(phone)}...</p>
+        <p>Checking order history for ${esc(phoneVal)}...</p>
       </div>
     `
-    
+
+    // Generate intelligent permutations so user can find orders
+    // whether they typed 62085210017968, 6285210017968, 085210017968, or an international number
+    const candidates = [rawDigits]
+    if (rawDigits.startsWith('620')) {
+      candidates.push('62' + rawDigits.slice(3))
+    }
+    if (rawDigits.startsWith('62') && rawDigits[2] !== '0') {
+      candidates.push('620' + rawDigits.slice(2))
+    }
+    if (rawDigits.startsWith('0')) {
+      candidates.push('62' + rawDigits)
+      candidates.push('62' + rawDigits.slice(1))
+    }
+    if (rawDigits.startsWith('8')) {
+      candidates.push('62' + rawDigits)
+      candidates.push('620' + rawDigits)
+    }
+
+    const uniqueCandidates = [...new Set(candidates)].filter(p => p.length >= 8 && p.length <= 15)
+
     try {
-      const { data, error } = await supabase.rpc('cek_pesanan', { p_phone: phone })
-      
-      if (error) {
-        console.error('Error cek pesanan:', error)
-        outEl.innerHTML = `
-          <div class="error-state">
-            <div class="error-icon">!</div>
-            <h4>Gagal Memeriksa Order</h4>
-            <p>${esc(error.message || 'Terjadi kesalahan saat mengambil data. Silakan coba beberapa saat lagi.')}</p>
-          </div>
-        `
-      } else {
-        outEl.innerHTML = renderOrderResults(data, phoneVal)
+      let finalData = []
+      let matchedPhone = rawDigits
+      let lastError = null
+
+      for (const cand of uniqueCandidates) {
+        const { data, error } = await supabase.rpc('cek_pesanan', { p_phone: cand })
+        if (error) {
+          lastError = error
+          continue
+        }
+        if (data && data.length > 0) {
+          finalData = data
+          matchedPhone = cand
+          break
+        }
+      }
+
+      if (finalData.length > 0) {
+        outEl.innerHTML = renderOrderResults(finalData, matchedPhone)
         const copyBtn = document.getElementById('btnCopyTrackLink')
         if (copyBtn) {
           copyBtn.onclick = () => {
             const url = copyBtn.dataset.url
             if (navigator.clipboard && navigator.clipboard.writeText) {
               navigator.clipboard.writeText(url).then(() => {
-                copyBtn.textContent = 'Link Berhasil Disalin!'
-                setTimeout(() => { copyBtn.textContent = 'Salin Link Pelacakan' }, 2000)
+                copyBtn.textContent = 'Link Copied to Clipboard!'
+                setTimeout(() => { copyBtn.textContent = 'Copy Tracking Link' }, 2000)
               }).catch(() => {
-                prompt('Salin tautan ini:', url)
+                prompt('Copy this link:', url)
               })
             } else {
-              prompt('Salin tautan ini:', url)
+              prompt('Copy this link:', url)
             }
           }
         }
+      } else if (lastError && uniqueCandidates.length === 1) {
+        console.error('Error cek pesanan:', lastError)
+        outEl.innerHTML = `
+          <div class="error-state">
+            <div class="error-icon">!</div>
+            <h4>Unable to Retrieve Order</h4>
+            <p>${esc(lastError.message || 'An error occurred while fetching your data. Please try again shortly.')}</p>
+          </div>
+        `
+      } else {
+        outEl.innerHTML = renderOrderResults([], phoneVal)
       }
     } catch (err) {
       outEl.innerHTML = `
         <div class="error-state">
           <div class="error-icon">!</div>
-          <p>Terjadi kendala jaringan. Pastikan koneksi internet Anda aktif.</p>
+          <p>Network connectivity issue. Please ensure your internet connection is active.</p>
         </div>
       `
     }
@@ -392,7 +446,7 @@ export const cek = () => {
       const btn = e.target.querySelector('.btn-search-trigger')
       const originalText = btn.innerHTML
       btn.disabled = true
-      btn.innerHTML = `<span>Mencari Data...</span>`
+      btn.innerHTML = `<span>Searching...</span>`
       
       const rawPhone = e.target.p.value
       await doSearch(rawPhone)

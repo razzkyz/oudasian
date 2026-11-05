@@ -18,12 +18,11 @@ export const detail = (c, id) => {
     'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=900&q=80'
   ]
 
-  const relatedOuds = getOuds(c).filter((_, i) => i + 1 !== +id).slice(0, 4)
   let currentImage = 0
 
   app.innerHTML = `
   <div class="breadcrumb-nav">
-    <a class="back-link" href="#/">← Kembali ke Katalog Produk</a>
+    <a class="back-link" href="#/">← Back to Product Catalog</a>
     <span class="breadcrumb-separator">/</span>
     <span class="breadcrumb-current">${meta.flag} ${c} · ${esc(o.sub || o.name)}</span>
   </div>
@@ -34,9 +33,9 @@ export const detail = (c, id) => {
     <div class="detail-gallery">
       <div class="gallery-main">
         <img id="mainImage" src="${galleryImages[0]}" alt="${esc(o.sub || o.name)}" onerror="this.src='${o.img}'"/>
-        <button class="gallery-prev" id="prevBtn" type="button" aria-label="Foto Sebelumnya">‹</button>
-        <button class="gallery-next" id="nextBtn" type="button" aria-label="Foto Berikutnya">›</button>
-        <div class="gallery-zoom-badge">Klik untuk memperbesar</div>
+        <button class="gallery-prev" id="prevBtn" type="button" aria-label="Previous Photo">‹</button>
+        <button class="gallery-next" id="nextBtn" type="button" aria-label="Next Photo">›</button>
+        <div class="gallery-zoom-badge">Click to enlarge</div>
       </div>
       <div class="gallery-thumbs">
         ${galleryImages.map((img, i) => `
@@ -56,34 +55,34 @@ export const detail = (c, id) => {
       </div>
 
       <h1 class="detail-title">${esc(o.sub || o.name)}</h1>
-      <div class="detail-subtitle">${esc(o.name)} · Asal: ${meta.label}</div>
+      <div class="detail-subtitle">${esc(o.name)} · Origin: ${meta.label}</div>
 
       <div class="detail-desc-box">
-        <h3>Spesifikasi &amp; Karakteristik Produk</h3>
+        <h3>Specifications &amp; Characteristics</h3>
         <p class="detail-desc">${esc(o.desc)}</p>
       </div>
 
       <div class="detail-features-grid">
         <div class="detail-feature-card">
-          <span class="feature-icon feature-num">01</span>
-          <div>
-            <strong>100% Autentik</strong>
-            <small>Dipilih langsung dari sumber terverifikasi</small>
+          <div class="feature-card-header">
+            <span class="feature-num-badge">01</span>
+            <strong class="feature-title">100% Authentic</strong>
           </div>
+          <p class="feature-desc">Directly selected from verified wild harvests</p>
         </div>
         <div class="detail-feature-card">
-          <span class="feature-icon feature-num">02</span>
-          <div>
-            <strong>Grade Premium</strong>
-            <small>Kualitas terstandarisasi &amp; aroma otentik</small>
+          <div class="feature-card-header">
+            <span class="feature-num-badge">02</span>
+            <strong class="feature-title">Premium Grade</strong>
           </div>
+          <p class="feature-desc">Standardized quality &amp; signature natural resin</p>
         </div>
         <div class="detail-feature-card">
-          <span class="feature-icon feature-num">03</span>
-          <div>
-            <strong>Garansi Supplier</strong>
-            <small>Pengemasan aman &amp; pengiriman terpercaya</small>
+          <div class="feature-card-header">
+            <span class="feature-num-badge">03</span>
+            <strong class="feature-title">Supplier Guarantee</strong>
           </div>
+          <p class="feature-desc">Secure airtight packaging &amp; insured shipping</p>
         </div>
       </div>
     </div>
@@ -92,93 +91,213 @@ export const detail = (c, id) => {
   <!-- Order Form -->
   <div class="booking-section-wrapper">
     <div class="booking-header">
-      <div class="booking-tag">FORMULIR PESANAN RESMI ASIAN OUD</div>
-      <h2 class="booking-title">Order Produk: ${esc(o.sub || o.name)}</h2>
-      <p class="booking-subtitle">Mohon lengkapi formulir di bawah ini dengan data diri dan alamat lengkap untuk proses verifikasi dan konfirmasi pengiriman pesanan Anda.</p>
+      <div class="booking-tag">OFFICIAL ASIAN OUD ORDER FORM</div>
+      <h2 class="booking-title">Order Product: ${esc(o.sub || o.name)}</h2>
+      <p class="booking-subtitle">Please complete the form below with your recipient details and address for fast verification and order confirmation.</p>
     </div>
 
     <form id="f" class="booking-form-card">
       <div class="form-grid-2">
         <div class="form-group">
-          <label>Nama Lengkap Pemesan <span class="required">*</span></label>
-          <input name="nama" type="text" placeholder="Contoh: Rian Pratama" required minlength="2" maxlength="100"/>
+          <label>Full Name <span class="required">*</span></label>
+          <input name="nama" type="text" placeholder="e.g. Mohammed Al-Otaibi / John Doe" required minlength="2" maxlength="100"/>
         </div>
         <div class="form-group">
-          <label>Email Aktif (Konfirmasi Order) <span class="required">*</span></label>
-          <input name="email" type="email" placeholder="contoh@email.com" required maxlength="150"/>
+          <label>Active Email (Order Confirmation) <span class="required">*</span></label>
+          <input name="email" type="email" placeholder="example@email.com" required maxlength="150"/>
         </div>
       </div>
 
       <div class="form-grid-2">
         <div class="form-group">
-          <label>Nomor WhatsApp / Telepon <span class="required">*</span></label>
-          <input name="phone" type="tel" placeholder="Contoh: 081234567890" required pattern="[0-9]{8,15}" title="Nomor telepon 8–15 digit angka"/>
-          <small class="form-hint">Digunakan untuk koordinasi order &amp; cek status pengiriman.</small>
+          <label>Title / Salutation <span class="required">*</span></label>
+          <select name="gender" required>
+            <option value="">-- Select Title --</option>
+            <option value="Laki-laki">Mr. / Sir</option>
+            <option value="Perempuan">Mrs. / Ms. / Madam</option>
+          </select>
         </div>
         <div class="form-group">
-          <label>Titel / Panggilan <span class="required">*</span></label>
-          <select name="gender" required>
-            <option value="">-- Pilih Titel --</option>
-            <option value="Laki-laki">Bapak / Tuan (Mr)</option>
-            <option value="Perempuan">Ibu / Nyonya (Ms/Mrs)</option>
-          </select>
+          <label>WhatsApp / Mobile Number <span class="required">*</span></label>
+          <div class="phone-split-row">
+            <div class="dial-code-group" id="dialCodeGroup">
+              <!-- Dropdown Selector -->
+              <div class="dial-select-wrap" id="dialSelectWrap">
+                <select id="dialCodeSelect" class="dial-code-select" aria-label="Country Dial Code">
+                  <optgroup label="Popular &amp; Asia">
+                    <option value="62" selected>🇮🇩 +62</option>
+                    <option value="60">🇲🇾 +60</option>
+                    <option value="65">🇸🇬 +65</option>
+                    <option value="66">🇹🇭 +66</option>
+                    <option value="84">🇻🇳 +84</option>
+                    <option value="855">🇰🇭 +855</option>
+                    <option value="856">🇱🇦 +856</option>
+                    <option value="81">🇯🇵 +81</option>
+                    <option value="82">🇰🇷 +82</option>
+                    <option value="852">🇭🇰 +852</option>
+                    <option value="886">🇹🇼 +886</option>
+                    <option value="61">🇦🇺 +61</option>
+                  </optgroup>
+                  <optgroup label="Middle East &amp; GCC">
+                    <option value="966">🇸🇦 +966</option>
+                    <option value="971">🇦🇪 +971</option>
+                    <option value="974">🇶🇦 +974</option>
+                    <option value="965">🇰🇼 +965</option>
+                    <option value="968">🇴🇲 +968</option>
+                    <option value="973">🇧🇭 +973</option>
+                  </optgroup>
+                  <optgroup label="Americas &amp; Europe">
+                    <option value="1">🇺🇸/🇨🇦 +1</option>
+                    <option value="44">🇬🇧 +44</option>
+                    <option value="49">🇩🇪 +49</option>
+                    <option value="33">🇫🇷 +33</option>
+                    <option value="41">🇨🇭 +41</option>
+                    <option value="31">🇳🇱 +31</option>
+                    <option value="90">🇹🇷 +90</option>
+                  </optgroup>
+                  <option value="custom">✏️ Type (+...)</option>
+                </select>
+              </div>
+
+              <!-- Manual Input Box -->
+              <div class="dial-input-wrap" id="dialInputWrap" style="display:none;">
+                <span class="dial-plus-prefix">+</span>
+                <input 
+                  type="text" 
+                  id="dialCodeInput" 
+                  class="dial-manual-input" 
+                  placeholder="62" 
+                  maxlength="5" 
+                  inputmode="numeric" 
+                  pattern="[0-9]{1,5}"
+                  title="Country code digits only"
+                />
+              </div>
+
+              <!-- Instant Toggle Button between Dropdown & Manual Input -->
+              <button 
+                type="button" 
+                id="btnSwitchDialMode" 
+                class="btn-dial-toggle" 
+                title="Switch between country list and typing manual code"
+                aria-label="Toggle country code mode"
+              >
+                <span id="dialToggleIcon">✏️</span>
+              </button>
+            </div>
+
+            <!-- Subscriber Phone Number -->
+            <div class="phone-subscriber-group">
+              <input 
+                id="phoneSubscriber" 
+                name="phone_subscriber" 
+                type="tel" 
+                class="phone-subscriber-input"
+                placeholder="e.g. 085210017968" 
+                required 
+                minlength="6" 
+                maxlength="16" 
+                autocomplete="tel-national"
+                title="Enter your phone or WhatsApp number"
+              />
+            </div>
+          </div>
+          <small class="form-hint">Country code &amp; local number are saved together for order tracking and WhatsApp updates.</small>
         </div>
       </div>
 
-      <!-- Alamat Lengkap -->
+      <!-- Country Selection & Postal Code -->
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label>Destination Country (Negara Tujuan) <span class="required">*</span></label>
+          <select name="negara" id="destCountrySelect" required>
+            <option value="">-- Select Destination Country --</option>
+            <optgroup label="Middle East &amp; GCC (Priority Air Freight)">
+              <option value="Saudi Arabia">🇸🇦 Saudi Arabia (المملكة العربية السعودية)</option>
+              <option value="United Arab Emirates">🇦🇪 United Arab Emirates (الإمارات)</option>
+              <option value="Qatar">🇶🇦 Qatar (قطر)</option>
+              <option value="Kuwait">🇰🇼 Kuwait (الكويت)</option>
+              <option value="Oman">🇴🇲 Oman (عمان)</option>
+              <option value="Bahrain">🇧🇭 Bahrain (البحرين)</option>
+            </optgroup>
+            <optgroup label="Asia Pacific">
+              <option value="Indonesia">🇮🇩 Indonesia</option>
+              <option value="Malaysia">🇲🇾 Malaysia</option>
+              <option value="Singapore">🇸🇬 Singapore</option>
+              <option value="Thailand">🇹🇭 Thailand</option>
+              <option value="Vietnam">🇻🇳 Vietnam</option>
+              <option value="Japan">🇯🇵 Japan</option>
+              <option value="South Korea">🇰🇷 South Korea</option>
+              <option value="Taiwan">🇹🇼 Taiwan</option>
+              <option value="Hong Kong">🇭🇰 Hong Kong</option>
+              <option value="Australia">🇦🇺 Australia</option>
+            </optgroup>
+            <optgroup label="Americas &amp; Europe">
+              <option value="United States">🇺🇸 United States</option>
+              <option value="United Kingdom">🇬🇧 United Kingdom</option>
+              <option value="Canada">🇨🇦 Canada</option>
+              <option value="Germany">🇩🇪 Germany</option>
+              <option value="France">🇫🇷 France</option>
+              <option value="Switzerland">🇨🇭 Switzerland</option>
+              <option value="Netherlands">🇳🇱 Netherlands</option>
+              <option value="Turkey">🇹🇷 Turkey</option>
+            </optgroup>
+            <optgroup label="Other Destination">
+              <option value="Other">🌍 Other Country (Worldwide Express Delivery)</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Postal / ZIP Code (Kode Pos) <span class="required">*</span></label>
+          <input name="kode_pos" type="text" placeholder="e.g. 11564 / 90210 / 12345" required minlength="3" maxlength="20"/>
+          <small class="form-hint">Essential for air courier routing and customs dispatch.</small>
+        </div>
+      </div>
+
+      <!-- City & State / Province -->
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label>City / Town (Kota) <span class="required">*</span></label>
+          <input name="kota" type="text" placeholder="e.g. Riyadh / Dubai / Jakarta / London" required minlength="2" maxlength="100"/>
+        </div>
+        <div class="form-group">
+          <label>State / Province / Region (Provinsi / Wilayah)</label>
+          <input name="provinsi" type="text" placeholder="e.g. Riyadh Province / Dubai / DKI Jakarta / California" maxlength="100"/>
+        </div>
+      </div>
+
+      <!-- Street Address -->
       <div class="form-group full-width">
-        <label>Alamat Lengkap Pengiriman <span class="required">*</span></label>
+        <label>Complete Street Address &amp; Delivery Notes <span class="required">*</span></label>
         <textarea
           name="alamat"
           rows="3"
-          placeholder="Tuliskan nama jalan, nomor rumah, RT/RW, kelurahan, kecamatan, kota, provinsi, dan kode pos..."
+          placeholder="Building name, villa/suite number, street name, district/neighborhood..."
           required
-          minlength="10"
+          minlength="8"
           maxlength="500"
         ></textarea>
-        <small class="form-hint">Pastikan alamat ditulis selengkap mungkin agar tim supplier dapat memproses pengiriman dengan tepat.</small>
+        <small class="form-hint">Please provide detailed address for DHL, FedEx, Aramex, or UPS door-to-door courier delivery.</small>
       </div>
 
       <div class="order-summary-box">
         <div class="summary-line">
-          <span>Produk yang Dipilih:</span>
+          <span>Selected Product:</span>
           <strong>${esc(o.sub || o.name)} (${c})</strong>
+        </div>
+        <div class="summary-line" style="margin-top:6px; font-size:12.5px; color:#aaa;">
+          <span>Export Compliance:</span>
+          <span style="color:var(--gold);">Archival Aroma Packaging + CITES Compliant</span>
         </div>
       </div>
 
       <button class="btn btn-booking" type="submit">
-        <span>Konfirmasi &amp; Kirim Pesanan →</span>
+        <span>Confirm &amp; Submit Order →</span>
       </button>
-      <p class="order-security-note">Data Anda aman dan terenkripsi. Tim ASIAN OUD akan segera menghubungi via WhatsApp untuk konfirmasi detail pesanan Anda.</p>
+      <p class="order-security-note">🔒 Your data is secure and confidential. Our customer support will contact you via WhatsApp to confirm order and dispatch details.</p>
     </form>
   </div>
-
-  <!-- Related Products -->
-  ${relatedOuds.length > 0 ? `
-  <div class="related-section">
-    <div class="related-header">
-      <h3>Pilihan Koleksi Lainnya dari ${c}</h3>
-      <p>Koleksi produk Agarwood alternatif dengan mutu dan karakter aroma unik</p>
-    </div>
-    <div class="related-grid">
-      ${relatedOuds.map(ro => `
-        <a class="related-card" href="#/oud/${encodeURIComponent(c)}/${ro.id}">
-          <div class="related-img-wrap">
-            <img src="${ro.img}" alt="${esc(ro.sub || ro.name)}" loading="lazy"
-              onerror="this.onerror=null;this.src='${o.img}'"/>
-            <div class="related-img-overlay"></div>
-            <span class="related-badge">${esc(ro.badge || 'Premium Grade')}</span>
-          </div>
-          <div class="related-info">
-            <h4>${esc(ro.sub || ro.name)}</h4>
-            <p>Produk #${ro.id} · Asal: ${meta.label}</p>
-            <span class="related-cta">Lihat Detail →</span>
-          </div>
-        </a>
-      `).join('')}
-    </div>
-  </div>
-  ` : ''}
   `
 
   // --- Gallery interactions ---
@@ -225,6 +344,107 @@ export const detail = (c, id) => {
     }
   }
 
+  // --- Dial Code & Country Selection Interactions ---
+  const dialCodeSelect   = document.getElementById('dialCodeSelect')
+  const dialSelectWrap   = document.getElementById('dialSelectWrap')
+  const dialInputWrap    = document.getElementById('dialInputWrap')
+  const dialCodeInput    = document.getElementById('dialCodeInput')
+  const btnSwitchDial    = document.getElementById('btnSwitchDialMode')
+  const dialToggleIcon   = document.getElementById('dialToggleIcon')
+  const destCountrySel   = document.getElementById('destCountrySelect')
+  const phoneSubInput    = document.getElementById('phoneSubscriber')
+
+  let isCustomDialMode = false
+
+  const setDialMode = (custom) => {
+    isCustomDialMode = custom
+    if (custom) {
+      if (dialSelectWrap) dialSelectWrap.style.display = 'none'
+      if (dialInputWrap) dialInputWrap.style.display = 'flex'
+      if (dialToggleIcon) dialToggleIcon.textContent = '📋'
+      if (btnSwitchDial) btnSwitchDial.title = 'Switch to country dropdown list'
+      if (dialCodeInput) {
+        if (!dialCodeInput.value && dialCodeSelect && dialCodeSelect.value && dialCodeSelect.value !== 'custom') {
+          dialCodeInput.value = dialCodeSelect.value
+        }
+        dialCodeInput.focus()
+      }
+    } else {
+      if (dialInputWrap) dialInputWrap.style.display = 'none'
+      if (dialSelectWrap) dialSelectWrap.style.display = 'block'
+      if (dialToggleIcon) dialToggleIcon.textContent = '✏️'
+      if (btnSwitchDial) btnSwitchDial.title = 'Type country code manually'
+      if (dialCodeInput && dialCodeInput.value && dialCodeSelect) {
+        const cleanVal = dialCodeInput.value.replace(/\D/g, '')
+        const matchingOpt = Array.from(dialCodeSelect.options).find(o => o.value === cleanVal)
+        if (matchingOpt) {
+          dialCodeSelect.value = cleanVal
+        }
+      }
+    }
+  }
+
+  if (dialCodeSelect) {
+    dialCodeSelect.onchange = () => {
+      if (dialCodeSelect.value === 'custom') {
+        setDialMode(true)
+      }
+    }
+  }
+
+  if (btnSwitchDial) {
+    btnSwitchDial.onclick = () => {
+      setDialMode(!isCustomDialMode)
+    }
+  }
+
+  // Country calling code mapping for destination countries
+  const countryDialMap = {
+    'Indonesia': '62',
+    'Malaysia': '60',
+    'Singapore': '65',
+    'Thailand': '66',
+    'Vietnam': '84',
+    'Cambodia': '855',
+    'Laos': '856',
+    'Saudi Arabia': '966',
+    'United Arab Emirates': '971',
+    'Qatar': '974',
+    'Kuwait': '965',
+    'Oman': '968',
+    'Bahrain': '973',
+    'United States': '1',
+    'Canada': '1',
+    'United Kingdom': '44',
+    'Australia': '61',
+    'Japan': '81',
+    'South Korea': '82',
+    'Hong Kong': '852',
+    'Taiwan': '886',
+    'Germany': '49',
+    'France': '33',
+    'Switzerland': '41',
+    'Netherlands': '31',
+    'Turkey': '90'
+  }
+
+  if (destCountrySel) {
+    destCountrySel.addEventListener('change', () => {
+      const selectedCountry = destCountrySel.value
+      const targetDial = countryDialMap[selectedCountry]
+      if (targetDial) {
+        if (isCustomDialMode) {
+          if (dialCodeInput) dialCodeInput.value = targetDial
+        } else {
+          if (dialCodeSelect) {
+            const opt = Array.from(dialCodeSelect.options).find(o => o.value === targetDial)
+            if (opt) dialCodeSelect.value = targetDial
+          }
+        }
+      }
+    })
+  }
+
   // --- Order Form Submit ---
   const form = document.getElementById('f')
   if (form) {
@@ -233,10 +453,60 @@ export const detail = (c, id) => {
       const btn = form.querySelector('button[type="submit"]')
       const origHTML = btn.innerHTML
       btn.disabled = true
-      btn.innerHTML = `<span>Memproses Pesanan...</span>`
+      btn.innerHTML = `<span>Processing Order...</span>`
 
-      const rawPhone = form.phone.value
-      const cleanPhone = norm(rawPhone)
+      // 1. Resolve Country Dial Code
+      let dialDigits = ''
+      if (isCustomDialMode) {
+        dialDigits = String(dialCodeInput?.value || '').replace(/\D/g, '')
+      } else {
+        dialDigits = String(dialCodeSelect?.value || '').replace(/\D/g, '')
+      }
+      if (!dialDigits) dialDigits = '62'
+
+      // 2. Resolve Subscriber Local Number
+      const subVal = phoneSubInput ? phoneSubInput.value : ''
+      const subDigits = String(subVal).replace(/\D/g, '')
+
+      if (!subDigits || subDigits.length < 6) {
+        btn.disabled = false
+        btn.innerHTML = origHTML
+        phoneSubInput?.focus()
+        return toast('Please enter a valid phone number (at least 6 digits)', true)
+      }
+
+      // 3. Assemble Full Complete Phone Number (e.g. 62085210017968)
+      // Preserves local leading 0 if entered (e.g. 62 + 085210017968 = 62085210017968)
+      let fullPhone = ''
+      if (subDigits.startsWith(dialDigits)) {
+        fullPhone = subDigits
+      } else {
+        fullPhone = dialDigits + subDigits
+      }
+
+      // Database check constraint enforcement: phone ~ '^[0-9]{8,15}$'
+      if (fullPhone.length > 15 && subDigits.startsWith('0')) {
+        fullPhone = dialDigits + subDigits.slice(1)
+      }
+
+      if (fullPhone.length < 8 || fullPhone.length > 15) {
+        btn.disabled = false
+        btn.innerHTML = origHTML
+        return toast('Combined phone number must be between 8 and 15 digits', true)
+      }
+
+      const countryVal = form.negara ? form.negara.value.trim() : ''
+      const postalVal = form.kode_pos ? form.kode_pos.value.trim() : ''
+      const cityVal = form.kota ? form.kota.value.trim() : ''
+      const provVal = form.provinsi ? form.provinsi.value.trim() : ''
+      const streetVal = form.alamat.value.trim()
+
+      // Format complete international shipping address
+      const fullAddress = [
+        streetVal,
+        [cityVal, provVal].filter(Boolean).join(', '),
+        [countryVal, postalVal ? `(Postal: ${postalVal})` : ''].filter(Boolean).join(' ')
+      ].filter(Boolean).join('\n')
 
       const payload = {
         oud_country: c,
@@ -244,23 +514,37 @@ export const detail = (c, id) => {
         oud_name: (o.sub ? `${o.sub} - ${o.name}` : o.name).substring(0, 150),
         nama: form.nama.value.trim(),
         email: form.email.value.trim(),
-        phone: cleanPhone,
+        phone: fullPhone,
         gender: form.gender.value,
-        alamat: form.alamat.value.trim()
+        alamat: fullAddress,
+        negara: countryVal,
+        kode_pos: postalVal,
+        kota: cityVal,
+        provinsi: provVal
       }
 
       let { error, data } = await supabase.from('orders').insert([payload]).select('id')
 
-      // Fallback jika kolom alamat belum ada
-      if (error && (error.message?.includes('alamat') || error.code === 'PGRST204')) {
-        const fallback = { ...payload }; delete fallback.alamat
+      // Fallback jika kolom baru (negara, kode_pos, kota, provinsi) belum dimigrasi di Supabase
+      if (error && (error.code === 'PGRST204' || error.message?.includes('negara') || error.message?.includes('kode_pos') || error.message?.includes('column'))) {
+        const fallback = {
+          oud_country: payload.oud_country,
+          oud_id: payload.oud_id,
+          oud_name: payload.oud_name,
+          nama: payload.nama,
+          email: payload.email,
+          phone: payload.phone,
+          gender: payload.gender,
+          alamat: fullAddress // tetap memuat negara, kode pos, kota secara lengkap!
+        }
         const r2 = await supabase.from('orders').insert([fallback]).select('id')
-        error = r2.error; data = r2.data
+        error = r2.error
+        data = r2.data
       }
 
       if (error) {
         btn.disabled = false; btn.innerHTML = origHTML
-        return toast('Gagal mengirim pesanan: ' + (error.message || 'Periksa koneksi Anda'), true)
+        return toast('Failed to submit order: ' + (error.message || 'Please check your connection'), true)
       }
 
       const orderId = data?.[0]?.id || 'ORD-' + Math.floor(1000 + Math.random() * 9000)
@@ -268,43 +552,59 @@ export const detail = (c, id) => {
       document.querySelector('.booking-section-wrapper').innerHTML = `
         <div class="booking-success-card">
           <div class="success-icon-badge">✓</div>
-          <h2 class="success-title">Pesanan Berhasil Diterima!</h2>
-          <p class="success-subtitle">Terima kasih <strong>${esc(payload.nama)}</strong>. Permintaan order untuk produk <strong>${esc(o.sub || o.name)}</strong> telah tersimpan di sistem ASIAN OUD.</p>
+          <h2 class="success-title">Order Successfully Received!</h2>
+          <p class="success-subtitle">Thank you, <strong>${esc(payload.nama)}</strong>. Your order request for <strong>${esc(o.sub || o.name)}</strong> has been recorded in the ASIAN OUD system.</p>
 
           <div class="success-info-box">
             <div class="info-row">
-              <span>Nomor Order:</span>
+              <span>Order #:</span>
               <strong class="gold-text">#${orderId}</strong>
             </div>
             <div class="info-row">
-              <span>Asal Produk:</span>
-              <span>${meta.flag} ${c}</span>
+              <span>Product:</span>
+              <span>${esc(o.sub || o.name)} (${meta.flag} ${c})</span>
             </div>
             <div class="info-row">
-              <span>WhatsApp:</span>
-              <span>${esc(cleanPhone)}</span>
+              <span>WhatsApp / Phone:</span>
+              <span class="gold-text">+${esc(dialDigits)} ${esc(subDigits)}</span>
             </div>
             <div class="info-row">
-              <span>Alamat Pengiriman:</span>
-              <span>${esc(payload.alamat)}</span>
+              <span>Tracking Number ID:</span>
+              <span style="font-family:monospace; font-weight:700; color:#fff;">${esc(fullPhone)}</span>
+            </div>
+            <div class="info-row">
+              <span>Destination Country:</span>
+              <strong style="color:var(--gold);">🌐 ${esc(countryVal || '-')}</strong>
+            </div>
+            <div class="info-row">
+              <span>Postal / ZIP Code:</span>
+              <span>📮 ${esc(postalVal || '-')}</span>
+            </div>
+            <div class="info-row">
+              <span>City &amp; Region:</span>
+              <span>${esc(cityVal)}${provVal ? ', ' + esc(provVal) : ''}</span>
+            </div>
+            <div class="info-row address-row">
+              <span>Full Shipping Address:</span>
+              <span class="address-text-block">${esc(fullAddress)}</span>
             </div>
           </div>
 
           <div class="success-actions">
-            <a href="#/cek?phone=${encodeURIComponent(cleanPhone)}" class="btn-primary-action">
-              Lacak Status Pesanan
+            <a href="#/cek?phone=${encodeURIComponent(fullPhone)}" class="btn-primary-action">
+              Track Order Status (${esc(fullPhone)}) →
             </a>
-            <a href="https://wa.me/6281234567890?text=${encodeURIComponent('Halo Admin ASIAN OUD, saya ingin konfirmasi pesanan produk ' + (o.sub || o.name) + ' — No. Order #' + orderId)}" target="_blank" class="btn-wa-confirm">
-              Konfirmasi via WhatsApp CS
+            <a href="https://wa.me/6281234567890?text=${encodeURIComponent('Hello ASIAN OUD Admin, I would like to confirm my order #' + orderId + ' (' + (o.sub || o.name) + ') for recipient ' + payload.nama + ' with phone ' + fullPhone)}" target="_blank" class="btn-wa-confirm">
+              Confirm via WhatsApp CS
             </a>
             <a href="#/" class="btn-secondary-action">
-              ← Kembali ke Beranda
+              ← Return to Home
             </a>
           </div>
         </div>
       `
       document.querySelector('.booking-section-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' })
-      toast('Pesanan berhasil dikirim! Silakan cek status di menu Cek Order.')
+      toast('Order submitted successfully! You can track your order in the Track Order menu.')
     }
   }
 }

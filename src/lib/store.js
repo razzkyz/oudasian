@@ -1,38 +1,38 @@
 import { supabase } from './supabase.js'
 import { getOuds as defaults, COUNTRIES as DEFAULT_COUNTRIES } from '../data/oud.js'
 
-const CACHE_KEY = 'asian_oud_store_v3'
+const CACHE_KEY = 'asian_oud_store_v4'
 
 export const COUNTRY_META_DEFAULTS = {
   Indonesia: {
     flag: '🇮🇩',
     label: 'Nusantara Wild Agarwood',
-    desc: 'Koleksi Gaharu pedalaman Kalimantan, Papua, dan Sumatra dengan kandungan resin hitam pekat dan mutu aroma legendaris terbaik dunia.'
+    desc: 'Wild agarwood collection from the interior rainforests of Kalimantan, Papua, and Sumatra, featuring dense dark resin and a world-renowned legendary aromatic profile.'
   },
   Cambodia: {
     flag: '🇰🇭',
     label: 'Pursat Royal Agarwood',
-    desc: 'Gaharu langka hutan Pursat dan Koh Kong yang termasyhur dengan karakter aroma manis madu, buah matang, dan kayu kuno.'
+    desc: 'Rare agarwood from the ancient Pursat and Koh Kong forests, celebrated for its sweet honey, ripe fruit, and antique woody character.'
   },
   Thailand: {
     flag: '🇹🇭',
     label: 'Siam Heritage Agarwood',
-    desc: 'Gaharu hutan Trat dan Prachinburi dengan aroma manis hangat menyegarkan serta hasil distilasi minyak murni berkualitas tinggi.'
+    desc: 'Heritage Trat and Prachinburi forest agarwood, offering warm uplifting sweet notes and exceptional natural resin distillation.'
   },
   Vietnam: {
     flag: '🇻🇳',
     label: 'Nha Trang Kinam Agarwood',
-    desc: 'Gaharu legendaris Khanh Hoa & Nha Trang dengan tingkatan resin Kyara/Kinam langka berkarakter aroma dingin surgawi.'
+    desc: 'Legendary Khanh Hoa & Nha Trang agarwood featuring rare Kinam/Kyara resin grades with an ethereal, heavenly cool aroma.'
   },
   Malaysia: {
     flag: '🇲🇾',
     label: 'Malacca & Borneo Agarwood',
-    desc: 'Gaharu hutan hujan Semenanjung dan Sarawak berdensitas tinggi dengan wangi herbal balsamic aromatik yang tahan lama.'
+    desc: 'Dense Peninsular and Sarawak rainforest agarwood with a long-lasting, deep aromatic herbal balsamic presence.'
   },
   Laos: {
     flag: '🇱🇦',
     label: 'Champasak Forest Agarwood',
-    desc: 'Gaharu murni hutan purba Champasak & Attapeu di sepanjang aliran sungai Mekong beraroma damai dan wangi lembut.'
+    desc: 'Pure agarwood harvested from the ancient Champasak and Attapeu forests along the Mekong river, with serene, delicate woody notes.'
   }
 }
 
@@ -90,7 +90,7 @@ export const getOuds = country => {
       id: item.slot || (idx + 1),
       slot: item.slot || (idx + 1),
       country: item.country,
-      name: item.name || `Koleksi #${idx + 1}`,
+      name: item.name || `Collection #${idx + 1}`,
       sub: item.sub || `${country} Agarwood`,
       desc: item.descr || '',
       img: item.img || 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80',

@@ -598,6 +598,7 @@ const tabOrders = async el => {
                 <span><strong>Email:</strong> ${esc(o.email || '-')}</span>
                 <span><strong>Titel:</strong> ${esc(o.gender || '-')}</span>
               </div>
+              ${(o.negara || o.kode_pos) ? `<div style="font-size:12.5px; color:var(--gold); margin:4px 0;">🌐 <strong>Destinasi:</strong> ${esc(o.negara || '-')}${o.kode_pos ? ` · Kode Pos: ${esc(o.kode_pos)}` : ''}</div>` : ''}
               ${o.alamat ? `<div class="order-address"><strong>Alamat Pengiriman:</strong> ${esc(o.alamat)}</div>` : ''}
               <div class="order-date">Waktu Pemesanan: ${new Date(o.created_at).toLocaleString('id-ID')} WIB</div>
             </div>
@@ -676,8 +677,8 @@ const tabOrders = async el => {
   }
 
   el.querySelector('#exp').onclick = () => {
-    const csv = ['ID,Nama,WhatsApp,Email,Produk,Negara,Alamat,Resi,Status,Tanggal'].concat(
-      ORD.map(o => `"${o.id}","${o.nama}","${o.phone}","${o.email || ''}","${o.oud_name || ''}","${o.oud_country || ''}","${(o.alamat || '').replace(/"/g, '""')}","${(o.resi || '').replace(/"/g, '""')}","${o.status}","${o.created_at}"`)
+    const csv = ['ID,Nama,WhatsApp,Email,Produk,Negara_Produk,Negara_Tujuan,Kode_Pos,Kota,Alamat,Resi,Status,Tanggal'].concat(
+      ORD.map(o => `"${o.id}","${o.nama}","${o.phone}","${o.email || ''}","${o.oud_name || ''}","${o.oud_country || ''}","${o.negara || ''}","${o.kode_pos || ''}","${o.kota || ''}","${(o.alamat || '').replace(/"/g, '""')}","${(o.resi || '').replace(/"/g, '""')}","${o.status}","${o.created_at}"`)
     ).join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)

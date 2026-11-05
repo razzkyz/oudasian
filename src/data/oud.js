@@ -399,17 +399,15 @@ export const getOuds = c => {
   const customList = TRAVEL_PACKAGES[c]
   return (customList || DEFAULT_TOUR_PACKAGES).map((item, i) => {
     const isObj = typeof item === 'object'
-    const sub = isObj ? item.sub : item
-    const badge = isObj ? item.badge : (i === 0 ? 'Best Seller' : 'Verified Tour')
-    const price = isObj ? item.price : 'Rp 3.850.000 / Pax'
-    const desc = isObj ? item.desc : `Paket wisata unggulan di ${c}: nikmati liburan berkelas dengan akomodasi hotel pilihan, transportasi nyaman, dan pemandu berpengalaman.`
-    const img = isObj ? item.img : 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=900&q=80'
+    const sub = isObj ? item.sub : `Grade A+ Super Sinking Wild ${c} Agarwood`
+    const badge = isObj ? item.badge : (i < 2 ? 'Super Sinking' : 'Premium Grade')
+    const desc = isObj ? item.desc : `Rare authentic wild agarwood curated directly from the deep rainforests of ${c}. High natural resin density with an everlasting, transcendent aroma.`
+    const img = isObj ? item.img : 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80'
     return {
       id: i + 1,
-      name: `Paket Tour ${c} #${i + 1}`,
+      name: `${c} Wild Agarwood #${i + 1}`,
       sub,
       badge,
-      price,
       img,
       desc
     }

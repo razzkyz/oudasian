@@ -23,27 +23,30 @@ export const home = (reset = false) => {
   // CMS values
   const badge     = S('lp_hero_badge',    'Trusted Supplier of Premium Agarwood')
   const headline  = S('lp_hero_title',    'BUY NOW')
-  const subtext   = S('lp_hero_subtitle', 'Koleksi Agarwood / Gaharu premium dari 6 negara Asia. Produk 100% autentik, bersertifikasi, dan dikurasi langsung dari sumber terpercaya.')
-  const stat1num  = S('lp_stat1_num',     '6')
-  const stat1lbl  = S('lp_stat1_label',   'Asian Countries')
-  const stat2num  = S('lp_stat2_num',     '100%')
-  const stat2lbl  = S('lp_stat2_label',   'Authentic & Verified')
-  const stat3num  = S('lp_stat3_num',     '4.9★')
-  const stat3lbl  = S('lp_stat3_label',   'Customer Rating')
-  const selLabel  = S('lp_country_label', 'PILIH ASAL PRODUK')
-  const selTitle  = S('lp_country_title', 'Koleksi Agarwood per Negara')
-  const catTag    = S('lp_catalog_tag',   'KATALOG ASIAN OUD')
-  const catTitle  = S('lp_catalog_title', `Produk Unggulan — ${selectedCountry}`)
-  const catSub    = S('lp_catalog_sub',   `${ouds.length} produk pilihan tersedia, dikurasi dari sumber terpercaya dengan grade premium`)
+  const customSub = S('lp_hero_subtitle', '')
+  const subtext   = (customSub && !customSub.includes('Koleksi Agarwood') && !customSub.includes('Gaharu'))
+    ? customSub
+    : 'Discover the finest agarwood collection from six Asian countries, carefully selected to ensure authenticity, exceptional quality, and a distinctive fragrance.'
+  const stat1num  = S('lp_hero_stat1_num', S('lp_stat1_num', '6'))
+  const stat1lbl  = S('lp_hero_stat1_lbl', S('lp_stat1_label', 'Asian Countries'))
+  const stat2num  = S('lp_hero_stat2_num', S('lp_stat2_num', '100%'))
+  const stat2lbl  = S('lp_hero_stat2_lbl', S('lp_stat2_label', 'Authentic & Pure'))
+  const stat3num  = S('lp_hero_stat3_num', S('lp_stat3_num', 'GRADE A+'))
+  const stat3lbl  = S('lp_hero_stat3_lbl', S('lp_stat3_label', 'Super Sinking'))
+  const selLabel  = S('lp_country_label', 'SELECT ORIGIN')
+  const selTitle  = S('lp_country_title', 'Agarwood Collections by Country')
+  const catTag    = S('lp_cat_badge',     S('lp_catalog_tag', 'ASIAN OUD CATALOG'))
+  const catTitle  = S('lp_cat_title',     S('lp_catalog_title', `Featured Collections — ${selectedCountry}`))
+  const catSub    = S('lp_cat_subtitle',  S('lp_catalog_sub', `${ouds.length} curated premium items available, directly verified from trusted wild harvests`))
 
-  const feat1title= S('lp_feat1_title',   'Sumber Langsung')
-  const feat1desc = S('lp_feat1_desc',    'Agarwood dikurasi langsung dari penghasil terpercaya di 6 negara Asia.')
-  const feat2title= S('lp_feat2_title',   'Grade Premium')
-  const feat2desc = S('lp_feat2_desc',    'Setiap produk melewati seleksi ketat untuk memastikan kualitas terbaik.')
-  const feat3title= S('lp_feat3_title',   '100% Autentik')
-  const feat3desc = S('lp_feat3_desc',    'Didukung dokumentasi asal-usul dan sertifikasi keaslian produk.')
-  const feat4title= S('lp_feat4_title',   'Layanan Profesional')
-  const feat4desc = S('lp_feat4_desc',    'Tim berpengalaman siap membantu konsultasi dan pemesanan 24/7.')
+  const feat1title= S('lp_feat1_title',   '100% Authentic & Natural')
+  const feat1desc = S('lp_feat1_desc',    'Free from artificial chemicals, synthetic fragrances, or color manipulation.')
+  const feat2title= S('lp_feat2_title',   'Direct Forest Harvest')
+  const feat2desc = S('lp_feat2_desc',    'Harvested directly by seasoned agarwood hunters deep in Asian native rainforests.')
+  const feat3title= S('lp_feat3_title',   'Super Sinking Grade')
+  const feat3desc = S('lp_feat3_desc',    'High-density resin that sinks in water, delivering an everlasting deep scent.')
+  const feat4title= S('lp_feat4_title',   'Protected Delivery')
+  const feat4desc = S('lp_feat4_desc',    'Secure airtight packaging with transparent tracking directly to your door.')
 
   // Update brand di navbar
   const brandEl = document.getElementById('brand')
@@ -56,26 +59,30 @@ export const home = (reset = false) => {
       <div class="luxury-pill-badge">${esc(badge)}</div>
       <h1 class="hero-clean-title hero-buy-title">${esc(headline)}</h1>
       <p class="hero-clean-subtitle">${esc(subtext)}</p>
-      <div class="hero-buy-action-wrap">
-        <button class="btn-hero-buy-action" onclick="const p = document.querySelector('.products-clean'); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'start' });">
-          <span>PILIH PRODUK &amp; ORDER SEKARANG →</span>
-        </button>
-      </div>
+      
+      <!-- Stats Row (Asian Countries Box) -->
       <div class="hero-stats-row">
-        <div class="hero-stat-item">
+        <div class="hero-stat-item stat-item-1">
           <span class="stat-number">${esc(stat1num)}</span>
           <span class="stat-label">${esc(stat1lbl)}</span>
         </div>
         <div class="hero-stat-divider"></div>
-        <div class="hero-stat-item">
+        <div class="hero-stat-item stat-item-2">
           <span class="stat-number">${esc(stat2num)}</span>
           <span class="stat-label">${esc(stat2lbl)}</span>
         </div>
         <div class="hero-stat-divider"></div>
-        <div class="hero-stat-item">
-          <span class="stat-number">${esc(stat3num)}</span>
+        <div class="hero-stat-item stat-item-3">
+          <span class="stat-number stat-grade-number">${esc(stat3num)}</span>
           <span class="stat-label">${esc(stat3lbl)}</span>
         </div>
+      </div>
+
+      <!-- Order CTA Button (Placed Underneath Stats Row) -->
+      <div class="hero-buy-action-wrap">
+        <button class="btn-hero-buy-action" onclick="const p = document.querySelector('.products-clean'); if (p) p.scrollIntoView({ behavior: 'smooth', block: 'start' });">
+          <span>CHOOSE YOUR OUD &amp; ORDER NOW</span>
+        </button>
       </div>
     </div>
   </section>
@@ -94,7 +101,7 @@ export const home = (reset = false) => {
           <button class="country-pill ${c === selectedCountry ? 'active' : ''} ${isIndo ? 'pill-indonesia' : ''}" data-c="${c}">
             <span class="pill-flag">${cMeta.flag || '🌏'}</span>
             <span class="pill-name">${c}</span>
-            ${isIndo ? '<span class="pill-badge-mini">Utama</span>' : ''}
+            ${isIndo ? '<span class="pill-badge-mini">Main Origin</span>' : ''}
           </button>
         `
       }).join('')}
@@ -103,7 +110,7 @@ export const home = (reset = false) => {
       <div class="country-info-header">
         <span class="country-info-flag">${meta.flag}</span>
         <div>
-          <h3 class="country-info-title">Agarwood dari ${selectedCountry}</h3>
+          <h3 class="country-info-title">Agarwood from ${selectedCountry}</h3>
           <span class="country-info-sub">${meta.label}</span>
         </div>
       </div>
@@ -143,7 +150,7 @@ export const home = (reset = false) => {
             <p class="product-desc-snippet">${esc(o.desc)}</p>
             <div class="product-footer-clean">
               <div class="product-action-btn">
-                <span>Lihat Detail</span>
+                <span>View Details</span>
                 <span class="btn-arrow-text">→</span>
               </div>
             </div>
@@ -178,6 +185,12 @@ export const home = (reset = false) => {
     </div>
     <div class="feature-clean-item">
       <div class="feature-clean-icon feature-icon-num">04</div>
+      <div>
+        <h4>${esc(feat4title)}</h4>
+        <p>${esc(feat4desc)}</p>
+      </div>
+    </div>
+  </section>
       <div>
         <h4>${esc(feat4title)}</h4>
         <p>${esc(feat4desc)}</p>
