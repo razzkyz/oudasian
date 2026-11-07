@@ -47,8 +47,6 @@ export const home = (reset = false) => {
   const feat2desc = S('lp_feat2_desc',    'Harvested directly by seasoned agarwood hunters deep in Asian native rainforests.')
   const feat3title= S('lp_feat3_title',   'Super Sinking Grade')
   const feat3desc = S('lp_feat3_desc',    'High-density resin that sinks in water, delivering an everlasting deep scent.')
-  const feat4title= S('lp_feat4_title',   'Protected Delivery')
-  const feat4desc = S('lp_feat4_desc',    'Secure airtight packaging with transparent tracking directly to your door.')
 
   // Update brand di navbar
   const brandEl = document.getElementById('brand')
@@ -182,19 +180,6 @@ export const home = (reset = false) => {
       <div>
         <h4>${esc(feat3title)}</h4>
         <p>${esc(feat3desc)}</p>
-      </div>
-    </div>
-    <div class="feature-clean-item">
-      <div class="feature-clean-icon feature-icon-num">04</div>
-      <div>
-        <h4>${esc(feat4title)}</h4>
-        <p>${esc(feat4desc)}</p>
-      </div>
-    </div>
-  </section>
-      <div>
-        <h4>${esc(feat4title)}</h4>
-        <p>${esc(feat4desc)}</p>
       </div>
     </div>
   </section>

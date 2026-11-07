@@ -856,16 +856,14 @@ const tabCms = el => {
       id: 'features',
       title: 'Keunggulan / Fitur Utama',
       icon: '✦',
-      desc: '4 kartu keunggulan ASIAN OUD di halaman depan.',
+      desc: '3 kartu keunggulan ASIAN OUD di halaman depan.',
       fields: [
         { key: 'lp_feat1_title', label: 'Keunggulan 1: Judul',      type: 'text', ph: '100% Autentik & Alami',     def: '100% Autentik & Alami' },
         { key: 'lp_feat1_desc',  label: 'Keunggulan 1: Keterangan', type: 'text', ph: 'Bebas bahan kimia...',      def: 'Bebas dari bahan kimia buatan, pewangi sintetis, atau manipulasi warna resin.' },
         { key: 'lp_feat2_title', label: 'Keunggulan 2: Judul',      type: 'text', ph: 'Kurasi Langsung dari Hutan',def: 'Kurasi Langsung dari Hutan' },
         { key: 'lp_feat2_desc',  label: 'Keunggulan 2: Keterangan', type: 'text', ph: 'Dipanen oleh pemburu...',   def: 'Dipanen langsung oleh pemburu gaharu berpengalaman dari hutan pedalaman Asia.' },
         { key: 'lp_feat3_title', label: 'Keunggulan 3: Judul',      type: 'text', ph: 'Mutu Super Sinking',        def: 'Mutu Super Sinking' },
-        { key: 'lp_feat3_desc',  label: 'Keunggulan 3: Keterangan', type: 'text', ph: 'Kandungan resin padat...',  def: 'Kandungan resin padat tinggi yang tenggelam di air dengan profil aroma abadi.' },
-        { key: 'lp_feat4_title', label: 'Keunggulan 4: Judul',      type: 'text', ph: 'Pengiriman Terproteksi',    def: 'Pengiriman Terproteksi' },
-        { key: 'lp_feat4_desc',  label: 'Keunggulan 4: Keterangan', type: 'text', ph: 'Kemasan kedap udara...',    def: 'Kemasan kedap udara aman dengan nomor pelacakan pengiriman transparan.' }
+        { key: 'lp_feat3_desc',  label: 'Keunggulan 3: Keterangan', type: 'text', ph: 'Kandungan resin padat...',  def: 'Kandungan resin padat tinggi yang tenggelam di air dengan profil aroma abadi.' }
       ]
     },
     {
