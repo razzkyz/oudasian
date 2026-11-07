@@ -188,8 +188,8 @@ const renderOrderResults = (orders, phoneSearched) => {
                       <span class="info-val">${esc(r.email)}</span>
                     </div>
                     <div class="info-item">
-                      <span class="info-label">Title / Salutation:</span>
-                      <span class="info-val">${esc(r.gender || '-')}</span>
+                      <span class="info-label">Gender:</span>
+                      <span class="info-val">${esc(r.gender === 'Laki-laki' ? 'Male' : (r.gender === 'Perempuan' ? 'Female' : (r.gender || '-')))}</span>
                     </div>
                     ${(r.negara || r.kode_pos) ? `
                     <div class="info-item">

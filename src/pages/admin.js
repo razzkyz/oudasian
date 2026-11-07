@@ -33,11 +33,12 @@ const applyLocalEdits = (orders) => {
 }
 
 /* ─── WHATSAPP NOTIFICATION TEMPLATES ────────────────────────────────── */
+const isFemale = g => g === 'Perempuan' || g === 'Female' || g === 'Mrs. / Ms. / Madam'
 const NOTIF_TEMPLATES = {
   'baru': {
     title: '1. Order Diterima',
     build: (o, host) => 
-`Halo ${o.gender === 'Perempuan' ? 'Ibu' : 'Bapak'} ${o.nama},
+`Halo ${isFemale(o.gender) ? 'Ibu' : 'Bapak'} ${o.nama},
 
 Terima kasih telah memesan Agarwood premium di ASIAN OUD.
 
@@ -55,7 +56,7 @@ ASIAN OUD — Trusted Supplier of Premium Agarwood`
   'proses': {
     title: '2. QC & Packing',
     build: (o, host) => 
-`Halo ${o.gender === 'Perempuan' ? 'Ibu' : 'Bapak'} ${o.nama},
+`Halo ${isFemale(o.gender) ? 'Ibu' : 'Bapak'} ${o.nama},
 
 Update pesanan Anda #${o.id} di ASIAN OUD:
 
@@ -70,7 +71,7 @@ ASIAN OUD`
   'kirim': {
     title: '3. Paket Dikirim',
     build: (o, host, resi) => 
-`Halo ${o.gender === 'Perempuan' ? 'Ibu' : 'Bapak'} ${o.nama},
+`Halo ${isFemale(o.gender) ? 'Ibu' : 'Bapak'} ${o.nama},
 
 Kabar baik! Pesanan Agarwood Anda #${o.id} (${o.oud_name}) telah diserahkan kepada kurir pengiriman.
 
@@ -86,7 +87,7 @@ ASIAN OUD`
   'selesai': {
     title: '4. Pesanan Selesai',
     build: (o, host) => 
-`Halo ${o.gender === 'Perempuan' ? 'Ibu' : 'Bapak'} ${o.nama},
+`Halo ${isFemale(o.gender) ? 'Ibu' : 'Bapak'} ${o.nama},
 
 Pesanan Agarwood Anda #${o.id} (${o.oud_name}) telah tercatat selesai dan diterima dengan baik.
 
@@ -100,7 +101,7 @@ ASIAN OUD — Trusted Supplier of Premium Agarwood`
   'verif': {
     title: '5. Verifikasi Alamat',
     build: (o, host) => 
-`Halo ${o.gender === 'Perempuan' ? 'Ibu' : 'Bapak'} ${o.nama},
+`Halo ${isFemale(o.gender) ? 'Ibu' : 'Bapak'} ${o.nama},
 
 Kami dari tim Admin ASIAN OUD ingin mengonfirmasi detail pesanan Anda #${o.id}:
 
@@ -192,10 +193,10 @@ const openOrderVerifier = (orderId, refreshCallback) => {
                 <input type="email" id="vEmail" class="v-input" value="${esc(o.email || '')}" />
               </div>
               <div class="v-form-row">
-                <label>Titel / Panggilan</label>
+                <label>Gender</label>
                 <select id="vGender" class="v-input v-select">
-                  <option value="Laki-laki" ${o.gender === 'Laki-laki' ? 'selected' : ''}>Bapak / Laki-laki</option>
-                  <option value="Perempuan" ${o.gender === 'Perempuan' ? 'selected' : ''}>Ibu / Perempuan</option>
+                  <option value="Male" ${o.gender === 'Male' || o.gender === 'Laki-laki' ? 'selected' : ''}>Male</option>
+                  <option value="Female" ${o.gender === 'Female' || o.gender === 'Perempuan' ? 'selected' : ''}>Female</option>
                   <option value="" ${!o.gender ? 'selected' : ''}>- Netral -</option>
                 </select>
               </div>
@@ -596,7 +597,7 @@ const tabOrders = async el => {
                 <span><strong>Pemesan:</strong> ${esc(o.nama)}</span>
                 <span><strong>WhatsApp:</strong> <span class="phone-hl">${esc(o.phone)}</span></span>
                 <span><strong>Email:</strong> ${esc(o.email || '-')}</span>
-                <span><strong>Titel:</strong> ${esc(o.gender || '-')}</span>
+                <span><strong>Gender:</strong> ${esc(o.gender === 'Laki-laki' ? 'Male' : (o.gender === 'Perempuan' ? 'Female' : (o.gender || '-')))}</span>
               </div>
               ${(o.negara || o.kode_pos) ? `<div style="font-size:12.5px; color:var(--gold); margin:4px 0;">🌐 <strong>Destinasi:</strong> ${esc(o.negara || '-')}${o.kode_pos ? ` · Kode Pos: ${esc(o.kode_pos)}` : ''}</div>` : ''}
               ${o.alamat ? `<div class="order-address"><strong>Alamat Pengiriman:</strong> ${esc(o.alamat)}</div>` : ''}

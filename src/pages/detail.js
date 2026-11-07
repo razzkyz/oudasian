@@ -103,18 +103,18 @@ export const detail = (c, id) => {
           <input name="nama" type="text" placeholder="e.g. Mohammed Al-Otaibi / John Doe" required minlength="2" maxlength="100"/>
         </div>
         <div class="form-group">
-          <label>Active Email (Order Confirmation) <span class="required">*</span></label>
+          <label>Email Address <span class="required">*</span></label>
           <input name="email" type="email" placeholder="example@email.com" required maxlength="150"/>
         </div>
       </div>
 
       <div class="form-grid-2">
         <div class="form-group">
-          <label>Title / Salutation <span class="required">*</span></label>
+          <label>Gender <span class="required">*</span></label>
           <select name="gender" required>
-            <option value="">-- Select Title --</option>
-            <option value="Laki-laki">Mr. / Sir</option>
-            <option value="Perempuan">Mrs. / Ms. / Madam</option>
+            <option value="">-- Select Gender --</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
           </select>
         </div>
         <div class="form-group">
@@ -206,63 +206,55 @@ export const detail = (c, id) => {
         </div>
       </div>
 
-      <!-- Country Selection & Postal Code -->
-      <div class="form-grid-2">
-        <div class="form-group">
-          <label>Destination Country (Negara Tujuan) <span class="required">*</span></label>
-          <select name="negara" id="destCountrySelect" required>
-            <option value="">-- Select Destination Country --</option>
-            <optgroup label="Middle East &amp; GCC (Priority Air Freight)">
-              <option value="Saudi Arabia">🇸🇦 Saudi Arabia (المملكة العربية السعودية)</option>
-              <option value="United Arab Emirates">🇦🇪 United Arab Emirates (الإمارات)</option>
-              <option value="Qatar">🇶🇦 Qatar (قطر)</option>
-              <option value="Kuwait">🇰🇼 Kuwait (الكويت)</option>
-              <option value="Oman">🇴🇲 Oman (عمان)</option>
-              <option value="Bahrain">🇧🇭 Bahrain (البحرين)</option>
-            </optgroup>
-            <optgroup label="Asia Pacific">
-              <option value="Indonesia">🇮🇩 Indonesia</option>
-              <option value="Malaysia">🇲🇾 Malaysia</option>
-              <option value="Singapore">🇸🇬 Singapore</option>
-              <option value="Thailand">🇹🇭 Thailand</option>
-              <option value="Vietnam">🇻🇳 Vietnam</option>
-              <option value="Japan">🇯🇵 Japan</option>
-              <option value="South Korea">🇰🇷 South Korea</option>
-              <option value="Taiwan">🇹🇼 Taiwan</option>
-              <option value="Hong Kong">🇭🇰 Hong Kong</option>
-              <option value="Australia">🇦🇺 Australia</option>
-            </optgroup>
-            <optgroup label="Americas &amp; Europe">
-              <option value="United States">🇺🇸 United States</option>
-              <option value="United Kingdom">🇬🇧 United Kingdom</option>
-              <option value="Canada">🇨🇦 Canada</option>
-              <option value="Germany">🇩🇪 Germany</option>
-              <option value="France">🇫🇷 France</option>
-              <option value="Switzerland">🇨🇭 Switzerland</option>
-              <option value="Netherlands">🇳🇱 Netherlands</option>
-              <option value="Turkey">🇹🇷 Turkey</option>
-            </optgroup>
-            <optgroup label="Other Destination">
-              <option value="Other">🌍 Other Country (Worldwide Express Delivery)</option>
-            </optgroup>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Postal / ZIP Code (Kode Pos) <span class="required">*</span></label>
-          <input name="kode_pos" type="text" placeholder="e.g. 11564 / 90210 / 12345" required minlength="3" maxlength="20"/>
-          <small class="form-hint">Essential for air courier routing and customs dispatch.</small>
-        </div>
+      <!-- Destination Country -->
+      <div class="form-group full-width">
+        <label>Destination Country <span class="required">*</span></label>
+        <select name="negara" id="destCountrySelect" required>
+          <option value="">-- Select Destination Country --</option>
+          <optgroup label="Middle East &amp; GCC (Priority Air Freight)">
+            <option value="Saudi Arabia">🇸🇦 Saudi Arabia (المملكة العربية السعودية)</option>
+            <option value="United Arab Emirates">🇦🇪 United Arab Emirates (الإمارات)</option>
+            <option value="Qatar">🇶🇦 Qatar (قطر)</option>
+            <option value="Kuwait">🇰🇼 Kuwait (الكويت)</option>
+            <option value="Oman">🇴🇲 Oman (عمان)</option>
+            <option value="Bahrain">🇧🇭 Bahrain (البحرين)</option>
+          </optgroup>
+          <optgroup label="Asia Pacific">
+            <option value="Indonesia">🇮🇩 Indonesia</option>
+            <option value="Malaysia">🇲🇾 Malaysia</option>
+            <option value="Singapore">🇸🇬 Singapore</option>
+            <option value="Thailand">🇹🇭 Thailand</option>
+            <option value="Vietnam">🇻🇳 Vietnam</option>
+            <option value="Japan">🇯🇵 Japan</option>
+            <option value="South Korea">🇰🇷 South Korea</option>
+            <option value="Taiwan">🇹🇼 Taiwan</option>
+            <option value="Hong Kong">🇭🇰 Hong Kong</option>
+            <option value="Australia">🇦🇺 Australia</option>
+          </optgroup>
+          <optgroup label="Americas &amp; Europe">
+            <option value="United States">🇺🇸 United States</option>
+            <option value="United Kingdom">🇬🇧 United Kingdom</option>
+            <option value="Canada">🇨🇦 Canada</option>
+            <option value="Germany">🇩🇪 Germany</option>
+            <option value="France">🇫🇷 France</option>
+            <option value="Switzerland">🇨🇭 Switzerland</option>
+            <option value="Netherlands">🇳🇱 Netherlands</option>
+            <option value="Turkey">🇹🇷 Turkey</option>
+          </optgroup>
+          <optgroup label="Other Destination">
+            <option value="Other">🌍 Other Country (Worldwide Express Delivery)</option>
+          </optgroup>
+        </select>
       </div>
 
       <!-- City & State / Province -->
       <div class="form-grid-2">
         <div class="form-group">
-          <label>City / Town (Kota) <span class="required">*</span></label>
+          <label>City / Town <span class="required">*</span></label>
           <input name="kota" type="text" placeholder="e.g. Riyadh / Dubai / Jakarta / London" required minlength="2" maxlength="100"/>
         </div>
         <div class="form-group">
-          <label>State / Province / Region (Provinsi / Wilayah)</label>
+          <label>State / Province / Region</label>
           <input name="provinsi" type="text" placeholder="e.g. Riyadh Province / Dubai / DKI Jakarta / California" maxlength="100"/>
         </div>
       </div>
@@ -279,6 +271,13 @@ export const detail = (c, id) => {
           maxlength="500"
         ></textarea>
         <small class="form-hint">Please provide detailed address for DHL, FedEx, Aramex, or UPS door-to-door courier delivery.</small>
+      </div>
+
+      <!-- Postal / ZIP Code (End of Form) -->
+      <div class="form-group full-width">
+        <label>Postal / ZIP Code <span class="required">*</span></label>
+        <input name="kode_pos" type="text" placeholder="e.g. 11564 / 90210 / 12345" required minlength="3" maxlength="20"/>
+        <small class="form-hint">Essential for air courier routing and customs dispatch.</small>
       </div>
 
       <div class="order-summary-box">
@@ -525,6 +524,16 @@ export const detail = (c, id) => {
 
       let { error, data } = await supabase.from('orders').insert([payload]).select('id')
 
+      // Fallback jika constraint database masih menggunakan nilai gender lama ('Laki-laki' / 'Perempuan')
+      if (error && (error.message?.includes('orders_valid') || error.message?.includes('gender') || error.message?.includes('check constraint'))) {
+        const mappedGender = payload.gender === 'Female' ? 'Perempuan' : 'Laki-laki'
+        const rGender = await supabase.from('orders').insert([{ ...payload, gender: mappedGender }]).select('id')
+        if (!rGender.error) {
+          error = null
+          data = rGender.data
+        }
+      }
+
       // Fallback jika kolom baru (negara, kode_pos, kota, provinsi) belum dimigrasi di Supabase
       if (error && (error.code === 'PGRST204' || error.message?.includes('negara') || error.message?.includes('kode_pos') || error.message?.includes('column'))) {
         const fallback = {
@@ -537,7 +546,11 @@ export const detail = (c, id) => {
           gender: payload.gender,
           alamat: fullAddress // tetap memuat negara, kode pos, kota secara lengkap!
         }
-        const r2 = await supabase.from('orders').insert([fallback]).select('id')
+        let r2 = await supabase.from('orders').insert([fallback]).select('id')
+        if (r2.error && (r2.error.message?.includes('orders_valid') || r2.error.message?.includes('gender') || r2.error.message?.includes('check constraint'))) {
+          fallback.gender = payload.gender === 'Female' ? 'Perempuan' : 'Laki-laki'
+          r2 = await supabase.from('orders').insert([fallback]).select('id')
+        }
         error = r2.error
         data = r2.data
       }
