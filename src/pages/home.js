@@ -33,8 +33,10 @@ export const home = (reset = false) => {
   const stat2lbl  = S('lp_hero_stat2_lbl', S('lp_stat2_label', 'Authentic & Pure'))
   const stat3num  = S('lp_hero_stat3_num', S('lp_stat3_num', 'GRADE A+'))
   const stat3lbl  = S('lp_hero_stat3_lbl', S('lp_stat3_label', 'Super Sinking'))
-  const selLabel  = S('lp_country_label', 'SELECT ORIGIN')
-  const selTitle  = S('lp_country_title', 'Agarwood Collections by Country')
+  let selTitle    = S('lp_country_title', 'PREMIUM AGARWOOD COLLECTION FROM SIX ASIAN COUNTRIES.')
+  if (!selTitle || selTitle === 'Agarwood Collections by Country') {
+    selTitle = 'PREMIUM AGARWOOD COLLECTION FROM SIX ASIAN COUNTRIES.'
+  }
   const catTag    = S('lp_cat_badge',     S('lp_catalog_tag', 'ASIAN OUD CATALOG'))
   const catTitle  = S('lp_cat_title',     S('lp_catalog_title', `Featured Collections — ${selectedCountry}`))
   const catSub    = S('lp_cat_subtitle',  S('lp_catalog_sub', `${ouds.length} curated premium items available, directly verified from trusted wild harvests`))
@@ -90,7 +92,6 @@ export const home = (reset = false) => {
   <!-- Country Selector Dinamis dari Database -->
   <section class="country-selector">
     <div class="selector-header">
-      <span class="selector-label">${esc(selLabel)}</span>
       <h2 class="selector-title">${esc(selTitle)}</h2>
     </div>
     <div class="country-pills">

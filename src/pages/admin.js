@@ -706,17 +706,28 @@ const tabOuds = el => {
   </div>
 
   <div class="oud-info-box">
-    Kelola produk Agarwood untuk negara <strong>${acountry}</strong>. Anda dapat mengganti nama produk, grade, deskripsi, dan foto katalog.
+    📸 Kelola produk Agarwood untuk negara <strong>${acountry}</strong>. Klik preview foto untuk ganti gambar, atau edit nama/deskripsi produk lalu simpan.
   </div>
 
   <div class="oud-editor-grid">
     ${ouds.map((o, idx) => `
       <form class="oud-editor-card" data-slot="${idx + 1}">
-        <div class="oud-preview">
-          <img src="${o.img}" alt="${esc(o.sub || o.name)}" class="prev"/>
+        <!-- FOTO PREVIEW: Klik untuk ganti -->
+        <div class="oud-preview" title="Klik gambar untuk ganti foto">
+          <img src="${o.img}" alt="${esc(o.sub || o.name)}" class="prev oud-img-clickable"/>
           <span class="oud-slot-badge">Slot #${idx + 1}</span>
+          <div class="oud-img-overlay">
+            <span class="oud-img-overlay-icon">📷</span>
+            <span class="oud-img-overlay-text">Ganti Foto</span>
+          </div>
+          <input type="file" name="file" accept="image/*" class="file-input file-input-hidden"/>
         </div>
+
         <div class="oud-fields">
+          <div class="oud-img-status" id="img-status-${idx + 1}" style="display:none;">
+            <span class="img-status-badge new">✓ Foto baru dipilih — klik Simpan untuk menyimpan</span>
+          </div>
+
           <div class="form-group">
             <label>Nama Produk / Grade</label>
             <input type="text" name="sub" value="${esc(o.sub || '')}" placeholder="Contoh: Premium Wild Agarwood Grade A+" required/>
@@ -729,15 +740,15 @@ const tabOuds = el => {
             <label>Deskripsi &amp; Spesifikasi Produk</label>
             <textarea name="descr" rows="3" placeholder="Tuliskan spesifikasi, aroma, resin, dan keunggulan produk...">${esc(o.desc || '')}</textarea>
           </div>
-          <div class="form-group">
-            <label>Upload Foto Produk Baru (opsional)</label>
-            <input type="file" name="file" accept="image/*" class="file-input"/>
-          </div>
+
           <div class="oud-actions">
             <button class="btn btn-save">
-              <span>Simpan Produk</span>
+              <span>💾 Simpan Produk</span>
             </button>
-            ${o.custom ? `<button type="button" class="btn btn-reset reset"><span>Reset ke Default</span></button>` : ''}
+            <button type="button" class="btn btn-pick-img" title="Upload foto produk baru">
+              <span>📷 Ganti Foto</span>
+            </button>
+            ${o.custom ? `<button type="button" class="btn btn-reset reset"><span>↺ Reset</span></button>` : ''}
           </div>
         </div>
       </form>
@@ -746,25 +757,65 @@ const tabOuds = el => {
   `
 
   el.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { acountry = b.dataset.c; tabOuds(el) })
-  el.querySelectorAll('.oud-editor-card').forEach(f => {
-    let img = null
+  el.querySelectorAll('.oud-editor-card').forEach((f, idx) => {
+    let img = null  // null = keep existing photo, '' = reset to default, string = new base64 image
     const slot = +f.dataset.slot
+    const fileInput = f.querySelector('.file-input')
+    const prevImg = f.querySelector('.prev')
+    const statusBox = f.querySelector('.oud-img-status')
+
+    // Click on image preview → open file picker
+    const imgClickable = f.querySelector('.oud-img-clickable')
+    if (imgClickable) {
+      imgClickable.onclick = () => fileInput && fileInput.click()
+    }
+
+    // Click "Ganti Foto" button → open file picker  
+    const btnPick = f.querySelector('.btn-pick-img')
+    if (btnPick) {
+      btnPick.onclick = () => fileInput && fileInput.click()
+    }
+
     const save = async im => {
       const btn = f.querySelector('.btn-save')
-      btn.disabled = true; btn.textContent = 'Menyimpan...'
-      const { error } = await supabase.rpc('admin_save_oud', {
+      btn.disabled = true; btn.innerHTML = `<span>⏳ Menyimpan...</span>`
+      // im = null means keep existing photo, so don't send p_img (SQL: CASE WHEN p_img IS NULL THEN ouds.img)
+      const rpcParams = {
         p_pin: pin, p_country: acountry, p_slot: slot,
-        p_name: f.name.value, p_sub: f.sub.value, p_descr: f.descr.value, p_img: im
-      })
-      if (error) { btn.disabled = false; btn.innerHTML = `<span>Simpan Produk</span>`; return toast(error.message, true) }
-      await load(); toast('Produk Agarwood berhasil disimpan'); tabOuds(el)
+        p_name: f.name.value, p_sub: f.sub.value, p_descr: f.descr.value
+      }
+      if (im !== null) rpcParams.p_img = im
+      const { error } = await supabase.rpc('admin_save_oud', rpcParams)
+      if (error) {
+        btn.disabled = false
+        btn.innerHTML = `<span>💾 Simpan Produk</span>`
+        return toast(error.message, true)
+      }
+      await load()
+      toast('✓ Produk berhasil disimpan!')
+      tabOuds(el)
     }
-    f.file.onchange = async () => {
-      if (f.file.files[0]) { img = await resize(f.file.files[0]); f.querySelector('.prev').src = img; toast('Foto dipilih') }
+
+    if (fileInput) {
+      fileInput.onchange = async () => {
+        if (fileInput.files[0]) {
+          img = await resize(fileInput.files[0])
+          if (prevImg) prevImg.src = img
+          if (statusBox) statusBox.style.display = 'block'
+          toast('📷 Foto dipilih — klik Simpan untuk menyimpan ke database')
+        }
+      }
     }
+
     f.onsubmit = e => { e.preventDefault(); save(img) }
+
     const r = f.querySelector('.reset')
-    if (r) r.onclick = () => { if (confirm('Reset ke foto default?')) save('') }
+    if (r) r.onclick = () => {
+      if (confirm('Reset gambar produk ini ke foto default? Foto custom akan dihapus.')) {
+        img = ''
+        save('')
+      }
+    }
   })
 }
 
@@ -795,6 +846,7 @@ const tabCms = el => {
       icon: '✦',
       desc: 'Judul dan sub-judul pada bagian katalog Agarwood 6 negara.',
       fields: [
+        { key: 'lp_country_title', label: 'Judul Bagian Origin 6 Negara', type: 'text', ph: 'PREMIUM AGARWOOD COLLECTION FROM SIX ASIAN COUNTRIES.', def: 'PREMIUM AGARWOOD COLLECTION FROM SIX ASIAN COUNTRIES.' },
         { key: 'lp_cat_badge',    label: 'Label Badge Katalog',       type: 'text', ph: 'KOLEKSI 6 NEGARA ASIA', def: 'KOLEKSI 6 NEGARA ASIA' },
         { key: 'lp_cat_title',    label: 'Judul Bagian Katalog',      type: 'text', ph: 'EKSPLORASI AGARWOOD ASIA', def: 'EKSPLORASI AGARWOOD ASIA' },
         { key: 'lp_cat_subtitle', label: 'Sub-judul Bagian Katalog',  type: 'text', ph: 'Pilih negara untuk melihat koleksi...', def: 'Pilih negara untuk melihat koleksi gaharu liar pilihan dengan aroma khas tiap wilayah.' }
