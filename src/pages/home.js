@@ -50,7 +50,7 @@ export const home = (reset = false) => {
 
   // Update brand di navbar
   const brandEl = document.getElementById('brand')
-  if (brandEl) brandEl.innerHTML = `<span class="brand-asian">ASIAN</span> <span class="brand-oud">OUD</span>`
+  if (brandEl) brandEl.innerHTML = `<img src="/images/logo-tree-transparent.png" alt="ASIAN OUD Emblem" class="navbar-logo-emblem"/><span class="brand-asian">ASIAN</span> <span class="brand-oud">OUD</span>`
 
   app.innerHTML = `
   <!-- Hero -->
