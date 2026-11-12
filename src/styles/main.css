@@ -720,161 +720,180 @@ textarea{width:100%;padding:12px;margin:6px 0;background:#0d0d0d;border:1px soli
 .tab-flag{font-size:20px}
 
 /* Oud Editor */
-.oud-info-box{background:#1a1a1a;border:1px solid var(--gold);border-radius:12px;padding:16px;margin-bottom:24px;color:#999;font-size:14px}
+.oud-info-box{background:rgba(212,175,55,0.07);border:1px solid rgba(212,175,55,0.3);border-radius:10px;padding:11px 16px;margin-bottom:20px;color:#888;font-size:12.5px;line-height:1.5}
 .oud-info-box strong{color:var(--gold)}
 
-.oud-editor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
-.oud-editor-card{background:linear-gradient(135deg,#1a1a1a,#151515);border:1px solid #2a2a2a;border-radius:16px;padding:24px;display:flex;gap:20px;transition:border-color .2s}
-.oud-editor-card:hover{border-color:#444}
+.oud-editor-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
 
-/* Product image preview — clickable to upload */
-.oud-preview{position:relative;flex-shrink:0;cursor:pointer}
-.oud-preview .prev{width:200px;aspect-ratio:1;object-fit:cover;border-radius:12px;border:2px solid #333;transition:all .25s;display:block}
-.oud-preview:hover .prev{border-color:var(--gold);filter:brightness(0.65)}
-.oud-slot-badge{position:absolute;top:8px;left:8px;background:var(--gold);color:#000;padding:4px 12px;border-radius:16px;font-size:11px;font-weight:700;z-index:2}
-
-/* Hover overlay "Ganti Foto" on image */
-.oud-img-overlay{
-  position:absolute;
-  inset:0;
-  border-radius:12px;
-  background:rgba(0,0,0,0.5);
+/* Card wrapper */
+.oud-editor-card{
+  background:#111;
+  border:1px solid #222;
+  border-radius:14px;
+  padding:20px;
   display:flex;
   flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  opacity:0;
-  transition:opacity .2s;
-  pointer-events:none;
-  z-index:3;
+  gap:16px;
+  transition:border-color .2s, box-shadow .2s;
 }
-.oud-preview:hover .oud-img-overlay{opacity:1}
-.oud-img-overlay-icon{font-size:28px}
-.oud-img-overlay-text{font-size:12px;font-weight:700;color:#fff;letter-spacing:0.5px;text-transform:uppercase}
+.oud-editor-card:hover{border-color:rgba(212,175,55,0.35);box-shadow:0 4px 20px rgba(0,0,0,0.5)}
 
-/* Hidden native file input (triggered by click on image/button) */
-.file-input-hidden{
-  position:absolute;
-  width:1px;height:1px;
-  opacity:0;overflow:hidden;
-  pointer-events:none;
-}
-/* Fallback visible file input (old style, kept if .file-input class is used without -hidden) */
-.file-input{padding:10px!important;font-size:14px!important}
-
-/* Image status indicator after picking a new photo */
-.oud-img-status{margin-bottom:4px}
-.img-status-badge{
-  display:inline-block;
-  background:rgba(46,204,113,0.15);
-  border:1px solid #2ecc71;
-  color:#2ecc71;
-  font-size:12px;
-  font-weight:700;
-  padding:5px 12px;
-  border-radius:8px;
-}
-
-/* "Ganti Foto" button */
-.btn-pick-img{
-  flex-shrink:0;
-  background:#1e1e1e !important;
-  border:2px solid #d4af37 !important;
-  color:#d4af37 !important;
-  font-weight:700;
-  padding:0 14px !important;
-  white-space:nowrap;
-  cursor:pointer;
-  border-radius:10px !important;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  height:44px;
-}
-.btn-pick-img:hover{background:#d4af37 !important;color:#000 !important}
-
-/* Direct Web Preview button */
-.btn-preview-web{
-  background:transparent !important;
-  border:1.5px solid rgba(212,175,55,0.4) !important;
-  color:var(--gold) !important;
-  padding:0 14px !important;
-  font-size:12.5px !important;
-  font-weight:700 !important;
-  text-decoration:none !important;
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  border-radius:10px !important;
-  transition:all .2s !important;
-  white-space:nowrap;
-  height:44px;
-}
-.btn-preview-web:hover{
-  background:rgba(212,175,55,0.15) !important;
-  border-color:var(--gold) !important;
-  transform:translateY(-1px);
-}
-
-/* Image URL input */
-.img-url-input{
-  padding:10px 14px !important;
-  font-size:13px !important;
-  background:#0f0f0f !important;
-  border:1.5px solid #2e2e2e !important;
-  border-radius:8px !important;
-  color:#eee !important;
-  width:100% !important;
-  box-sizing:border-box !important;
-  transition:border-color .2s;
-}
-.img-url-input:focus{
-  outline:none !important;
-  border-color:var(--gold) !important;
-}
-
-/* 4-slot gallery grid in admin */
+/* ── 4-slot gallery grid ──────────────── */
 .oud-gallery-slots{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  margin-bottom:14px;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
 }
 .oud-gallery-slot{
   display:flex;
   flex-direction:column;
-  gap:4px;
+  gap:5px;
 }
 .oud-gallery-slot.slot-main{
   grid-column:1/-1;
 }
 .oud-slot-label{
-  font-size:11px;
-  font-weight:600;
-  color:#aaa;
+  font-size:10px;
+  font-weight:700;
+  color:#666;
   text-transform:uppercase;
-  letter-spacing:.5px;
-  margin-bottom:2px;
+  letter-spacing:.6px;
 }
-.oud-gallery-slot .oud-preview{
-  aspect-ratio:4/3;
-  min-height:90px;
+
+/* Preview image box */
+.oud-preview{
+  position:relative;
+  cursor:pointer;
+  border-radius:10px;
+  overflow:hidden;
+  background:#0d0d0d;
+  border:1.5px solid #252525;
+  transition:border-color .2s;
 }
-.oud-gallery-slot.slot-main .oud-preview{
-  aspect-ratio:16/7;
-  min-height:140px;
+.oud-preview:hover{border-color:var(--gold)}
+.oud-preview .prev,
+.oud-preview img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition:filter .2s;
 }
+.oud-preview:hover img{filter:brightness(0.6)}
+
+/* Slot main: wider/taller */
+.oud-gallery-slot.slot-main .oud-preview{height:160px}
+/* Side slots: square-ish */
+.oud-gallery-slot:not(.slot-main) .oud-preview{height:100px}
+
+/* Hover overlay */
+.oud-img-overlay{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
+  opacity:0;
+  transition:opacity .2s;
+  pointer-events:none;
+  background:rgba(0,0,0,0.45);
+  z-index:3;
+}
+.oud-preview:hover .oud-img-overlay{opacity:1}
+.oud-img-overlay-icon{font-size:22px}
+.oud-img-overlay-text{font-size:11px;font-weight:700;color:#fff;letter-spacing:.4px;text-transform:uppercase}
+
+/* Slot badge (Product #N) */
+.oud-slot-badge{
+  position:absolute;top:7px;left:7px;
+  background:var(--gold);color:#000;
+  padding:3px 9px;border-radius:12px;
+  font-size:10px;font-weight:800;z-index:4;
+}
+
+/* Hidden file input */
+.file-input-hidden{
+  position:absolute;width:1px;height:1px;
+  opacity:0;overflow:hidden;pointer-events:none;
+}
+.file-input{padding:10px!important;font-size:14px!important}
+
+/* Status badge after selecting photo */
+.oud-img-status{margin:0}
+.img-status-badge{
+  display:inline-block;
+  background:rgba(46,204,113,0.12);
+  border:1px solid #2ecc71;
+  color:#2ecc71;
+  font-size:11px;font-weight:700;
+  padding:3px 10px;border-radius:6px;
+}
+
+/* URL input (small, inside each slot) */
+.img-url-input{
+  padding:6px 10px !important;
+  font-size:11px !important;
+  background:#0a0a0a !important;
+  border:1px solid #2a2a2a !important;
+  border-radius:6px !important;
+  color:#bbb !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  transition:border-color .2s;
+}
+.img-url-input::placeholder{color:#444 !important}
+.img-url-input:focus{outline:none !important;border-color:var(--gold) !important}
+
+/* ── Fields section ─────────────────── */
+.oud-fields{display:flex;flex-direction:column;gap:12px}
+.oud-fields .form-group{margin:0}
+.oud-fields label{font-size:11.5px !important;color:#888 !important;font-weight:600;margin-bottom:4px;display:block}
+.oud-fields input,.oud-fields textarea{
+  padding:9px 12px !important;
+  font-size:13px !important;
+  border-radius:8px !important;
+}
+
+/* ── Action buttons row ─────────────── */
+.oud-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn-save{flex:1;min-width:140px;font-size:13px !important;height:40px !important;padding:0 16px !important}
+.btn-reset{background:transparent!important;border:1px solid #c0392b!important;color:#c0392b!important;padding:0 12px !important;height:40px !important;font-size:12px !important}
+.btn-reset:hover{background:#c0392b!important;color:#fff!important}
+
+/* "Lihat di Web" button */
+.btn-preview-web{
+  background:transparent !important;
+  border:1.5px solid rgba(212,175,55,0.35) !important;
+  color:var(--gold) !important;
+  padding:0 14px !important;
+  font-size:12px !important;
+  font-weight:700 !important;
+  text-decoration:none !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border-radius:8px !important;
+  transition:all .2s !important;
+  white-space:nowrap;
+  height:40px;
+}
+.btn-preview-web:hover{
+  background:rgba(212,175,55,0.12) !important;
+  border-color:var(--gold) !important;
+}
+
+/* Legacy btn-pick-img (kept for compatibility) */
+.btn-pick-img{flex-shrink:0;background:#1a1a1a !important;border:1.5px solid var(--gold) !important;color:var(--gold) !important;font-weight:700;padding:0 14px !important;white-space:nowrap;cursor:pointer;border-radius:8px !important;display:inline-flex;align-items:center;justify-content:center;height:40px}
+.btn-pick-img:hover{background:var(--gold) !important;color:#000 !important}
+
 @media(max-width:600px){
   .oud-gallery-slots{grid-template-columns:1fr}
   .oud-gallery-slot.slot-main{grid-column:auto}
+  .oud-gallery-slot.slot-main .oud-preview{height:130px}
+  .oud-gallery-slot:not(.slot-main) .oud-preview{height:90px}
 }
-
-.oud-fields{flex:1;display:flex;flex-direction:column;gap:16px}
-.oud-actions{display:flex;gap:10px;margin-top:auto;flex-wrap:wrap}
-.btn-save{flex:1;min-width:120px}
-.btn-reset{background:transparent!important;border:1px solid #e74c3c!important;color:#e74c3c!important;padding:0 12px !important}
-.btn-reset:hover{background:#e74c3c!important;color:#fff!important}
 
 /* Settings */
 .settings-grid{display:grid;grid-template-columns:2fr 1fr;gap:24px}

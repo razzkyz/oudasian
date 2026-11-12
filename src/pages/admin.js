@@ -714,21 +714,27 @@ const tabOuds = el => {
     ${ouds.map((o, idx) => {
       const slot = o.slot || o.id || (idx + 1)
       const imgSlots = [
-        { key: 'img',  label: 'Foto Utama (Foto 1)', val: o.img,  fileField: 'file',  urlField: 'img_url',  statusId: `img-status-${slot}`,  previewClass: 'prev oud-img-clickable' },
-        { key: 'img2', label: 'Foto Galeri 2',       val: o.img2, fileField: 'file2', urlField: 'img_url2', statusId: `img2-status-${slot}`, previewClass: 'prev2' },
-        { key: 'img3', label: 'Foto Galeri 3',       val: o.img3, fileField: 'file3', urlField: 'img_url3', statusId: `img3-status-${slot}`, previewClass: 'prev3' },
-        { key: 'img4', label: 'Foto Galeri 4',       val: o.img4, fileField: 'file4', urlField: 'img_url4', statusId: `img4-status-${slot}`, previewClass: 'prev4' },
+        { key: 'img',  label: '📷 Foto Utama', val: o.img,  fileField: 'file',  urlField: 'img_url',  statusId: `img-status-${slot}`,  previewClass: 'prev oud-img-clickable' },
+        { key: 'img2', label: 'Galeri 2',      val: o.img2, fileField: 'file2', urlField: 'img_url2', statusId: `img2-status-${slot}`, previewClass: 'prev2' },
+        { key: 'img3', label: 'Galeri 3',      val: o.img3, fileField: 'file3', urlField: 'img_url3', statusId: `img3-status-${slot}`, previewClass: 'prev3' },
+        { key: 'img4', label: 'Galeri 4',      val: o.img4, fileField: 'file4', urlField: 'img_url4', statusId: `img4-status-${slot}`, previewClass: 'prev4' },
       ]
       const PLACEHOLDER = "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80"
       return `
       <form class="oud-editor-card" data-slot="${slot}">
+
+        <!-- Card header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+          <span style="font-size:12px;font-weight:800;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Produk #${slot}</span>
+          <a href="#/oud/${encodeURIComponent(acountry)}/${slot}" target="_blank" class="btn btn-preview-web" style="height:32px;font-size:11px;padding:0 10px">Lihat di Web ↗</a>
+        </div>
 
         <!-- FOTO GALERI: 4 slot -->
         <div class="oud-gallery-slots">
           ${imgSlots.map((s, si) => `
           <div class="oud-gallery-slot${si === 0 ? ' slot-main' : ''}">
             <div class="oud-slot-label">${s.label}</div>
-            <div class="oud-preview" title="Klik gambar untuk ganti foto">
+            <div class="oud-preview" title="Klik untuk ganti foto">
               <img src="${s.val || PLACEHOLDER}" alt="${esc(o.sub || o.name)}" class="${s.previewClass}" onerror="this.src='${PLACEHOLDER}'"/>
               <div class="oud-img-overlay">
                 <span class="oud-img-overlay-icon">📷</span>
@@ -737,11 +743,9 @@ const tabOuds = el => {
               <input type="file" name="${s.fileField}" accept="image/jpeg,image/png,image/webp,image/jpg" class="file-input file-input-hidden" data-preview="${s.previewClass}" data-status="${s.statusId}"/>
             </div>
             <div class="oud-img-status" id="${s.statusId}" style="display:none;">
-              <span class="img-status-badge new">✓ Foto dipilih</span>
+              <span class="img-status-badge">✓ Dipilih</span>
             </div>
-            <div style="margin-top:4px;">
-              <input type="url" name="${s.urlField}" class="img-url-input" placeholder="atau tempel URL foto..." value="${s.val && !s.val.startsWith('data:') ? esc(s.val) : ''}" data-preview="${s.previewClass}" data-status="${s.statusId}" style="font-size:11px;padding:4px 6px;"/>
-            </div>
+            <input type="url" name="${s.urlField}" class="img-url-input" placeholder="Tempel URL foto..." value="${s.val && !s.val.startsWith('data:') ? esc(s.val) : ''}" data-preview="${s.previewClass}" data-status="${s.statusId}"/>
           </div>
           `).join('')}
         </div>
@@ -756,18 +760,15 @@ const tabOuds = el => {
             <input type="text" name="name" value="${esc(o.name || '')}" placeholder="Contoh: Kalimantan Super Sinking" required/>
           </div>
           <div class="form-group">
-            <label>Deskripsi &amp; Spesifikasi Produk</label>
-            <textarea name="descr" rows="2" placeholder="Tuliskan spesifikasi, aroma, resin, dan keunggulan produk...">${esc(o.desc || '')}</textarea>
+            <label>Deskripsi &amp; Spesifikasi</label>
+            <textarea name="descr" rows="2" placeholder="Aroma, resin, keunggulan produk...">${esc(o.desc || '')}</textarea>
           </div>
 
           <div class="oud-actions">
             <button class="btn btn-save" type="submit">
               <span>💾 Simpan Semua Foto</span>
             </button>
-            <a href="#/oud/${encodeURIComponent(acountry)}/${slot}" target="_blank" class="btn btn-preview-web" title="Buka produk ini di website">
-              <span>Lihat di Web ↗</span>
-            </a>
-            ${o.custom ? `<button type="button" class="btn btn-reset reset" title="Kembalikan foto dan deskripsi ke bawaan"><span>↺ Reset</span></button>` : ''}
+            ${o.custom ? `<button type="button" class="btn btn-reset reset"><span>↺ Reset</span></button>` : ''}
           </div>
         </div>
       </form>
