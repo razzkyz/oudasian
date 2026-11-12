@@ -12,11 +12,16 @@ export const detail = (c, id) => {
 
   const meta = getCountryMeta(c)
 
-  const galleryImages = [
-    o.img,
+  const FALLBACK = [
     'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
     'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=900&q=80',
     'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=900&q=80'
+  ]
+  const galleryImages = [
+    o.img,
+    o.img2 || FALLBACK[0],
+    o.img3 || FALLBACK[1],
+    o.img4 || FALLBACK[2]
   ]
 
   let currentImage = 0

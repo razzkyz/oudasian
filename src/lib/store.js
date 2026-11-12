@@ -94,6 +94,9 @@ export const getOuds = country => {
       sub: item.sub || `${country} Agarwood`,
       desc: item.descr || '',
       img: item.img || 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80',
+      img2: item.img2 || null,
+      img3: item.img3 || null,
+      img4: item.img4 || null,
       badge: item.slot <= 2 ? 'Super Sinking' : 'Premium Grade',
       custom: true
     }))

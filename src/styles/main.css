@@ -834,6 +834,42 @@ textarea{width:100%;padding:12px;margin:6px 0;background:#0d0d0d;border:1px soli
   border-color:var(--gold) !important;
 }
 
+/* 4-slot gallery grid in admin */
+.oud-gallery-slots{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-bottom:14px;
+}
+.oud-gallery-slot{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+.oud-gallery-slot.slot-main{
+  grid-column:1/-1;
+}
+.oud-slot-label{
+  font-size:11px;
+  font-weight:600;
+  color:#aaa;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  margin-bottom:2px;
+}
+.oud-gallery-slot .oud-preview{
+  aspect-ratio:4/3;
+  min-height:90px;
+}
+.oud-gallery-slot.slot-main .oud-preview{
+  aspect-ratio:16/7;
+  min-height:140px;
+}
+@media(max-width:600px){
+  .oud-gallery-slots{grid-template-columns:1fr}
+  .oud-gallery-slot.slot-main{grid-column:auto}
+}
+
 .oud-fields{flex:1;display:flex;flex-direction:column;gap:16px}
 .oud-actions{display:flex;gap:10px;margin-top:auto;flex-wrap:wrap}
 .btn-save{flex:1;min-width:120px}
