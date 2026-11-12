@@ -1,7 +1,9 @@
 import { supabase } from './supabase.js'
 import { getOuds as defaults, COUNTRIES as DEFAULT_COUNTRIES } from '../data/oud.js'
 
-const CACHE_KEY = 'asian_oud_store_v4'
+const CACHE_KEY = 'asian_oud_store_v5'
+// v5: added img2/img3/img4 gallery columns — clears old v4 cache automatically
+try { localStorage.removeItem('asian_oud_store_v4') } catch(e) {}
 
 export const COUNTRY_META_DEFAULTS = {
   Indonesia: {
