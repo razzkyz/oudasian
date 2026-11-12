@@ -12,17 +12,11 @@ export const detail = (c, id) => {
 
   const meta = getCountryMeta(c)
 
-  const FALLBACK = [
-    'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
-    'https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=900&q=80',
-    'https://images.unsplash.com/photo-1528181304800-259b08848526?auto=format&fit=crop&w=900&q=80'
-  ]
-  const galleryImages = [
-    o.img,
-    o.img2 || FALLBACK[0],
-    o.img3 || FALLBACK[1],
-    o.img4 || FALLBACK[2]
-  ]
+  // Only use actual photos belonging to this product — no random stock photos!
+  const galleryImages = [o.img, o.img2, o.img3, o.img4].filter(Boolean)
+  if (galleryImages.length === 0) {
+    galleryImages.push('https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80')
+  }
 
   let currentImage = 0
 
@@ -39,11 +33,13 @@ export const detail = (c, id) => {
     <div class="detail-gallery">
       <div class="gallery-main">
         <img id="mainImage" src="${galleryImages[0]}" alt="${esc(o.sub || o.name)}" onerror="this.src='${o.img}'"/>
-        <button class="gallery-prev" id="prevBtn" type="button" aria-label="Previous Photo">‹</button>
-        <button class="gallery-next" id="nextBtn" type="button" aria-label="Next Photo">›</button>
+        ${galleryImages.length > 1 ? `
+          <button class="gallery-prev" id="prevBtn" type="button" aria-label="Previous Photo">‹</button>
+          <button class="gallery-next" id="nextBtn" type="button" aria-label="Next Photo">›</button>
+        ` : ''}
         <div class="gallery-zoom-badge">Click to enlarge</div>
       </div>
-      <div class="gallery-thumbs">
+      <div class="gallery-thumbs" style="${galleryImages.length <= 1 ? 'display:none;' : ''}">
         ${galleryImages.map((img, i) => `
           <button class="gallery-thumb ${i === 0 ? 'active' : ''}" data-index="${i}" type="button">
             <img src="${img}" alt="Preview ${i + 1}" onerror="this.src='${o.img}'"/>

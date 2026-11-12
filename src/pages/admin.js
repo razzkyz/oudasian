@@ -707,47 +707,59 @@ const tabOuds = el => {
   </div>
 
   <div class="oud-info-box">
-    📸 <strong>Manajemen Produk Agarwood (${acountry})</strong>: Klik tombol <strong>📷 Ganti Foto</strong> atau klik langsung pada gambar preview untuk mengunggah foto baru. Anda juga dapat menempelkan URL gambar online. Perubahan langsung aktif di website setelah disimpan.
+    📸 <strong>Manajemen Produk Agarwood (${acountry})</strong>: Klik kotak foto atau tombol <strong>📁 Pilih File Foto</strong> untuk mengunggah foto langsung dari HP atau komputer Anda. Tersedia hingga 4 foto per produk (1 Foto Utama + 3 Foto Galeri). Perubahan langsung aktif di website setelah disimpan.
   </div>
 
   <div class="oud-editor-grid">
     ${ouds.map((o, idx) => {
       const slot = o.slot || o.id || (idx + 1)
       const imgSlots = [
-        { key: 'img',  label: '📷 Foto Utama', val: o.img,  fileField: 'file',  urlField: 'img_url',  statusId: `img-status-${slot}`,  previewClass: 'prev oud-img-clickable' },
-        { key: 'img2', label: 'Galeri 2',      val: o.img2, fileField: 'file2', urlField: 'img_url2', statusId: `img2-status-${slot}`, previewClass: 'prev2' },
-        { key: 'img3', label: 'Galeri 3',      val: o.img3, fileField: 'file3', urlField: 'img_url3', statusId: `img3-status-${slot}`, previewClass: 'prev3' },
-        { key: 'img4', label: 'Galeri 4',      val: o.img4, fileField: 'file4', urlField: 'img_url4', statusId: `img4-status-${slot}`, previewClass: 'prev4' },
+        { key: 'img',  label: '⭐ Foto Utama (Cover)', val: o.img,  fileField: 'file',  statusId: `img-status-${slot}` },
+        { key: 'img2', label: '📷 Foto Galeri 2',       val: o.img2, fileField: 'file2', statusId: `img2-status-${slot}` },
+        { key: 'img3', label: '📷 Foto Galeri 3',       val: o.img3, fileField: 'file3', statusId: `img3-status-${slot}` },
+        { key: 'img4', label: '📷 Foto Galeri 4',       val: o.img4, fileField: 'file4', statusId: `img4-status-${slot}` },
       ]
-      const PLACEHOLDER = "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80"
       return `
       <form class="oud-editor-card" data-slot="${slot}">
 
         <!-- Card header -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
-          <span style="font-size:12px;font-weight:800;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Produk #${slot}</span>
-          <a href="#/oud/${encodeURIComponent(acountry)}/${slot}" target="_blank" class="btn btn-preview-web" style="height:32px;font-size:11px;padding:0 10px">Lihat di Web ↗</a>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:13px;font-weight:800;color:var(--gold);letter-spacing:.5px;text-transform:uppercase">Produk #${slot}</span>
+          <a href="#/oud/${encodeURIComponent(acountry)}/${slot}" target="_blank" class="btn btn-preview-web" style="height:32px;font-size:11px;padding:0 12px">Lihat di Web ↗</a>
         </div>
 
-        <!-- FOTO GALERI: 4 slot -->
+        <!-- 4 FOTO UPLOAD SLOTS (Pure File Upload) -->
         <div class="oud-gallery-slots">
-          ${imgSlots.map((s, si) => `
-          <div class="oud-gallery-slot${si === 0 ? ' slot-main' : ''}">
-            <div class="oud-slot-label">${s.label}</div>
-            <div class="oud-preview" title="Klik untuk ganti foto">
-              <img src="${s.val || PLACEHOLDER}" alt="${esc(o.sub || o.name)}" class="${s.previewClass}" onerror="this.src='${PLACEHOLDER}'"/>
-              <div class="oud-img-overlay">
-                <span class="oud-img-overlay-icon">📷</span>
-                <span class="oud-img-overlay-text">Ganti</span>
+          ${imgSlots.map((s, si) => {
+            const hasPhoto = Boolean(s.val)
+            return `
+            <div class="oud-gallery-slot ${si === 0 ? 'slot-main' : ''}" data-slotkey="${s.key}">
+              <div class="oud-slot-header">
+                <span class="oud-slot-title">${s.label}</span>
+                ${s.val && si > 0 ? `<button type="button" class="btn-clear-slot" data-clear="${s.key}" title="Hapus foto ${s.label}">✕ Hapus</button>` : ''}
               </div>
-              <input type="file" name="${s.fileField}" accept="image/jpeg,image/png,image/webp,image/jpg" class="file-input file-input-hidden" data-preview="${s.previewClass}" data-status="${s.statusId}"/>
+
+              <!-- Preview Box (Klik untuk pilih file) -->
+              <label class="oud-preview-box" title="Klik untuk pilih file foto dari HP/komputer">
+                <img src="${s.val || ''}" alt="${s.label}" class="slot-preview-img" style="${hasPhoto ? '' : 'display:none;'}" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"/>
+                <div class="oud-preview-empty" style="${hasPhoto ? 'display:none;' : 'display:flex;'}">
+                  <span class="oud-preview-empty-icon">📁</span>
+                  <span>Klik untuk Upload File</span>
+                </div>
+                <input type="file" name="${s.fileField}" accept="image/jpeg,image/png,image/webp,image/jpg" class="file-input-hidden"/>
+              </label>
+
+              <!-- Status Badge -->
+              <div class="oud-img-status" id="${s.statusId}" style="display:none;"></div>
+
+              <!-- Tombol Pilih File -->
+              <label class="btn-upload-label ${hasPhoto ? 'has-photo' : ''}">
+                <input type="file" name="${s.fileField}_btn" accept="image/jpeg,image/png,image/webp,image/jpg" class="file-input-hidden"/>
+                <span>📁 ${hasPhoto ? 'Ganti File Foto' : 'Pilih File Foto'}</span>
+              </label>
             </div>
-            <div class="oud-img-status" id="${s.statusId}" style="display:none;">
-              <span class="img-status-badge">✓ Dipilih</span>
-            </div>
-            <input type="url" name="${s.urlField}" class="img-url-input" placeholder="Tempel URL foto..." value="${s.val && !s.val.startsWith('data:') ? esc(s.val) : ''}" data-preview="${s.previewClass}" data-status="${s.statusId}"/>
-          </div>
-          `).join('')}
+            `
+          }).join('')}
         </div>
 
         <div class="oud-fields">
@@ -768,7 +780,7 @@ const tabOuds = el => {
             <button class="btn btn-save" type="submit">
               <span>💾 Simpan Semua Foto</span>
             </button>
-            ${o.custom ? `<button type="button" class="btn btn-reset reset"><span>↺ Reset</span></button>` : ''}
+            ${o.custom ? `<button type="button" class="btn btn-reset reset"><span>↺ Reset Produk</span></button>` : ''}
           </div>
         </div>
       </form>
@@ -779,81 +791,98 @@ const tabOuds = el => {
 
   el.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { acountry = b.dataset.c; tabOuds(el) })
   el.querySelectorAll('.oud-editor-card').forEach((f) => {
-    // Track per-slot image changes: null = keep existing, string = new value
+    // null = keep existing, string = new base64 image (or '' to delete)
     const imgState = { img: null, img2: null, img3: null, img4: null }
     const slot = +f.dataset.slot
+    const currentOud = ouds.find(x => (x.slot || x.id) === slot) || {}
 
-    // Helper: bind a gallery slot's file input + url input + clickable image
-    const bindSlot = (fileFieldName, urlFieldName, previewClass, stateKey) => {
-      const fileInput = f.querySelector(`input[name="${fileFieldName}"]`)
-      const urlInput  = f.querySelector(`input[name="${urlFieldName}"]`)
-      const prevImg   = f.querySelector(`img.${previewClass.split(' ')[0]}`)
-      const statusBox = fileInput ? document.getElementById(fileInput.dataset.status) : null
+    // Setup each slot's file input & clear button
+    const slotKeys = [
+      { key: 'img',  field: 'file' },
+      { key: 'img2', field: 'file2' },
+      { key: 'img3', field: 'file3' },
+      { key: 'img4', field: 'file4' }
+    ]
 
-      // Click on preview image → open file picker
-      if (prevImg) {
-        prevImg.onclick = () => fileInput && fileInput.click()
-      }
+    slotKeys.forEach(({ key }) => {
+      const slotEl = f.querySelector(`.oud-gallery-slot[data-slotkey="${key}"]`)
+      if (!slotEl) return
 
-      // URL input live preview
-      if (urlInput) {
-        urlInput.oninput = () => {
-          const u = urlInput.value.trim()
-          if (u && (u.startsWith('http://') || u.startsWith('https://'))) {
-            imgState[stateKey] = u
-            if (prevImg) prevImg.src = u
-            if (statusBox) {
-              statusBox.innerHTML = `<span class="img-status-badge new">✓ URL dimasukkan</span>`
-              statusBox.style.display = 'block'
-            }
+      const prevImg   = slotEl.querySelector('.slot-preview-img')
+      const emptyBox  = slotEl.querySelector('.oud-preview-empty')
+      const statusBox = slotEl.querySelector('.oud-img-status')
+      const fileInputs = slotEl.querySelectorAll('input[type="file"]')
+      const labelSpan = slotEl.querySelector('.btn-upload-label span')
+      const btnClear  = slotEl.querySelector('.btn-clear-slot')
+
+      const onFileChange = async (file) => {
+        if (!file) return
+        try {
+          toast('Memproses foto...')
+          const b64 = await resize(file)
+          imgState[key] = b64
+          if (prevImg) {
+            prevImg.src = b64
+            prevImg.style.display = 'block'
           }
+          if (emptyBox) emptyBox.style.display = 'none'
+          if (statusBox) {
+            const kb = Math.round(b64.length / 1024)
+            statusBox.innerHTML = `<span class="img-status-badge">✓ Foto baru terpilih (${kb} KB)</span>`
+            statusBox.style.display = 'block'
+          }
+          if (labelSpan) labelSpan.textContent = '✓ Foto Baru Dipilih'
+          toast('📷 Foto berhasil dimuat! Klik Simpan Semua Foto.')
+        } catch (err) {
+          console.error('Error resize:', err)
+          toast(err.message || 'Gagal memproses file foto', true)
         }
       }
 
-      // File upload → resize → preview
-      if (fileInput) {
-        fileInput.onchange = async () => {
-          if (fileInput.files[0]) {
-            try {
-              toast('Memproses foto...')
-              const b64 = await resize(fileInput.files[0])
-              imgState[stateKey] = b64
-              if (prevImg) prevImg.src = b64
-              if (statusBox) {
-                const kb = Math.round(b64.length / 1024)
-                statusBox.innerHTML = `<span class="img-status-badge new">✓ Foto dipilih (${kb} KB) — klik Simpan</span>`
-                statusBox.style.display = 'block'
-              }
-              toast('📷 Foto berhasil dimuat! Klik Simpan Semua Foto.')
-            } catch (err) {
-              console.error('Error resize:', err)
-              toast(err.message || 'Gagal memproses file foto', true)
-            }
+      fileInputs.forEach(input => {
+        input.onchange = () => {
+          if (input.files && input.files[0]) {
+            onFileChange(input.files[0])
           }
         }
-      }
-    }
+      })
 
-    bindSlot('file',  'img_url',  'prev oud-img-clickable', 'img')
-    bindSlot('file2', 'img_url2', 'prev2',                  'img2')
-    bindSlot('file3', 'img_url3', 'prev3',                  'img3')
-    bindSlot('file4', 'img_url4', 'prev4',                  'img4')
+      if (btnClear) {
+        btnClear.onclick = (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          imgState[key] = ''
+          if (prevImg) {
+            prevImg.src = ''
+            prevImg.style.display = 'none'
+          }
+          if (emptyBox) emptyBox.style.display = 'flex'
+          if (statusBox) {
+            statusBox.innerHTML = `<span class="img-status-badge" style="background:rgba(231,76,60,0.15);border-color:#e74c3c;color:#e74c3c;">✕ Foto dihapus (klik Simpan)</span>`
+            statusBox.style.display = 'block'
+          }
+          if (labelSpan) labelSpan.textContent = '📁 Pilih File Foto'
+        }
+      }
+    })
 
     const save = async () => {
       const btn = f.querySelector('.btn-save')
-      btn.disabled = true; btn.innerHTML = `<span>⏳ Menyimpan ke Database...</span>`
+      btn.disabled = true
+      btn.innerHTML = `<span>⏳ Menyimpan ke Database...</span>`
 
-      // Resolve final image values (state override → url input → null = keep existing)
-      const resolveImg = (stateKey, urlFieldName) => {
-        if (imgState[stateKey] !== null) return imgState[stateKey]
-        const u = f.querySelector(`input[name="${urlFieldName}"]`)?.value.trim()
-        return u && u.startsWith('http') ? u : null
+      // Determine final image values
+      // If imgState[k] !== null, use it (either new b64 or '' for delete)
+      // If null, preserve current photo
+      const resolveFinal = (k) => {
+        if (imgState[k] !== null) return imgState[k]
+        return currentOud[k] || null
       }
 
-      const finalImg  = resolveImg('img',  'img_url')
-      const finalImg2 = resolveImg('img2', 'img_url2')
-      const finalImg3 = resolveImg('img3', 'img_url3')
-      const finalImg4 = resolveImg('img4', 'img_url4')
+      const finalImg  = resolveFinal('img')
+      const finalImg2 = resolveFinal('img2')
+      const finalImg3 = resolveFinal('img3')
+      const finalImg4 = resolveFinal('img4')
 
       const rpcParams = {
         p_pin:     pin,
@@ -868,8 +897,9 @@ const tabOuds = el => {
         p_img4:    finalImg4 !== null ? finalImg4 : null,
       }
 
-      const { error } = await supabase.rpc('admin_save_oud', rpcParams)
+      let { error } = await supabase.rpc('admin_save_oud', rpcParams)
       if (error) {
+        console.error('admin_save_oud error:', error)
         btn.disabled = false
         btn.innerHTML = `<span>💾 Simpan Semua Foto</span>`
         return toast('Gagal menyimpan: ' + (error.message || 'Koneksi bermasalah'), true)
@@ -877,16 +907,17 @@ const tabOuds = el => {
 
       // Optimistic instant in-memory update
       const targetIdx = (DB.ouds || []).findIndex(x => x.country === acountry && x.slot === slot)
-      const currentOud = ouds.find(x => (x.slot || x.id) === slot)
       const updatedRecord = {
-        country: acountry, slot,
+        country: acountry,
+        slot,
         name:  rpcParams.p_name,
         sub:   rpcParams.p_sub,
         descr: rpcParams.p_descr,
-        img:  finalImg  || (targetIdx !== -1 ? DB.ouds[targetIdx].img  : (currentOud?.img  || null)),
-        img2: finalImg2 || (targetIdx !== -1 ? DB.ouds[targetIdx].img2 : (currentOud?.img2 || null)),
-        img3: finalImg3 || (targetIdx !== -1 ? DB.ouds[targetIdx].img3 : (currentOud?.img3 || null)),
-        img4: finalImg4 || (targetIdx !== -1 ? DB.ouds[targetIdx].img4 : (currentOud?.img4 || null)),
+        img:  finalImg,
+        img2: finalImg2,
+        img3: finalImg3,
+        img4: finalImg4,
+        custom: true
       }
       if (targetIdx !== -1) {
         DB.ouds[targetIdx] = { ...DB.ouds[targetIdx], ...updatedRecord }

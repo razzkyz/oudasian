@@ -195,13 +195,26 @@ begin
   where id = p_id;
 end $$;
 
-create or replace function admin_save_oud(p_pin text, p_country text, p_slot int, p_name text, p_sub text, p_descr text, p_img text)
+create or replace function admin_save_oud(
+  p_pin text, p_country text, p_slot int,
+  p_name text, p_sub text, p_descr text,
+  p_img text,
+  p_img2 text default null,
+  p_img3 text default null,
+  p_img4 text default null
+)
 returns void language plpgsql security definer set search_path = public, extensions as $$
 begin
   perform _admin_ok(p_pin);
-  insert into ouds(country,slot,name,sub,descr,img) values(p_country,p_slot,p_name,p_sub,p_descr,nullif(p_img,''))
-  on conflict(country,slot) do update set name=excluded.name, sub=excluded.sub, descr=excluded.descr,
-    img = case when p_img is null then ouds.img when p_img='' then null else p_img end;
+  insert into ouds(country,slot,name,sub,descr,img,img2,img3,img4)
+    values(p_country,p_slot,p_name,p_sub,p_descr,
+           nullif(p_img,''), nullif(p_img2,''), nullif(p_img3,''), nullif(p_img4,''))
+  on conflict(country,slot) do update set
+    name=excluded.name, sub=excluded.sub, descr=excluded.descr,
+    img  = case when p_img  is null then ouds.img  when p_img =''  then null else p_img  end,
+    img2 = case when p_img2 is null then ouds.img2 when p_img2='' then null else p_img2 end,
+    img3 = case when p_img3 is null then ouds.img3 when p_img3='' then null else p_img3 end,
+    img4 = case when p_img4 is null then ouds.img4 when p_img4='' then null else p_img4 end;
 end $$;
 
 create or replace function admin_save_site(p_pin text, p_key text, p_value text) returns void
@@ -226,7 +239,7 @@ end $$;
 revoke all on function _ip(), _admin_ok(text), orders_guard(), notify_tg() from public, anon, authenticated;
 revoke all on function cek_pesanan(text), admin_login(text), admin_list(text), admin_status(text,bigint,text),
   admin_update_order(text,bigint,text,text,text,text,text,text),
-  admin_save_oud(text,text,int,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) from public;
+  admin_save_oud(text,text,int,text,text,text,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) from public;
 grant execute on function cek_pesanan(text), admin_login(text), admin_list(text), admin_status(text,bigint,text),
   admin_update_order(text,bigint,text,text,text,text,text,text),
-  admin_save_oud(text,text,int,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) to anon, authenticated;
+  admin_save_oud(text,text,int,text,text,text,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) to anon, authenticated;
