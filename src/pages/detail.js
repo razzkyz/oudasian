@@ -6,7 +6,8 @@ import { home } from './home.js'
 const app = document.getElementById('app')
 
 export const detail = (c, id) => {
-  const o = getOuds(c)[id - 1]
+  const ouds = getOuds(c)
+  const o = ouds.find(x => String(x.slot || x.id) === String(id)) || ouds[+id - 1] || ouds[0]
   if (!o) return home()
 
   const meta = getCountryMeta(c)

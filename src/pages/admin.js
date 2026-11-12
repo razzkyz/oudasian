@@ -707,26 +707,28 @@ const tabOuds = el => {
   </div>
 
   <div class="oud-info-box">
-    📸 Kelola produk Agarwood untuk negara <strong>${acountry}</strong>. Klik preview foto untuk ganti gambar, atau edit nama/deskripsi produk lalu simpan.
+    📸 <strong>Manajemen Produk Agarwood (${acountry})</strong>: Klik tombol <strong>📷 Ganti Foto</strong> atau klik langsung pada gambar preview untuk mengunggah foto baru. Anda juga dapat menempelkan URL gambar online. Perubahan langsung aktif di website setelah disimpan.
   </div>
 
   <div class="oud-editor-grid">
-    ${ouds.map((o, idx) => `
-      <form class="oud-editor-card" data-slot="${idx + 1}">
+    ${ouds.map((o, idx) => {
+      const slot = o.slot || o.id || (idx + 1)
+      return `
+      <form class="oud-editor-card" data-slot="${slot}">
         <!-- FOTO PREVIEW: Klik untuk ganti -->
         <div class="oud-preview" title="Klik gambar untuk ganti foto">
-          <img src="${o.img}" alt="${esc(o.sub || o.name)}" class="prev oud-img-clickable"/>
-          <span class="oud-slot-badge">Slot #${idx + 1}</span>
+          <img src="${o.img}" alt="${esc(o.sub || o.name)}" class="prev oud-img-clickable" onerror="this.src='https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80'"/>
+          <span class="oud-slot-badge">Produk #${slot}</span>
           <div class="oud-img-overlay">
             <span class="oud-img-overlay-icon">📷</span>
             <span class="oud-img-overlay-text">Ganti Foto</span>
           </div>
-          <input type="file" name="file" accept="image/*" class="file-input file-input-hidden"/>
+          <input type="file" name="file" accept="image/jpeg,image/png,image/webp,image/jpg" class="file-input file-input-hidden"/>
         </div>
 
         <div class="oud-fields">
-          <div class="oud-img-status" id="img-status-${idx + 1}" style="display:none;">
-            <span class="img-status-badge new">✓ Foto baru dipilih — klik Simpan untuk menyimpan</span>
+          <div class="oud-img-status" id="img-status-${slot}" style="display:none;">
+            <span class="img-status-badge new">✓ Foto baru dipilih — klik Simpan untuk mengaktifkan</span>
           </div>
 
           <div class="form-group">
@@ -739,31 +741,41 @@ const tabOuds = el => {
           </div>
           <div class="form-group">
             <label>Deskripsi &amp; Spesifikasi Produk</label>
-            <textarea name="descr" rows="3" placeholder="Tuliskan spesifikasi, aroma, resin, dan keunggulan produk...">${esc(o.desc || '')}</textarea>
+            <textarea name="descr" rows="2" placeholder="Tuliskan spesifikasi, aroma, resin, dan keunggulan produk...">${esc(o.desc || '')}</textarea>
+          </div>
+
+          <div class="form-group" style="margin-top:-4px;">
+            <label style="font-size:12px; color:#aaa;">Atau Masukkan URL Gambar Web (Opsional):</label>
+            <input type="url" name="img_url" class="img-url-input" placeholder="https://..." value="${o.img && !o.img.startsWith('data:') ? esc(o.img) : ''}" />
           </div>
 
           <div class="oud-actions">
-            <button class="btn btn-save">
+            <button class="btn btn-save" type="submit">
               <span>💾 Simpan Produk</span>
             </button>
-            <button type="button" class="btn btn-pick-img" title="Upload foto produk baru">
+            <button type="button" class="btn btn-pick-img" title="Pilih foto dari komputer atau HP">
               <span>📷 Ganti Foto</span>
             </button>
-            ${o.custom ? `<button type="button" class="btn btn-reset reset"><span>↺ Reset</span></button>` : ''}
+            <a href="#/oud/${encodeURIComponent(acountry)}/${slot}" target="_blank" class="btn btn-preview-web" title="Buka produk ini di website">
+              <span>Lihat di Web ↗</span>
+            </a>
+            ${o.custom ? `<button type="button" class="btn btn-reset reset" title="Kembalikan foto dan deskripsi ke bawaan"><span>↺ Reset</span></button>` : ''}
           </div>
         </div>
       </form>
-    `).join('')}
+      `
+    }).join('')}
   </div>
   `
 
   el.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { acountry = b.dataset.c; tabOuds(el) })
-  el.querySelectorAll('.oud-editor-card').forEach((f, idx) => {
-    let img = null  // null = keep existing photo, '' = reset to default, string = new base64 image
+  el.querySelectorAll('.oud-editor-card').forEach((f) => {
+    let img = null  // null = keep existing photo, string = new base64 image or url
     const slot = +f.dataset.slot
     const fileInput = f.querySelector('.file-input')
     const prevImg = f.querySelector('.prev')
     const statusBox = f.querySelector('.oud-img-status')
+    const urlInput = f.querySelector('input[name="img_url"]')
 
     // Click on image preview → open file picker
     const imgClickable = f.querySelector('.oud-img-clickable')
@@ -777,42 +789,96 @@ const tabOuds = el => {
       btnPick.onclick = () => fileInput && fileInput.click()
     }
 
-    const save = async im => {
-      const btn = f.querySelector('.btn-save')
-      btn.disabled = true; btn.innerHTML = `<span>⏳ Menyimpan...</span>`
-      // im = null means keep existing photo, so don't send p_img (SQL: CASE WHEN p_img IS NULL THEN ouds.img)
-      const rpcParams = {
-        p_pin: pin, p_country: acountry, p_slot: slot,
-        p_name: f.name.value, p_sub: f.sub.value, p_descr: f.descr.value
+    // Live URL input preview
+    if (urlInput) {
+      urlInput.oninput = () => {
+        const u = urlInput.value.trim()
+        if (u && (u.startsWith('http://') || u.startsWith('https://'))) {
+          img = u
+          if (prevImg) prevImg.src = u
+          if (statusBox) {
+            statusBox.innerHTML = `<span class="img-status-badge new">✓ URL gambar dimasukkan — klik Simpan untuk mengaktifkan</span>`
+            statusBox.style.display = 'block'
+          }
+        }
       }
-      if (im !== null) rpcParams.p_img = im
-      const { error } = await supabase.rpc('admin_save_oud', rpcParams)
-      if (error) {
-        btn.disabled = false
-        btn.innerHTML = `<span>💾 Simpan Produk</span>`
-        return toast(error.message, true)
-      }
-      await load()
-      toast('✓ Produk berhasil disimpan!')
-      tabOuds(el)
     }
 
     if (fileInput) {
       fileInput.onchange = async () => {
         if (fileInput.files[0]) {
-          img = await resize(fileInput.files[0])
-          if (prevImg) prevImg.src = img
-          if (statusBox) statusBox.style.display = 'block'
-          toast('📷 Foto dipilih — klik Simpan untuk menyimpan ke database')
+          try {
+            toast('Memproses foto...')
+            img = await resize(fileInput.files[0])
+            if (prevImg) prevImg.src = img
+            if (statusBox) {
+              const kb = Math.round(img.length / 1024)
+              statusBox.innerHTML = `<span class="img-status-badge new">✓ Foto baru terpilih (${kb} KB) — klik Simpan Produk di bawah</span>`
+              statusBox.style.display = 'block'
+            }
+            toast('📷 Foto berhasil dimuat! Klik tombol Simpan Produk di bawah.')
+          } catch (err) {
+            console.error('Error resize:', err)
+            toast(err.message || 'Gagal memproses file foto', true)
+          }
         }
       }
+    }
+
+    const save = async im => {
+      const btn = f.querySelector('.btn-save')
+      btn.disabled = true; btn.innerHTML = `<span>⏳ Menyimpan ke Database...</span>`
+      
+      let finalImg = im
+      if (!finalImg && urlInput && urlInput.value.trim()) {
+        finalImg = urlInput.value.trim()
+      }
+
+      const rpcParams = {
+        p_pin: pin,
+        p_country: acountry,
+        p_slot: slot,
+        p_name: f.name.value.trim(),
+        p_sub: f.sub.value.trim(),
+        p_descr: f.descr.value.trim(),
+        p_img: finalImg !== null ? finalImg : null
+      }
+
+      const { error } = await supabase.rpc('admin_save_oud', rpcParams)
+      if (error) {
+        btn.disabled = false
+        btn.innerHTML = `<span>💾 Simpan Produk</span>`
+        return toast('Gagal menyimpan: ' + (error.message || 'Koneksi bermasalah'), true)
+      }
+
+      // Optimistic instant in-memory update so web view updates with 0ms delay
+      const targetIdx = (DB.ouds || []).findIndex(x => x.country === acountry && x.slot === slot)
+      const currentOud = ouds.find(x => (x.slot || x.id) === slot)
+      const updatedRecord = {
+        country: acountry,
+        slot: slot,
+        name: rpcParams.p_name,
+        sub: rpcParams.p_sub,
+        descr: rpcParams.p_descr,
+        img: finalImg || (targetIdx !== -1 ? DB.ouds[targetIdx].img : (currentOud ? currentOud.img : null))
+      }
+      if (targetIdx !== -1) {
+        DB.ouds[targetIdx] = { ...DB.ouds[targetIdx], ...updatedRecord }
+      } else {
+        DB.ouds.push(updatedRecord)
+      }
+      persistSite()
+
+      await load()
+      toast('✓ Foto & produk berhasil disimpan! Perubahan sudah aktif di web.')
+      tabOuds(el)
     }
 
     f.onsubmit = e => { e.preventDefault(); save(img) }
 
     const r = f.querySelector('.reset')
     if (r) r.onclick = () => {
-      if (confirm('Reset gambar produk ini ke foto default? Foto custom akan dihapus.')) {
+      if (confirm('Reset produk ini ke foto & data default bawaan? Foto kustom akan dihapus.')) {
         img = ''
         save('')
       }
