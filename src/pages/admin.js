@@ -1293,7 +1293,7 @@ const tabCms = el => {
         { key: 'lp_country_title', label: 'Judul Bagian Origin 6 Negara', type: 'text', ph: 'PREMIUM AGARWOOD COLLECTION FROM SIX ASIAN COUNTRIES.', def: 'PREMIUM AGARWOOD COLLECTION FROM SIX ASIAN COUNTRIES.' },
         { key: 'lp_cat_badge',    label: 'Label Badge Katalog',       type: 'text', ph: 'KOLEKSI 6 NEGARA ASIA', def: 'KOLEKSI 6 NEGARA ASIA' },
         { key: 'lp_cat_title',    label: 'Judul Bagian Katalog',      type: 'text', ph: 'EKSPLORASI AGARWOOD ASIA', def: 'EKSPLORASI AGARWOOD ASIA' },
-        { key: 'lp_cat_subtitle', label: 'Sub-judul Bagian Katalog',  type: 'text', ph: 'Pilih negara untuk melihat koleksi...', def: 'Pilih negara untuk melihat koleksi gaharu liar pilihan dengan aroma khas tiap wilayah.' }
+        { key: 'lp_cat_subtitle', label: 'Sub-judul Bagian Katalog',  type: 'text', ph: '8 premium agarwood collections, sourced from trusted suppliers...', def: '8 premium agarwood collections, sourced from trusted suppliers and thoroughly quality-verified to ensure authenticity and the highest standards of excellence.' }
       ]
     },
     {

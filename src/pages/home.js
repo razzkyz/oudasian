@@ -39,7 +39,10 @@ export const home = (reset = false) => {
   }
   const catTag    = S('lp_cat_badge',     S('lp_catalog_tag', 'ASIAN OUD CATALOG'))
   const catTitle  = S('lp_cat_title',     S('lp_catalog_title', `Featured Collections — ${selectedCountry}`))
-  const catSub    = S('lp_cat_subtitle',  S('lp_catalog_sub', `${ouds.length} curated premium items available, directly verified from trusted wild harvests`))
+  let catSub      = S('lp_cat_subtitle',  S('lp_catalog_sub', ''))
+  if (!catSub || catSub.includes('curated premium items available') || catSub.includes('Pilih negara untuk melihat koleksi')) {
+    catSub = `${ouds.length} premium agarwood collections, sourced from trusted suppliers and thoroughly quality-verified to ensure authenticity and the highest standards of excellence.`
+  }
 
   const feat1title= S('lp_feat1_title',   '100% Authentic & Natural')
   const feat1desc = S('lp_feat1_desc',    'Free from artificial chemicals, synthetic fragrances, or color manipulation.')
