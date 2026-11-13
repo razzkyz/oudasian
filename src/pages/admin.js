@@ -116,11 +116,29 @@ Tautan pelacakan online:
 ${host}#/cek?phone=${encodeURIComponent(o.phone)}
 
 Terima kasih!`
+  },
+  'catatan': {
+    title: '6. Catatan Khusus',
+    build: (o, host) => 
+`Halo ${isFemale(o.gender) ? 'Ibu' : 'Bapak'} ${o.nama},
+
+Pesan & Catatan Khusus dari Admin ASIAN OUD terkait pesanan Anda #${o.id} (${o.oud_name || 'Koleksi Agarwood'}):
+
+"${o.catatan || '(Belum ada catatan khusus yang ditulis)'}"
+
+• Status Pesanan: ${o.status || 'Diproses'}
+${o.resi ? `• No. Resi Pengiriman: ${o.resi}\n` : ''}• Alamat Tujuan: ${o.alamat || '-'}
+
+Anda dapat memantau status pesanan dan keaslian gaharu secara online:
+${host}#/cek?phone=${encodeURIComponent(o.phone)}
+
+Jika ada pertanyaan lebih lanjut, silakan balas pesan ini. Terima kasih!
+ASIAN OUD — Trusted Supplier of Premium Agarwood`
   }
 }
 
 /* ─── MODAL: CEK ORDER & ATUR NOTIFIKASI ────────────────────────────── */
-const openOrderVerifier = (orderId, refreshCallback) => {
+const openOrderVerifier = (orderId, refreshCallback, initialMode = '') => {
   const o = ORD.find(x => x.id === orderId)
   if (!o) return
 
@@ -134,7 +152,8 @@ const openOrderVerifier = (orderId, refreshCallback) => {
   overlay.className = 'verifier-overlay'
 
   let currentTplKey = 'baru'
-  if (o.status === 'Diproses') currentTplKey = 'proses'
+  if (initialMode === 'catatan' || o.catatan) currentTplKey = 'catatan'
+  else if (o.status === 'Diproses') currentTplKey = 'proses'
   else if (o.status === 'Dikirim') currentTplKey = 'kirim'
   else if (o.status === 'Selesai') currentTplKey = 'selesai'
 
@@ -145,6 +164,7 @@ const openOrderVerifier = (orderId, refreshCallback) => {
           <div class="verifier-top-badges">
             <span class="verifier-badge">ORDER #${o.id}</span>
             <span class="verifier-status-badge status-${(o.status || '').toLowerCase()}">${o.status}</span>
+            ${o.catatan ? `<span class="verifier-catatan-pill">📝 Ada Catatan</span>` : ''}
           </div>
           <h2 class="verifier-title">${esc(o.oud_name || 'Produk Agarwood')} (${esc(o.oud_country || '-')})</h2>
           <span class="verifier-meta-time">Waktu Order: ${new Date(o.created_at).toLocaleString('id-ID')} WIB</span>
@@ -158,7 +178,7 @@ const openOrderVerifier = (orderId, refreshCallback) => {
           <div class="verifier-pane-title">
             <span>Pemeriksaan &amp; Edit Data Pemesan</span>
           </div>
-          <p class="verifier-pane-desc">Periksa kembali kebenaran data pembeli, atau ubah nomor telepon untuk menguji pelacakan pelanggan:</p>
+          <p class="verifier-pane-desc">Periksa kembali data pembeli, tulis catatan khusus, atau ubah nomor telepon pemesan:</p>
 
           <form id="verifierForm" class="verifier-form">
             <div class="v-form-row">
@@ -171,6 +191,18 @@ const openOrderVerifier = (orderId, refreshCallback) => {
               </select>
             </div>
 
+            <!-- CATATAN KHUSUS ADMIN (MANUAL BEBAS ISI) -->
+            <div class="v-form-row v-form-catatan-highlight">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <label for="vCatatan" style="color:var(--gold); display:flex; align-items:center; gap:6px;">
+                  <span>📝 Catatan Khusus Admin untuk Pemesan (Manual)</span>
+                </label>
+                <span class="badge-catatan-live">Tampil di Cek &amp; WA</span>
+              </div>
+              <textarea id="vCatatan" class="v-input v-textarea v-catatan-textarea" rows="3" placeholder="Tulis catatan manual bebas di sini... Contoh: Pesanan kayu gaharu super telah diinspeksi kurator, dokumen CITES siap, paket estimasi sampai Kamis...">${esc(o.catatan || '')}</textarea>
+              <small class="v-field-hint" style="color:#aaa;">💡 Catatan ini bebas diisi admin, akan langsung muncul di halaman <strong>Cek Pemesanan (#/cek)</strong> dan otomatis masuk ke draft WhatsApp.</small>
+            </div>
+
             <div class="v-form-row">
               <label>Nama Pemesan</label>
               <input type="text" id="vNama" class="v-input" value="${esc(o.nama || '')}" required />
@@ -179,7 +211,7 @@ const openOrderVerifier = (orderId, refreshCallback) => {
             <div class="v-form-row">
               <label>Nomor Telepon / WhatsApp Pemesan</label>
               <div class="v-input-group">
-                <input type="tel" id="vPhone" class="v-input" value="${esc(o.phone || '')}" placeholder="Contoh: 081234567890" required />
+                <input type="tel" id="vPhone" class="v-input" value="${esc(o.phone || '')}" placeholder="Contoh: 081234567890 / 620852..." required />
                 <button type="button" id="btnTestTrackCurrent" class="btn btn-secondary v-btn-addon" title="Uji halaman pelacakan publik dengan nomor ini">
                   Uji Cek Order ↗
                 </button>
@@ -209,12 +241,12 @@ const openOrderVerifier = (orderId, refreshCallback) => {
 
             <div class="v-form-row">
               <label>Nomor Resi / Ekspedisi (Opsional)</label>
-              <input type="text" id="vResi" class="v-input" value="${esc(o.resi || '')}" placeholder="Contoh: JNE YES 0123456789" />
+              <input type="text" id="vResi" class="v-input" value="${esc(o.resi || '')}" placeholder="Contoh: JNE YES 0123456789 / DHL EXPR-998822" />
             </div>
 
             <div class="v-actions-data">
               <button type="submit" id="btnSaveVerifier" class="btn btn-primary v-btn-save">
-                Simpan Perubahan Data
+                💾 Simpan Perubahan &amp; Catatan
               </button>
             </div>
           </form>
@@ -228,6 +260,7 @@ const openOrderVerifier = (orderId, refreshCallback) => {
           <p class="verifier-pane-desc">Pilih template pesan resmi untuk dikirimkan ke WhatsApp pelanggan sesuai tahapan order:</p>
 
           <div class="notif-tpl-chips">
+            <button type="button" class="notif-chip ${currentTplKey === 'catatan' ? 'active' : ''}" data-tpl="catatan">📝 Catatan Khusus</button>
             <button type="button" class="notif-chip ${currentTplKey === 'baru' ? 'active' : ''}" data-tpl="baru">1. Diterima</button>
             <button type="button" class="notif-chip ${currentTplKey === 'proses' ? 'active' : ''}" data-tpl="proses">2. QC &amp; Packing</button>
             <button type="button" class="notif-chip ${currentTplKey === 'kirim' ? 'active' : ''}" data-tpl="kirim">3. Dikirim</button>
@@ -268,6 +301,7 @@ const openOrderVerifier = (orderId, refreshCallback) => {
     status: overlay.querySelector('#vStatus').value,
     alamat: overlay.querySelector('#vAlamat').value.trim(),
     resi: overlay.querySelector('#vResi').value.trim(),
+    catatan: overlay.querySelector('#vCatatan')?.value.trim() || '',
     oud_name: o.oud_name,
     oud_country: o.oud_country
   })
@@ -310,6 +344,18 @@ const openOrderVerifier = (orderId, refreshCallback) => {
   overlay.querySelector('#vGender').onchange = updatePreview
   overlay.querySelector('#vAlamat').oninput = updatePreview
   overlay.querySelector('#vResi').oninput = updatePreview
+  overlay.querySelector('#vCatatan').oninput = updatePreview
+
+  // Auto focus catatan if opened with catatan mode
+  if (initialMode === 'catatan') {
+    setTimeout(() => {
+      const catEl = overlay.querySelector('#vCatatan')
+      if (catEl) {
+        catEl.focus()
+        catEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+    }, 150)
+  }
 
   // Modal dismiss
   const closeModal = () => {
@@ -362,7 +408,7 @@ const openOrderVerifier = (orderId, refreshCallback) => {
 
     const cur = getFormData()
 
-    // 1. Persist locally first
+    // 1. Persist locally first so it shows immediately
     saveLocalOrderEdit(o.id, {
       nama: cur.nama,
       phone: cur.phone,
@@ -370,13 +416,14 @@ const openOrderVerifier = (orderId, refreshCallback) => {
       gender: cur.gender,
       alamat: cur.alamat,
       status: cur.status,
-      resi: cur.resi
+      resi: cur.resi,
+      catatan: cur.catatan
     })
     Object.assign(o, cur)
 
     // 2. Call Supabase RPCs
     try {
-      const { error: errUpdate } = await supabase.rpc('admin_update_order', {
+      let { error: errUpdate } = await supabase.rpc('admin_update_order', {
         p_pin: pin,
         p_id: o.id,
         p_nama: cur.nama,
@@ -384,8 +431,25 @@ const openOrderVerifier = (orderId, refreshCallback) => {
         p_email: cur.email,
         p_gender: cur.gender,
         p_alamat: cur.alamat,
-        p_status: cur.status
+        p_status: cur.status,
+        p_catatan: cur.catatan,
+        p_resi: cur.resi
       })
+
+      // If remote DB doesn't have 10-param signature yet, fallback to 8 params
+      if (errUpdate && errUpdate.message && (errUpdate.message.includes('function') || errUpdate.code === 'PGRST202')) {
+        const { error: errLegacy } = await supabase.rpc('admin_update_order', {
+          p_pin: pin,
+          p_id: o.id,
+          p_nama: cur.nama,
+          p_phone: cur.phone,
+          p_email: cur.email,
+          p_gender: cur.gender,
+          p_alamat: cur.alamat,
+          p_status: cur.status
+        })
+        if (!errLegacy) errUpdate = null
+      }
 
       if (errUpdate) {
         await supabase.rpc('admin_status', { p_pin: pin, p_id: o.id, p_status: cur.status }).catch(() => {})
@@ -395,9 +459,9 @@ const openOrderVerifier = (orderId, refreshCallback) => {
       console.warn('RPC sync notice:', err)
     }
 
-    toast(`Data order #${o.id} berhasil diperbarui!`)
+    toast(`Data & Catatan order #${o.id} berhasil disimpan!`)
     saveBtn.disabled = false
-    saveBtn.textContent = 'Simpan Perubahan Data'
+    saveBtn.textContent = '💾 Simpan Perubahan & Catatan'
 
     if (refreshCallback) refreshCallback()
   }
@@ -541,19 +605,22 @@ const tabOrders = async el => {
   <!-- TOOLBAR QUICK CHECKER NOMOR TELEPON PELANGGAN -->
   <div class="admin-quick-checker">
     <div class="quick-checker-header">
-      <strong class="quick-checker-title">Pemeriksaan &amp; Notifikasi Pelanggan Cepat</strong>
-      <span class="quick-checker-badge">MULTI-NOMOR TESTER</span>
+      <strong class="quick-checker-title">Pemeriksaan &amp; Catatan Khusus Pelanggan</strong>
+      <span class="quick-checker-badge">MANUAL NOTE &amp; TRACKER</span>
     </div>
     <p class="quick-checker-desc">
-      Ketik nomor telepon pemesan yang berbeda untuk langsung mengecek tampilan status di halaman pelacakan atau memfilter order:
+      Ketik nomor telepon pemesan (Indonesia, Thailand, dll) untuk langsung menulis catatan manual bebas, mengirim notifikasi via WhatsApp, atau menguji tampilan pelacakan pelanggan:
     </p>
     <div class="quick-checker-bar">
-      <input type="tel" id="quickTestPhone" class="quick-phone-input" placeholder="Ketik nomor telepon pemesan (contoh: 081234567890)..." />
-      <button type="button" id="btnQuickTestTrack" class="btn btn-primary">
-        Uji Pelacakan Online ↗
+      <input type="tel" id="quickTestPhone" class="quick-phone-input" placeholder="Ketik nomor telepon pemesan (contoh: 081234567890 / 620852... / nomor Thailand)..." />
+      <button type="button" id="btnQuickWriteNote" class="btn btn-primary btn-quick-catatan">
+        📝 Tulis Catatan Manual
+      </button>
+      <button type="button" id="btnQuickTestTrack" class="btn btn-secondary">
+        Uji Cek Pesanan ↗
       </button>
       <button type="button" id="btnQuickFilter" class="btn btn-secondary">
-        Filter Order Nomor Ini
+        Filter Order
       </button>
       <button type="button" id="btnResetQuickFilter" class="btn btn-secondary" style="display:none;">
         Reset Filter
@@ -562,7 +629,7 @@ const tabOrders = async el => {
   </div>
 
   <div class="admin-filters">
-    <input type="text" id="sq" placeholder="Cari pemesan, produk, no hp..." class="filter-search"/>
+    <input type="text" id="sq" placeholder="Cari pemesan, produk, no hp, catatan admin..." class="filter-search"/>
     <select id="sf" class="filter-select">
       <option value="">Semua Status</option>
       <option value="Baru">Baru</option>
@@ -580,7 +647,7 @@ const tabOrders = async el => {
     const q = el.querySelector('#sq').value.toLowerCase()
     const st = el.querySelector('#sf').value
     const list = ORD.filter(o => {
-      const mQ = !q || [o.nama, o.phone, o.email, o.oud_name, o.oud_country, o.alamat, o.resi].some(v => (v || '').toLowerCase().includes(q))
+      const mQ = !q || [o.nama, o.phone, o.email, o.oud_name, o.oud_country, o.alamat, o.resi, o.catatan].some(v => (v || '').toLowerCase().includes(q))
       const mS = !st || o.status === st
       return mQ && mS
     })
@@ -605,6 +672,7 @@ const tabOrders = async el => {
                 <span class="order-id-badge">#${o.id}</span>
                 <span class="order-status-pill status-${(o.status || '').toLowerCase()}">${o.status}</span>
                 ${o.resi ? `<span class="order-resi-pill">Resi: ${esc(o.resi)}</span>` : ''}
+                ${o.catatan ? `<span class="order-has-note-badge">📝 Ada Catatan Admin</span>` : ''}
               </div>
               <div class="order-product-name">${esc(o.oud_name || 'Produk Agarwood')} (${esc(o.oud_country || '-')})</div>
               <div class="order-meta">
@@ -615,11 +683,20 @@ const tabOrders = async el => {
               </div>
               ${(o.negara || o.kode_pos) ? `<div style="font-size:12.5px; color:var(--gold); margin:4px 0;">🌐 <strong>Destinasi:</strong> ${esc(o.negara || '-')}${o.kode_pos ? ` · Kode Pos: ${esc(o.kode_pos)}` : ''}</div>` : ''}
               ${o.alamat ? `<div class="order-address"><strong>Alamat Pengiriman:</strong> ${esc(o.alamat)}</div>` : ''}
+              ${o.catatan ? `
+                <div class="order-catatan-preview-box">
+                  <span class="catatan-preview-icon">📝</span>
+                  <div class="catatan-preview-content">
+                    <strong class="catatan-preview-title">Catatan Khusus Admin:</strong>
+                    <div class="catatan-preview-text">"${esc(o.catatan)}"</div>
+                  </div>
+                </div>
+              ` : ''}
               <div class="order-date">Waktu Pemesanan: ${new Date(o.created_at).toLocaleString('id-ID')} WIB</div>
             </div>
             <div class="order-actions">
               <button type="button" class="btn btn-primary btn-check-order" data-id="${o.id}">
-                Cek Order / Notif
+                📝 Catatan &amp; Verif
               </button>
               <select class="status-select" data-id="${o.id}">
                 ${['Baru', 'Diproses', 'Dikirim', 'Selesai'].map(s => `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s}</option>`).join('')}
@@ -666,9 +743,43 @@ const tabOrders = async el => {
 
   // Quick checker actions
   const quickInput = el.querySelector('#quickTestPhone')
+  const btnWriteNote = el.querySelector('#btnQuickWriteNote')
   const btnTrack = el.querySelector('#btnQuickTestTrack')
   const btnFilter = el.querySelector('#btnQuickFilter')
   const btnReset = el.querySelector('#btnResetQuickFilter')
+
+  // Helper to match order by phone permutation
+  const findOrderByPhone = (inputPhone) => {
+    if (!inputPhone) return null
+    const cleanDigits = inputPhone.replace(/\D/g, '')
+    return ORD.find(o => {
+      const oDigits = (o.phone || '').replace(/\D/g, '')
+      if (!oDigits || !cleanDigits) return false
+      return (
+        oDigits === cleanDigits ||
+        oDigits.endsWith(cleanDigits) ||
+        cleanDigits.endsWith(oDigits) ||
+        (o.phone || '').includes(inputPhone)
+      )
+    })
+  }
+
+  // Quick Write Note Button: typing phone immediately opens note form
+  btnWriteNote.onclick = () => {
+    const p = quickInput.value.trim()
+    if (!p) {
+      toast('Ketik nomor telepon pemesan terlebih dahulu', true)
+      quickInput.focus()
+      return
+    }
+    const match = findOrderByPhone(p)
+    if (match) {
+      toast(`Membuka catatan untuk pesanan #${match.id} (${match.nama})...`)
+      openOrderVerifier(match.id, () => tabOrders(el), 'catatan')
+    } else {
+      toast(`Tidak ditemukan pesanan dengan nomor telepon "${p}". Cek daftar order atau gunakan tombol Filter.`, true)
+    }
+  }
 
   btnTrack.onclick = () => {
     const p = quickInput.value.trim()

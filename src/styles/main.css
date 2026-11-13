@@ -1709,6 +1709,109 @@ textarea{width:100%;padding:12px;margin:6px 0;background:#0d0d0d;border:1px soli
 .btn-card-wa{display:inline-flex;align-items:center;gap:8px;background:#27ae60;color:#fff;text-decoration:none;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;transition:.2s}
 .btn-card-wa:hover{background:#219150;transform:translateY(-2px);box-shadow:0 6px 18px rgba(39,174,96,0.4)}
 
+/* ==========================================================================
+   OFFICIAL ADMIN NOTE STYLING (TRACKING PAGE)
+   ========================================================================== */
+.table-catatan-pill{
+  display: inline-block;
+  font-size: 11px;
+  color: var(--gold);
+  background: rgba(212, 175, 55, 0.14);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.order-admin-note-card{
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, rgba(18, 16, 12, 0.95) 100%);
+  border: 1.5px solid var(--gold);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45), 0 0 16px rgba(212, 175, 55, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+.order-admin-note-card::before{
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--gold), #8a6d1b);
+}
+.note-card-header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.note-card-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(212, 175, 55, 0.22);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+.note-star-icon{
+  font-size: 12px;
+  animation: pulse 2s infinite ease-in-out;
+}
+@keyframes pulse{
+  0%, 100%{ transform: scale(1); opacity: 1; }
+  50%{ transform: scale(1.2); opacity: 0.8; }
+}
+.note-time-label{
+  font-size: 11.5px;
+  color: #999;
+  font-style: italic;
+}
+.note-card-body{
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(10, 10, 10, 0.7);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+}
+.note-quote-mark, .note-quote-mark-end{
+  font-family: Georgia, serif;
+  font-size: 26px;
+  line-height: 1;
+  color: var(--gold);
+  opacity: 0.8;
+  user-select: none;
+}
+.note-quote-text{
+  flex: 1;
+  color: #f7f3e8;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.note-card-footer{
+  font-size: 11.5px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* EMPTY STATE */
 .empty-state-card{text-align:center;background:#141414;border:1px solid #282828;border-radius:18px;padding:48px 24px;max-width:600px;margin:20px auto}
 .empty-icon-circle{width:70px;height:70px;border-radius:50%;background:#1f1f1f;border:1px solid #333;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 18px}
@@ -2430,6 +2533,59 @@ textarea{width:100%;padding:12px;margin:6px 0;background:#0d0d0d;border:1px soli
   padding: 3px 10px;
   border-radius: 12px;
 }
+.order-has-note-badge{
+  font-size: 11px;
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--gold);
+  border: 1px solid rgba(212, 175, 55, 0.6);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+.order-catatan-preview-box{
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px dashed rgba(212, 175, 55, 0.45);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 10px 0;
+}
+.catatan-preview-icon{
+  font-size: 16px;
+  line-height: 1.2;
+}
+.catatan-preview-content{
+  flex: 1;
+}
+.catatan-preview-title{
+  display: block;
+  font-size: 11px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.catatan-preview-text{
+  font-size: 13px;
+  color: #fff;
+  line-height: 1.45;
+  font-style: italic;
+  white-space: pre-line;
+}
+.btn-quick-catatan{
+  background: linear-gradient(135deg, var(--gold), #aa820a) !important;
+  color: #000 !important;
+  font-weight: 800 !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(212,175,55,0.35) !important;
+}
+.btn-quick-catatan:hover{
+  background: linear-gradient(135deg, #f3cf65, var(--gold)) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(212,175,55,0.5) !important;
+}
 .phone-hl{
   color: var(--gold);
   font-weight: 600;
@@ -2529,6 +2685,15 @@ textarea{width:100%;padding:12px;margin:6px 0;background:#0d0d0d;border:1px soli
   border-radius: 12px;
   text-transform: uppercase;
 }
+.verifier-catatan-pill{
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 3px 10px;
+  border-radius: 12px;
+}
 .verifier-title{
   font-family: Cinzel, serif;
   font-size: 20px;
@@ -2601,6 +2766,33 @@ textarea{width:100%;padding:12px;margin:6px 0;background:#0d0d0d;border:1px soli
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+.v-form-catatan-highlight{
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(15, 15, 15, 0.95) 100%);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  border-radius: 12px;
+  padding: 12px 14px;
+  gap: 8px;
+}
+.badge-catatan-live{
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--gold);
+  background: rgba(212, 175, 55, 0.18);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.v-catatan-textarea{
+  background: #060606 !important;
+  border-color: rgba(212, 175, 55, 0.5) !important;
+  color: #fff !important;
+}
+.v-catatan-textarea:focus{
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4) !important;
 }
 .v-form-row label{
   font-size: 12px;

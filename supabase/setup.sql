@@ -14,6 +14,8 @@ create table if not exists orders(
   status text default 'Baru', created_at timestamptz default now());
 alter table orders add column if not exists ip text;
 alter table orders add column if not exists alamat text;
+alter table orders add column if not exists catatan text;
+alter table orders add column if not exists resi text;
 create table if not exists ouds(country text, slot int, name text, sub text, descr text, img text, img2 text, img3 text, img4 text, video1 text, video2 text, primary key(country,slot));
 create table if not exists site(key text primary key, value text);
 create table if not exists settings(key text primary key, value text);
@@ -125,7 +127,7 @@ create trigger on_order_tg after insert on orders for each row execute function 
 -- dibatasi 15 cek / 10 menit per IP, email disamarkan, IP tidak dibocorkan
 drop function if exists cek_pesanan(text);
 create function cek_pesanan(p_phone text)
-returns table(id bigint, oud_name text, nama text, email text, phone text, gender text, status text, created_at timestamptz, alamat text)
+returns table(id bigint, oud_name text, nama text, email text, phone text, gender text, status text, created_at timestamptz, alamat text, catatan text, resi text)
 language plpgsql security definer set search_path = public, extensions as $$
 declare v_ip text := _ip();
 begin
@@ -135,7 +137,7 @@ begin
   if random() < 0.05 then delete from rate_log r where r.ts < now() - interval '1 day'; end if;
   insert into rate_log(kind, ip) values('cek', v_ip);
   return query select o.id, o.oud_name, o.nama, regexp_replace(o.email,'^(.).*(@.*)$','\1***\2'),
-                      o.phone, o.gender, o.status, o.created_at, o.alamat
+                      o.phone, o.gender, o.status, o.created_at, o.alamat, o.catatan, o.resi
                from orders o where o.phone = p_phone order by o.created_at desc;
 end $$;
 
@@ -179,7 +181,9 @@ create or replace function admin_update_order(
   p_email text,
   p_gender text default null,
   p_alamat text default null,
-  p_status text default 'Baru'
+  p_status text default 'Baru',
+  p_catatan text default null,
+  p_resi text default null
 ) returns void
 language plpgsql security definer set search_path = public, extensions as $$
 begin
@@ -191,7 +195,9 @@ begin
       email = coalesce(nullif(trim(p_email),''), email),
       gender = p_gender,
       alamat = p_alamat,
-      status = p_status
+      status = p_status,
+      catatan = p_catatan,
+      resi = p_resi
   where id = p_id;
 end $$;
 
@@ -243,8 +249,8 @@ end $$;
 -- 8. HAK EKSEKUSI FUNGSI --------------------------------------------------
 revoke all on function _ip(), _admin_ok(text), orders_guard(), notify_tg() from public, anon, authenticated;
 revoke all on function cek_pesanan(text), admin_login(text), admin_list(text), admin_status(text,bigint,text),
-  admin_update_order(text,bigint,text,text,text,text,text,text),
+  admin_update_order(text,bigint,text,text,text,text,text,text,text,text),
   admin_save_oud(text,text,int,text,text,text,text,text,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) from public;
 grant execute on function cek_pesanan(text), admin_login(text), admin_list(text), admin_status(text,bigint,text),
-  admin_update_order(text,bigint,text,text,text,text,text,text),
+  admin_update_order(text,bigint,text,text,text,text,text,text,text,text),
   admin_save_oud(text,text,int,text,text,text,text,text,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) to anon, authenticated;

@@ -97,6 +97,7 @@ const renderOrderResults = (orders, phoneSearched) => {
                   <td class="cell-product">
                     <div class="table-prod-name">${esc(r.oud_name || 'Agarwood Collection')}</div>
                     ${r.oud_country ? `<span class="table-prod-country">${esc(r.oud_country)}</span>` : ''}
+                    ${r.catatan ? `<div class="table-catatan-pill">📝 Catatan Admin Tersedia</div>` : ''}
                   </td>
                   <td class="cell-customer">
                     <div class="customer-name">${esc(r.nama)}</div>
@@ -157,6 +158,27 @@ const renderOrderResults = (orders, phoneSearched) => {
                 </div>
               </div>
 
+              ${r.catatan ? `
+                <!-- CATATAN KHUSUS RESMI DARI ADMIN -->
+                <div class="order-admin-note-card">
+                  <div class="note-card-header">
+                    <span class="note-card-badge">
+                      <span class="note-star-icon">✦</span>
+                      <span>CATATAN RESMI DARI ADMIN ASIAN OUD</span>
+                    </span>
+                    <span class="note-time-label">Pesan Langsung Kurator</span>
+                  </div>
+                  <div class="note-card-body">
+                    <div class="note-quote-mark">“</div>
+                    <div class="note-quote-text">${esc(r.catatan)}</div>
+                    <div class="note-quote-mark-end">”</div>
+                  </div>
+                  <div class="note-card-footer">
+                    <span>📌 Catatan khusus ini ditulis manual oleh admin untuk pesanan #${r.id} (${esc(r.nama)}).</span>
+                  </div>
+                </div>
+              ` : ''}
+
               <div class="detail-split-grid">
                 <!-- Kolom Produk -->
                 <div class="detail-section-block">
@@ -195,6 +217,12 @@ const renderOrderResults = (orders, phoneSearched) => {
                     <div class="info-item">
                       <span class="info-label">Destination Country:</span>
                       <span class="info-val">🌐 ${esc(r.negara || '-')}${r.kode_pos ? ` (ZIP/Postal: ${esc(r.kode_pos)})` : ''}</span>
+                    </div>
+                    ` : ''}
+                    ${r.resi ? `
+                    <div class="info-item resi-item">
+                      <span class="info-label">Tracking / Resi:</span>
+                      <span class="info-val" style="color:var(--gold); font-weight:700;">📦 ${esc(r.resi)}</span>
                     </div>
                     ` : ''}
                     ${r.alamat ? `
@@ -398,6 +426,23 @@ export const cek = () => {
           break
         }
       }
+
+      // Merge local admin edits (such as custom catatan, status, resi) for zero-latency instant preview
+      try {
+        const edits = JSON.parse(localStorage.getItem('asian_oud_order_edits') || '{}')
+        if (finalData.length > 0) {
+          finalData = finalData.map(o => edits[o.id] ? { ...o, ...edits[o.id] } : o)
+        } else {
+          // If remote RPC had no match yet (e.g. offline testing), check local storage records
+          const localList = Object.values(edits).filter(o => {
+            const oDigits = (o.phone || '').replace(/\D/g, '')
+            return uniqueCandidates.includes(oDigits)
+          })
+          if (localList.length > 0) {
+            finalData = localList
+          }
+        }
+      } catch (e) {}
 
       if (finalData.length > 0) {
         outEl.innerHTML = renderOrderResults(finalData, matchedPhone)
