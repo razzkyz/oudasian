@@ -64,7 +64,53 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',-apple-
 
 
 main{max-width:1400px;margin:0 auto;padding:0 40px 16px}
-body.is-admin-view main{padding-bottom:60px}
+
+/* ==================== DEDICATED FULLSCREEN ADMIN VIEW ==================== */
+/* Hide public navbar, hamburger menu, overlay, mobile sidebar, shipping slider, and footer in admin */
+body.is-admin-view {
+  background: #0a0a0a !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden;
+}
+body.is-admin-view .nav,
+body.is-admin-view .menu-toggle,
+body.is-admin-view #menuToggle,
+body.is-admin-view .nav-overlay,
+body.is-admin-view #navOverlay,
+body.is-admin-view .mobile-sidebar,
+body.is-admin-view #mobileSidebar,
+body.is-admin-view .shipping-slider-section,
+body.is-admin-view #shippingSliderSection,
+body.is-admin-view .footer,
+body.is-admin-view footer {
+  display: none !important;
+}
+
+body.is-admin-view main,
+body.is-admin-view main#app {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh !important;
+}
+
+body.is-admin-view .admin-layout {
+  min-height: 100vh !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+body.is-admin-view .admin-login {
+  min-height: 100vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px 20px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
 
 /* HERO SECTION ULTRA LUXURY */
 .hero{position:relative;min-height:650px;display:flex;align-items:center;justify-content:center;margin:0 -16px 80px;padding:100px 40px 80px;overflow:hidden}
@@ -653,7 +699,7 @@ textarea{width:100%;padding:12px;margin:6px 0;background:#0d0d0d;border:1px soli
 .btn-login{width:100%;margin-top:0!important}
 
 /* ==================== ADMIN LAYOUT ==================== */
-.admin-layout{display:flex;min-height:100vh;background:#0a0a0a;margin:0 -16px}
+.admin-layout{display:flex;min-height:100vh;background:#0a0a0a;margin:0;width:100%}
 
 /* Sidebar */
 .admin-sidebar{width:280px;background:linear-gradient(180deg,#1a1a1a,#0f0f0f);border-right:2px solid #2a2a2a;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}

@@ -419,6 +419,11 @@ const login = () => {
         </div>
         <button class="btn btn-login">Masuk ke Dashboard</button>
       </form>
+      <div style="margin-top:20px; padding-top:16px; border-top:1px solid #222;">
+        <a href="#/" style="color:#888; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:.2s;" onmouseover="this.style.color='#d4af37'" onmouseout="this.style.color='#888'">
+          <span>← Kembali ke Tampilan Website</span>
+        </a>
+      </div>
     </div>
   </div>
   `
@@ -473,21 +478,30 @@ export const admin = async () => {
         </button>
       </nav>
       <div class="sidebar-footer">
+        <a href="#/" target="_blank" class="nav-item" style="color:#aaa; text-decoration:none; margin-bottom:6px;">
+          <span class="nav-icon" style="font-size:16px;">🌐</span>
+          <span class="nav-text">Lihat Website ↗</span>
+        </a>
         <button class="nav-item logout-btn" id="out">
           <span class="nav-icon" style="display:inline-flex; align-items:center;">←</span>
-          <span class="nav-text">Keluar</span>
+          <span class="nav-text">Keluar (Logout)</span>
         </button>
       </div>
     </aside>
 
     <main class="admin-main">
-      <div class="admin-header">
+      <div class="admin-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
         <h1 class="admin-title">${{
           orders: `Manajemen Pesanan Agarwood`,
           ouds:   `Kelola Produk Agarwood`,
           cms:    `CMS Landing Page`,
           site:   `Pengaturan Sistem`
         }[atab]}</h1>
+        <div class="admin-header-actions">
+          <a href="#/" target="_blank" class="btn btn-preview-web" style="height:36px; padding:0 14px; font-size:12px;">
+            <span>🌐 Buka Tampilan Web ↗</span>
+          </a>
+        </div>
       </div>
       <div id="body" class="admin-body"></div>
     </main>
