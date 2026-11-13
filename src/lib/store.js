@@ -1,11 +1,12 @@
 import { supabase } from './supabase.js'
 import { getOuds as defaults, COUNTRIES as DEFAULT_COUNTRIES } from '../data/oud.js'
 
-const CACHE_KEY = 'asian_oud_store_v6'
-// v6: clean 4-photo gallery upload, pure file upload without URL input
+const CACHE_KEY = 'asian_oud_store_v7'
+// v7: support 3 photos + 2 videos per product
 try { 
   localStorage.removeItem('asian_oud_store_v4')
   localStorage.removeItem('asian_oud_store_v5')
+  localStorage.removeItem('asian_oud_store_v6')
 } catch(e) {}
 
 export const COUNTRY_META_DEFAULTS = {
@@ -102,6 +103,8 @@ export const getOuds = country => {
       img2: item.img2 || null,
       img3: item.img3 || null,
       img4: item.img4 || null,
+      video1: item.video1 || null,
+      video2: item.video2 || null,
       badge: item.slot <= 2 ? 'Super Sinking' : 'Premium Grade',
       custom: true
     }))

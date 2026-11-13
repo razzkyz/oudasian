@@ -12,13 +12,19 @@ export const detail = (c, id) => {
 
   const meta = getCountryMeta(c)
 
-  // Only use actual photos belonging to this product — no random stock photos!
-  const galleryImages = [o.img, o.img2, o.img3, o.img4].filter(Boolean)
-  if (galleryImages.length === 0) {
-    galleryImages.push('https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80')
+  // 3 Images + 2 Videos support
+  const mediaItems = []
+  if (o.img)    mediaItems.push({ type: 'image', src: o.img, label: 'Foto Utama' })
+  if (o.img2)   mediaItems.push({ type: 'image', src: o.img2, label: 'Foto 2' })
+  if (o.img3)   mediaItems.push({ type: 'image', src: o.img3, label: 'Foto 3' })
+  if (o.video1) mediaItems.push({ type: 'video', src: o.video1, label: 'Video 1' })
+  if (o.video2) mediaItems.push({ type: 'video', src: o.video2, label: 'Video 2' })
+
+  if (mediaItems.length === 0) {
+    mediaItems.push({ type: 'image', src: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80', label: 'Foto' })
   }
 
-  let currentImage = 0
+  let currentMediaIdx = 0
 
   app.innerHTML = `
   <div class="breadcrumb-nav">
@@ -31,18 +37,19 @@ export const detail = (c, id) => {
   <div class="detail-hero">
     <!-- Gallery -->
     <div class="detail-gallery">
-      <div class="gallery-main">
-        <img id="mainImage" src="${galleryImages[0]}" alt="${esc(o.sub || o.name)}" onerror="this.src='${o.img}'"/>
-        ${galleryImages.length > 1 ? `
-          <button class="gallery-prev" id="prevBtn" type="button" aria-label="Previous Photo">‹</button>
-          <button class="gallery-next" id="nextBtn" type="button" aria-label="Next Photo">›</button>
+      <div class="gallery-main" id="galleryMain">
+        <div id="mediaViewerWrap" class="media-viewer-wrap" style="width:100%;height:100%;position:relative;"></div>
+        ${mediaItems.length > 1 ? `
+          <button class="gallery-prev" id="prevBtn" type="button" aria-label="Previous Media">‹</button>
+          <button class="gallery-next" id="nextBtn" type="button" aria-label="Next Media">›</button>
         ` : ''}
-        <div class="gallery-zoom-badge">Click to enlarge</div>
+        <div class="gallery-zoom-badge" id="zoomBadge" style="display:none;">Click to enlarge</div>
       </div>
-      <div class="gallery-thumbs" style="${galleryImages.length <= 1 ? 'display:none;' : ''}">
-        ${galleryImages.map((img, i) => `
-          <button class="gallery-thumb ${i === 0 ? 'active' : ''}" data-index="${i}" type="button">
-            <img src="${img}" alt="Preview ${i + 1}" onerror="this.src='${o.img}'"/>
+      <div class="gallery-thumbs" style="${mediaItems.length <= 1 ? 'display:none;' : ''}">
+        ${mediaItems.map((item, i) => `
+          <button class="gallery-thumb ${i === 0 ? 'active' : ''} ${item.type === 'video' ? 'thumb-is-video' : ''}" data-index="${i}" type="button">
+            <img src="${item.type === 'video' ? (o.img || 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=900&q=80') : item.src}" alt="${item.label}"/>
+            ${item.type === 'video' ? `<span class="video-play-tag">▶ Video</span>` : ''}
           </button>
         `).join('')}
       </div>
@@ -301,49 +308,77 @@ export const detail = (c, id) => {
   </div>
   `
 
-  // --- Gallery interactions ---
-  const mainImg = document.getElementById('mainImage')
-  const thumbs  = document.querySelectorAll('.gallery-thumb')
-  const prevBtn = document.getElementById('prevBtn')
-  const nextBtn = document.getElementById('nextBtn')
+  // --- Gallery media viewer interactions ---
+  const viewerWrap = document.getElementById('mediaViewerWrap')
+  const zoomBadge  = document.getElementById('zoomBadge')
+  const thumbs     = document.querySelectorAll('.gallery-thumb')
+  const prevBtn    = document.getElementById('prevBtn')
+  const nextBtn    = document.getElementById('nextBtn')
 
-  const updateGallery = idx => {
-    currentImage = (idx + galleryImages.length) % galleryImages.length
-    if (mainImg) {
-      mainImg.style.opacity = '0.4'
-      setTimeout(() => {
-        mainImg.src = galleryImages[currentImage]
-        mainImg.style.opacity = '1'
-      }, 150)
+  const openLightbox = (imgSrc) => {
+    const modal = document.createElement('div')
+    modal.className = 'lightbox-modal'
+    modal.innerHTML = `
+      <div class="lightbox-overlay"></div>
+      <div class="lightbox-content">
+        <img src="${imgSrc}" alt="Full Preview"/>
+        <button class="lightbox-close">✕</button>
+      </div>
+    `
+    document.body.appendChild(modal)
+    setTimeout(() => modal.classList.add('open'), 10)
+    const closeModal = () => {
+      modal.classList.remove('open')
+      setTimeout(() => modal.remove(), 300)
     }
-    thumbs.forEach((t, i) => t.classList.toggle('active', i === currentImage))
+    modal.querySelector('.lightbox-close').onclick = closeModal
+    modal.querySelector('.lightbox-overlay').onclick = closeModal
   }
 
-  thumbs.forEach(t => t.onclick = () => updateGallery(+t.dataset.index))
-  if (prevBtn) prevBtn.onclick = () => updateGallery(currentImage - 1)
-  if (nextBtn) nextBtn.onclick = () => updateGallery(currentImage + 1)
+  const renderMedia = idx => {
+    currentMediaIdx = (idx + mediaItems.length) % mediaItems.length
+    const item = mediaItems[currentMediaIdx]
+    if (!viewerWrap) return
 
-  if (mainImg) {
-    mainImg.onclick = () => {
-      const modal = document.createElement('div')
-      modal.className = 'lightbox-modal'
-      modal.innerHTML = `
-        <div class="lightbox-overlay"></div>
-        <div class="lightbox-content">
-          <img src="${galleryImages[currentImage]}" alt="Full Preview"/>
-          <button class="lightbox-close">✕</button>
-        </div>
-      `
-      document.body.appendChild(modal)
-      setTimeout(() => modal.classList.add('open'), 10)
-      const closeModal = () => {
-        modal.classList.remove('open')
-        setTimeout(() => modal.remove(), 300)
+    viewerWrap.style.opacity = '0.3'
+    setTimeout(() => {
+      if (item.type === 'video') {
+        if (zoomBadge) zoomBadge.style.display = 'none'
+        const isYoutube = item.src.includes('youtube.com') || item.src.includes('youtu.be')
+        if (isYoutube) {
+          let vidId = ''
+          if (item.src.includes('youtu.be/')) vidId = item.src.split('youtu.be/')[1].split('?')[0]
+          else if (item.src.includes('v=')) vidId = item.src.split('v=')[1].split('&')[0]
+          viewerWrap.innerHTML = `
+            <iframe src="https://www.youtube.com/embed/${vidId}?autoplay=1&rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;min-height:350px;border-radius:12px;"></iframe>
+          `
+        } else {
+          viewerWrap.innerHTML = `
+            <video id="mainVideo" src="${item.src}" controls autoplay playsinline style="width:100%;height:100%;min-height:350px;object-fit:contain;background:#000;border-radius:12px;"></video>
+          `
+        }
+      } else {
+        if (zoomBadge) zoomBadge.style.display = 'block'
+        viewerWrap.innerHTML = `
+          <img id="mainImage" src="${item.src}" alt="${esc(o.sub || o.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;cursor:pointer;" onerror="this.src='${o.img}'"/>
+        `
+        const imgEl = viewerWrap.querySelector('#mainImage')
+        if (imgEl) {
+          imgEl.onclick = () => openLightbox(item.src)
+        }
       }
-      modal.querySelector('.lightbox-close').onclick = closeModal
-      modal.querySelector('.lightbox-overlay').onclick = closeModal
-    }
+      viewerWrap.style.opacity = '1'
+    }, 120)
+
+    thumbs.forEach((t, i) => t.classList.toggle('active', i === currentMediaIdx))
   }
+
+  // Initial render
+  renderMedia(0)
+
+  thumbs.forEach(t => t.onclick = () => renderMedia(+t.dataset.index))
+  if (prevBtn) prevBtn.onclick = () => renderMedia(currentMediaIdx - 1)
+  if (nextBtn) nextBtn.onclick = () => renderMedia(currentMediaIdx + 1)
 
   // --- Dial Code & Country Selection Interactions ---
   const dialCodeSelect   = document.getElementById('dialCodeSelect')

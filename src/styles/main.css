@@ -921,6 +921,18 @@ textarea{width:100%;padding:12px;margin:6px 0;background:#0d0d0d;border:1px soli
 }
 .file-input{padding:10px!important;font-size:14px!important}
 
+/* ── Video Slots in Admin ────────────── */
+.oud-video-section{margin-top:14px;border-top:1px solid #222;padding-top:14px}
+.oud-section-title{font-size:12px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.oud-video-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.oud-video-slot{background:#141414;border:1px solid #242424;border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px}
+.oud-video-empty{height:100px;background:#0c0c0c;border:1.5px dashed #333;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.btn-clear-video{background:transparent;border:none;color:#777;cursor:pointer;font-size:12px;padding:2px 6px;border-radius:4px;transition:all .2s}
+.btn-clear-video:hover{color:#e74c3c;background:rgba(231,76,60,0.15)}
+@media(max-width:600px){
+  .oud-video-grid{grid-template-columns:1fr}
+}
+
 /* ── Fields section ─────────────────── */
 .oud-fields{display:flex;flex-direction:column;gap:12px}
 .oud-fields .form-group{margin:0}
@@ -1363,10 +1375,37 @@ textarea{width:100%;padding:12px;margin:6px 0;background:#0d0d0d;border:1px soli
 .gallery-prev:hover,.gallery-next:hover{background:var(--gold);color:#000;box-shadow:0 0 20px rgba(212,175,55,0.6)}
 .gallery-zoom-badge{position:absolute;bottom:12px;left:12px;font-size:11.5px;font-weight:600;background:rgba(0,0,0,0.8);border:1px solid rgba(255,255,255,0.15);padding:5px 12px;border-radius:14px;color:#ccc}
 
-.gallery-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.gallery-thumb{aspect-ratio:1;border-radius:12px;overflow:hidden;border:2px solid #2a2a2a;background:#0a0a0a;cursor:pointer;padding:0;transition:.2s}
+.gallery-thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.gallery-thumb{aspect-ratio:1;border-radius:12px;overflow:hidden;border:2px solid #2a2a2a;background:#0a0a0a;cursor:pointer;padding:0;transition:.2s;position:relative}
 .gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .gallery-thumb.active{border-color:var(--gold);box-shadow:0 0 16px rgba(212,175,55,0.5);transform:scale(1.03)}
+.gallery-thumb.thumb-is-video::after{
+  content:'▶';
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:rgba(0,0,0,0.75);
+  border:1.5px solid var(--gold);
+  color:var(--gold);
+  width:24px;height:24px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;
+  pointer-events:none;
+  box-shadow:0 2px 8px rgba(0,0,0,0.6);
+}
+.video-play-tag{
+  position:absolute;bottom:3px;left:2px;right:2px;
+  background:rgba(0,0,0,0.88);
+  color:var(--gold);
+  font-size:8px;font-weight:800;
+  padding:1px 0;border-radius:3px;
+  text-align:center;
+  letter-spacing:.3px;
+  text-transform:uppercase;
+  pointer-events:none;
+}
+.media-viewer-wrap{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#000;border-radius:14px;overflow:hidden}
+.media-viewer-wrap video,.media-viewer-wrap iframe,.media-viewer-wrap img{width:100%;height:100%;border-radius:14px}
 
 .detail-badge-top{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .badge-flag{font-size:22px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4))}

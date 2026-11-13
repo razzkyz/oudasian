@@ -14,7 +14,7 @@ create table if not exists orders(
   status text default 'Baru', created_at timestamptz default now());
 alter table orders add column if not exists ip text;
 alter table orders add column if not exists alamat text;
-create table if not exists ouds(country text, slot int, name text, sub text, descr text, img text, primary key(country,slot));
+create table if not exists ouds(country text, slot int, name text, sub text, descr text, img text, img2 text, img3 text, img4 text, video1 text, video2 text, primary key(country,slot));
 create table if not exists site(key text primary key, value text);
 create table if not exists settings(key text primary key, value text);
 create table if not exists admin_sessions(token_hash text primary key, expires_at timestamptz not null);
@@ -201,20 +201,25 @@ create or replace function admin_save_oud(
   p_img text,
   p_img2 text default null,
   p_img3 text default null,
-  p_img4 text default null
+  p_img4 text default null,
+  p_video1 text default null,
+  p_video2 text default null
 )
 returns void language plpgsql security definer set search_path = public, extensions as $$
 begin
   perform _admin_ok(p_pin);
-  insert into ouds(country,slot,name,sub,descr,img,img2,img3,img4)
+  insert into ouds(country,slot,name,sub,descr,img,img2,img3,img4,video1,video2)
     values(p_country,p_slot,p_name,p_sub,p_descr,
-           nullif(p_img,''), nullif(p_img2,''), nullif(p_img3,''), nullif(p_img4,''))
+           nullif(p_img,''), nullif(p_img2,''), nullif(p_img3,''), nullif(p_img4,''),
+           nullif(p_video1,''), nullif(p_video2,''))
   on conflict(country,slot) do update set
     name=excluded.name, sub=excluded.sub, descr=excluded.descr,
-    img  = case when p_img  is null then ouds.img  when p_img =''  then null else p_img  end,
-    img2 = case when p_img2 is null then ouds.img2 when p_img2='' then null else p_img2 end,
-    img3 = case when p_img3 is null then ouds.img3 when p_img3='' then null else p_img3 end,
-    img4 = case when p_img4 is null then ouds.img4 when p_img4='' then null else p_img4 end;
+    img    = case when p_img    is null then ouds.img    when p_img    ='' then null else p_img    end,
+    img2   = case when p_img2   is null then ouds.img2   when p_img2   ='' then null else p_img2   end,
+    img3   = case when p_img3   is null then ouds.img3   when p_img3   ='' then null else p_img3   end,
+    img4   = case when p_img4   is null then ouds.img4   when p_img4   ='' then null else p_img4   end,
+    video1 = case when p_video1 is null then ouds.video1 when p_video1 ='' then null else p_video1 end,
+    video2 = case when p_video2 is null then ouds.video2 when p_video2 ='' then null else p_video2 end;
 end $$;
 
 create or replace function admin_save_site(p_pin text, p_key text, p_value text) returns void
@@ -239,7 +244,7 @@ end $$;
 revoke all on function _ip(), _admin_ok(text), orders_guard(), notify_tg() from public, anon, authenticated;
 revoke all on function cek_pesanan(text), admin_login(text), admin_list(text), admin_status(text,bigint,text),
   admin_update_order(text,bigint,text,text,text,text,text,text),
-  admin_save_oud(text,text,int,text,text,text,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) from public;
+  admin_save_oud(text,text,int,text,text,text,text,text,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) from public;
 grant execute on function cek_pesanan(text), admin_login(text), admin_list(text), admin_status(text,bigint,text),
   admin_update_order(text,bigint,text,text,text,text,text,text),
-  admin_save_oud(text,text,int,text,text,text,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) to anon, authenticated;
+  admin_save_oud(text,text,int,text,text,text,text,text,text,text,text,text), admin_save_site(text,text,text), admin_set_pin(text,text) to anon, authenticated;

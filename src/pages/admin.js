@@ -721,7 +721,7 @@ const tabOuds = el => {
   </div>
 
   <div class="oud-info-box">
-    📸 <strong>Manajemen Produk Agarwood (${acountry})</strong>: Klik kotak foto atau tombol <strong>📁 Pilih File Foto</strong> untuk mengunggah foto langsung dari HP atau komputer Anda. Tersedia hingga 4 foto per produk (1 Foto Utama + 3 Foto Galeri). Perubahan langsung aktif di website setelah disimpan.
+    📸 <strong>Manajemen Media Produk Agarwood (${acountry})</strong>: Setiap produk mendukung <strong>3 Foto</strong> (Foto Utama &amp; 2 Foto Galeri) dan <strong>2 Video</strong> (Fisik Kayu &amp; Tes Bakar/Aroma). Anda dapat mengunggah file foto/video langsung dari HP atau menempelkan tautan. Perubahan langsung aktif di website setelah disimpan.
   </div>
 
   <div class="oud-editor-grid">
@@ -731,7 +731,6 @@ const tabOuds = el => {
         { key: 'img',  label: '⭐ Foto Utama (Cover)', val: o.img,  fileField: 'file',  statusId: `img-status-${slot}` },
         { key: 'img2', label: '📷 Foto Galeri 2',       val: o.img2, fileField: 'file2', statusId: `img2-status-${slot}` },
         { key: 'img3', label: '📷 Foto Galeri 3',       val: o.img3, fileField: 'file3', statusId: `img3-status-${slot}` },
-        { key: 'img4', label: '📷 Foto Galeri 4',       val: o.img4, fileField: 'file4', statusId: `img4-status-${slot}` },
       ]
       return `
       <form class="oud-editor-card" data-slot="${slot}">
@@ -742,7 +741,7 @@ const tabOuds = el => {
           <a href="#/oud/${encodeURIComponent(acountry)}/${slot}" target="_blank" class="btn btn-preview-web" style="height:32px;font-size:11px;padding:0 12px">Lihat di Web ↗</a>
         </div>
 
-        <!-- 4 FOTO UPLOAD SLOTS (Pure File Upload) -->
+        <!-- 3 FOTO UPLOAD SLOTS -->
         <div class="oud-gallery-slots">
           ${imgSlots.map((s, si) => {
             const hasPhoto = Boolean(s.val)
@@ -758,7 +757,7 @@ const tabOuds = el => {
                 <img src="${s.val || ''}" alt="${s.label}" class="slot-preview-img" style="${hasPhoto ? '' : 'display:none;'}" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex';"/>
                 <div class="oud-preview-empty" style="${hasPhoto ? 'display:none;' : 'display:flex;'}">
                   <span class="oud-preview-empty-icon">📁</span>
-                  <span>Klik untuk Upload File</span>
+                  <span>Klik Upload Foto</span>
                 </div>
                 <input type="file" name="${s.fileField}" accept="image/jpeg,image/png,image/webp,image/jpg" class="file-input-hidden"/>
               </label>
@@ -769,11 +768,69 @@ const tabOuds = el => {
               <!-- Tombol Pilih File -->
               <label class="btn-upload-label ${hasPhoto ? 'has-photo' : ''}">
                 <input type="file" name="${s.fileField}_btn" accept="image/jpeg,image/png,image/webp,image/jpg" class="file-input-hidden"/>
-                <span>📁 ${hasPhoto ? 'Ganti File Foto' : 'Pilih File Foto'}</span>
+                <span>📁 ${hasPhoto ? 'Ganti Foto' : 'Pilih File Foto'}</span>
               </label>
             </div>
             `
           }).join('')}
+        </div>
+
+        <!-- 2 VIDEO SLOTS -->
+        <div class="oud-video-section">
+          <div class="oud-section-title">🎬 Video Produk (2 Slot)</div>
+          <div class="oud-video-grid">
+            <!-- Video 1 -->
+            <div class="oud-video-slot" data-videokey="video1">
+              <div class="oud-slot-header">
+                <span class="oud-slot-title">🎬 Video 1 (Fisik Kayu)</span>
+                ${o.video1 ? `<button type="button" class="btn-clear-video" data-vclear="video1" title="Hapus Video 1">✕ Hapus</button>` : ''}
+              </div>
+              <div class="oud-video-preview-wrap">
+                ${o.video1 ? `
+                  <video src="${o.video1}" controls class="slot-video-preview" style="width:100%;max-height:130px;background:#000;border-radius:6px;"></video>
+                ` : `
+                  <div class="oud-video-empty">
+                    <span style="font-size:22px;">🎬</span>
+                    <span style="font-size:11px;color:#777;">Belum ada Video 1</span>
+                  </div>
+                `}
+              </div>
+              <div class="oud-video-status" id="video1-status-${slot}" style="display:none;"></div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px;">
+                <label class="btn-upload-label ${o.video1 ? 'has-photo' : ''}" style="font-size:11px;padding:6px 10px;">
+                  <input type="file" name="video1_file" accept="video/mp4,video/webm,video/quicktime" class="file-input-hidden"/>
+                  <span>📹 ${o.video1 ? 'Ganti Video' : 'Upload Video (MP4)'}</span>
+                </label>
+                <input type="url" name="video1_url" class="img-url-input" placeholder="atau tempel link video (YouTube/MP4)..." value="${o.video1 || ''}" style="font-size:11px;padding:5px 8px;"/>
+              </div>
+            </div>
+
+            <!-- Video 2 -->
+            <div class="oud-video-slot" data-videokey="video2">
+              <div class="oud-slot-header">
+                <span class="oud-slot-title">🎬 Video 2 (Tes Aroma / Bakar)</span>
+                ${o.video2 ? `<button type="button" class="btn-clear-video" data-vclear="video2" title="Hapus Video 2">✕ Hapus</button>` : ''}
+              </div>
+              <div class="oud-video-preview-wrap">
+                ${o.video2 ? `
+                  <video src="${o.video2}" controls class="slot-video-preview" style="width:100%;max-height:130px;background:#000;border-radius:6px;"></video>
+                ` : `
+                  <div class="oud-video-empty">
+                    <span style="font-size:22px;">🎬</span>
+                    <span style="font-size:11px;color:#777;">Belum ada Video 2</span>
+                  </div>
+                `}
+              </div>
+              <div class="oud-video-status" id="video2-status-${slot}" style="display:none;"></div>
+              <div style="display:flex;flex-direction:column;gap:5px;margin-top:6px;">
+                <label class="btn-upload-label ${o.video2 ? 'has-photo' : ''}" style="font-size:11px;padding:6px 10px;">
+                  <input type="file" name="video2_file" accept="video/mp4,video/webm,video/quicktime" class="file-input-hidden"/>
+                  <span>📹 ${o.video2 ? 'Ganti Video' : 'Upload Video (MP4)'}</span>
+                </label>
+                <input type="url" name="video2_url" class="img-url-input" placeholder="atau tempel link video (YouTube/MP4)..." value="${o.video2 || ''}" style="font-size:11px;padding:5px 8px;"/>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="oud-fields">
@@ -792,7 +849,7 @@ const tabOuds = el => {
 
           <div class="oud-actions">
             <button class="btn btn-save" type="submit">
-              <span>💾 Simpan Semua Foto</span>
+              <span>💾 Simpan 3 Foto &amp; 2 Video</span>
             </button>
             ${o.custom ? `<button type="button" class="btn btn-reset reset"><span>↺ Reset Produk</span></button>` : ''}
           </div>
@@ -806,19 +863,20 @@ const tabOuds = el => {
   el.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { acountry = b.dataset.c; tabOuds(el) })
   el.querySelectorAll('.oud-editor-card').forEach((f) => {
     // null = keep existing, string = new base64 image (or '' to delete)
-    const imgState = { img: null, img2: null, img3: null, img4: null }
+    const imgState = { img: null, img2: null, img3: null }
+    // null = keep existing, string = new video url (or '' to delete)
+    const videoState = { video1: null, video2: null }
     const slot = +f.dataset.slot
     const currentOud = ouds.find(x => (x.slot || x.id) === slot) || {}
 
-    // Setup each slot's file input & clear button
-    const slotKeys = [
+    // Setup photo slot file inputs & clear buttons (3 slots)
+    const photoSlots = [
       { key: 'img',  field: 'file' },
       { key: 'img2', field: 'file2' },
-      { key: 'img3', field: 'file3' },
-      { key: 'img4', field: 'file4' }
+      { key: 'img3', field: 'file3' }
     ]
 
-    slotKeys.forEach(({ key }) => {
+    photoSlots.forEach(({ key }) => {
       const slotEl = f.querySelector(`.oud-gallery-slot[data-slotkey="${key}"]`)
       if (!slotEl) return
 
@@ -842,11 +900,11 @@ const tabOuds = el => {
           if (emptyBox) emptyBox.style.display = 'none'
           if (statusBox) {
             const kb = Math.round(b64.length / 1024)
-            statusBox.innerHTML = `<span class="img-status-badge">✓ Foto baru terpilih (${kb} KB)</span>`
+            statusBox.innerHTML = `<span class="img-status-badge">✓ Foto siap (${kb} KB)</span>`
             statusBox.style.display = 'block'
           }
           if (labelSpan) labelSpan.textContent = '✓ Foto Baru Dipilih'
-          toast('📷 Foto berhasil dimuat! Klik Simpan Semua Foto.')
+          toast('📷 Foto berhasil dimuat! Klik Simpan di bawah.')
         } catch (err) {
           console.error('Error resize:', err)
           toast(err.message || 'Gagal memproses file foto', true)
@@ -872,10 +930,116 @@ const tabOuds = el => {
           }
           if (emptyBox) emptyBox.style.display = 'flex'
           if (statusBox) {
-            statusBox.innerHTML = `<span class="img-status-badge" style="background:rgba(231,76,60,0.15);border-color:#e74c3c;color:#e74c3c;">✕ Foto dihapus (klik Simpan)</span>`
+            statusBox.innerHTML = `<span class="img-status-badge" style="background:rgba(231,76,60,0.15);border-color:#e74c3c;color:#e74c3c;">✕ Foto dihapus</span>`
             statusBox.style.display = 'block'
           }
           if (labelSpan) labelSpan.textContent = '📁 Pilih File Foto'
+        }
+      }
+    })
+
+    // Setup video slot file inputs, url inputs & clear buttons (2 slots)
+    const videoSlots = ['video1', 'video2']
+    videoSlots.forEach(vKey => {
+      const vSlot = f.querySelector(`.oud-video-slot[data-videokey="${vKey}"]`)
+      if (!vSlot) return
+
+      const fileInput = vSlot.querySelector('input[type="file"]')
+      const urlInput  = vSlot.querySelector('input[type="url"]')
+      const prevWrap  = vSlot.querySelector('.oud-video-preview-wrap')
+      const statusEl  = vSlot.querySelector('.oud-video-status')
+      const btnClear  = vSlot.querySelector('.btn-clear-video')
+      const labelSpan = vSlot.querySelector('.btn-upload-label span')
+
+      // 1. File Upload to Supabase Storage
+      if (fileInput) {
+        fileInput.onchange = async () => {
+          const file = fileInput.files?.[0]
+          if (!file) return
+          if (file.size > 50 * 1024 * 1024) {
+            return toast('Ukuran file video maksimal 50 MB!', true)
+          }
+
+          if (statusEl) {
+            statusEl.innerHTML = `<span class="img-status-badge" style="background:rgba(212,175,55,0.15);border-color:var(--gold);color:var(--gold);">⏳ Mengunggah video (${Math.round(file.size / 1024 / 1024 * 10) / 10} MB)...</span>`
+            statusEl.style.display = 'block'
+          }
+          toast(`Mengunggah file video (${Math.round(file.size / 1024 / 1024 * 10) / 10} MB)...`)
+
+          try {
+            const ext = file.name.split('.').pop() || 'mp4'
+            const filePath = `videos/${acountry.toLowerCase()}-slot${slot}-${vKey}-${Date.now()}.${ext}`
+
+            const { error: upErr } = await supabase.storage.from('product-media').upload(filePath, file, { cacheControl: '3600', upsert: true })
+            if (upErr) {
+              console.error('Upload video error:', upErr)
+              if (statusEl) statusEl.style.display = 'none'
+              return toast('Gagal mengunggah video: ' + (upErr.message || 'Error storage'), true)
+            }
+
+            const { data: pub } = supabase.storage.from('product-media').getPublicUrl(filePath)
+            const videoUrl = pub.publicUrl
+            videoState[vKey] = videoUrl
+
+            if (urlInput) urlInput.value = videoUrl
+            if (prevWrap) {
+              prevWrap.innerHTML = `<video src="${videoUrl}" controls style="width:100%;max-height:130px;background:#000;border-radius:6px;"></video>`
+            }
+            if (statusEl) {
+              statusEl.innerHTML = `<span class="img-status-badge">✓ Video berhasil diunggah!</span>`
+              statusEl.style.display = 'block'
+            }
+            if (labelSpan) labelSpan.textContent = '✓ Video Terpilih'
+            toast('🎬 Video berhasil diunggah! Klik Simpan di bawah.')
+          } catch (err) {
+            console.error('Video upload error:', err)
+            if (statusEl) statusEl.style.display = 'none'
+            toast('Gagal memproses video: ' + (err.message || 'Koneksi error'), true)
+          }
+        }
+      }
+
+      // 2. Direct URL paste (YouTube / MP4 URL)
+      if (urlInput) {
+        urlInput.oninput = () => {
+          const u = urlInput.value.trim()
+          if (u && (u.startsWith('http://') || u.startsWith('https://'))) {
+            videoState[vKey] = u
+            if (prevWrap) {
+              if (u.includes('youtube.com') || u.includes('youtu.be')) {
+                prevWrap.innerHTML = `<div style="padding:16px 10px;text-align:center;color:var(--gold);font-size:12px;background:#0c0c0c;border-radius:6px;">✓ Tautan YouTube terhubung</div>`
+              } else {
+                prevWrap.innerHTML = `<video src="${u}" controls style="width:100%;max-height:130px;background:#000;border-radius:6px;"></video>`
+              }
+            }
+            if (statusEl) {
+              statusEl.innerHTML = `<span class="img-status-badge">✓ Link video terpasang</span>`
+              statusEl.style.display = 'block'
+            }
+          }
+        }
+      }
+
+      // 3. Clear video button
+      if (btnClear) {
+        btnClear.onclick = (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          videoState[vKey] = ''
+          if (urlInput) urlInput.value = ''
+          if (prevWrap) {
+            prevWrap.innerHTML = `
+              <div class="oud-video-empty">
+                <span style="font-size:22px;">🎬</span>
+                <span style="font-size:11px;color:#777;">Video dihapus</span>
+              </div>
+            `
+          }
+          if (statusEl) {
+            statusEl.innerHTML = `<span class="img-status-badge" style="background:rgba(231,76,60,0.15);border-color:#e74c3c;color:#e74c3c;">✕ Video dihapus (klik Simpan)</span>`
+            statusEl.style.display = 'block'
+          }
+          if (labelSpan) labelSpan.textContent = '📹 Upload Video (MP4)'
         }
       }
     })
@@ -885,18 +1049,16 @@ const tabOuds = el => {
       btn.disabled = true
       btn.innerHTML = `<span>⏳ Menyimpan ke Database...</span>`
 
-      // Determine final image values
-      // If imgState[k] !== null, use it (either new b64 or '' for delete)
-      // If null, preserve current photo
-      const resolveFinal = (k) => {
+      const resolveFinalImg = (k) => {
         if (imgState[k] !== null) return imgState[k]
         return currentOud[k] || null
       }
 
-      const finalImg  = resolveFinal('img')
-      const finalImg2 = resolveFinal('img2')
-      const finalImg3 = resolveFinal('img3')
-      const finalImg4 = resolveFinal('img4')
+      const finalImg    = resolveFinalImg('img')
+      const finalImg2   = resolveFinalImg('img2')
+      const finalImg3   = resolveFinalImg('img3')
+      const finalVideo1 = videoState.video1 !== null ? videoState.video1 : (f.querySelector('input[name="video1_url"]')?.value.trim() || currentOud.video1 || null)
+      const finalVideo2 = videoState.video2 !== null ? videoState.video2 : (f.querySelector('input[name="video2_url"]')?.value.trim() || currentOud.video2 || null)
 
       const rpcParams = {
         p_pin:     pin,
@@ -908,14 +1070,45 @@ const tabOuds = el => {
         p_img:     finalImg  !== null ? finalImg  : null,
         p_img2:    finalImg2 !== null ? finalImg2 : null,
         p_img3:    finalImg3 !== null ? finalImg3 : null,
-        p_img4:    finalImg4 !== null ? finalImg4 : null,
+        p_img4:    null,
+        p_video1:  finalVideo1 !== null ? finalVideo1 : null,
+        p_video2:  finalVideo2 !== null ? finalVideo2 : null,
       }
 
       let { error } = await supabase.rpc('admin_save_oud', rpcParams)
       if (error) {
-        console.error('admin_save_oud error:', error)
+        console.error('admin_save_oud 12-param error:', error)
+        // If function with 12 params not yet registered in schema cache, try 10-param version
+        if (error.code === 'PGRST202' || error.message?.includes('schema cache')) {
+          const fallbackParams = {
+            p_pin:     pin,
+            p_country: acountry,
+            p_slot:    slot,
+            p_name:    rpcParams.p_name,
+            p_sub:     rpcParams.p_sub,
+            p_descr:   rpcParams.p_descr,
+            p_img:     rpcParams.p_img,
+            p_img2:    rpcParams.p_img2,
+            p_img3:    rpcParams.p_img3,
+            p_img4:    null,
+          }
+          const r2 = await supabase.rpc('admin_save_oud', fallbackParams)
+          if (!r2.error) {
+            error = null
+            // Also directly update video1 and video2 if possible
+            try {
+              await supabase.from('ouds').update({
+                video1: finalVideo1,
+                video2: finalVideo2
+              }).match({ country: acountry, slot })
+            } catch(e) {}
+          }
+        }
+      }
+
+      if (error) {
         btn.disabled = false
-        btn.innerHTML = `<span>💾 Simpan Semua Foto</span>`
+        btn.innerHTML = `<span>💾 Simpan 3 Foto &amp; 2 Video</span>`
         return toast('Gagal menyimpan: ' + (error.message || 'Koneksi bermasalah'), true)
       }
 
@@ -924,13 +1117,14 @@ const tabOuds = el => {
       const updatedRecord = {
         country: acountry,
         slot,
-        name:  rpcParams.p_name,
-        sub:   rpcParams.p_sub,
-        descr: rpcParams.p_descr,
-        img:  finalImg,
-        img2: finalImg2,
-        img3: finalImg3,
-        img4: finalImg4,
+        name:   rpcParams.p_name,
+        sub:    rpcParams.p_sub,
+        descr:  rpcParams.p_descr,
+        img:    finalImg,
+        img2:   finalImg2,
+        img3:   finalImg3,
+        video1: finalVideo1,
+        video2: finalVideo2,
         custom: true
       }
       if (targetIdx !== -1) {
@@ -941,7 +1135,7 @@ const tabOuds = el => {
       persistSite()
 
       await load()
-      toast('✓ Semua foto & produk berhasil disimpan! Perubahan sudah aktif di web.')
+      toast('✓ 3 Foto & 2 Video berhasil disimpan! Perubahan sudah aktif di web.')
       tabOuds(el)
     }
 
@@ -949,8 +1143,9 @@ const tabOuds = el => {
 
     const r = f.querySelector('.reset')
     if (r) r.onclick = () => {
-      if (confirm('Reset produk ini ke foto & data default bawaan? Foto kustom akan dihapus.')) {
-        imgState.img = imgState.img2 = imgState.img3 = imgState.img4 = ''
+      if (confirm('Reset produk ini ke media & data default bawaan? Semua foto dan video kustom akan dihapus.')) {
+        imgState.img = imgState.img2 = imgState.img3 = ''
+        videoState.video1 = videoState.video2 = ''
         save()
       }
     }
