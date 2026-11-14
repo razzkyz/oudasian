@@ -16,6 +16,10 @@ alter table orders add column if not exists ip text;
 alter table orders add column if not exists alamat text;
 alter table orders add column if not exists catatan text;
 alter table orders add column if not exists resi text;
+alter table orders add column if not exists negara text;
+alter table orders add column if not exists kode_pos text;
+alter table orders add column if not exists kota text;
+alter table orders add column if not exists provinsi text;
 create table if not exists ouds(country text, slot int, name text, sub text, descr text, img text, img2 text, img3 text, img4 text, video1 text, video2 text, primary key(country,slot));
 create table if not exists site(key text primary key, value text);
 create table if not exists settings(key text primary key, value text);
@@ -46,7 +50,7 @@ alter table orders drop constraint if exists orders_valid;
 alter table orders add constraint orders_valid check (
   char_length(nama) between 2 and 100 and char_length(email) <= 150
   and email ~* '^[^@\s]+@[^@\s]+\.[^@\s]+$'
-  and phone ~ '^[0-9]{8,15}$' and gender in ('Laki-laki','Perempuan')
+  and phone ~ '^[0-9]{8,15}$' and gender in ('Laki-laki','Perempuan','Male','Female')
   and (alamat is null or char_length(alamat) <= 1000)
   and oud_country in ('Thailand','Cambodia','Vietnam','Malaysia','Indonesia','Laos')
   and oud_id between 1 and 8 and char_length(oud_name) <= 150
@@ -69,10 +73,13 @@ alter table admin_sessions enable row level security;
 alter table rate_log enable row level security;
 revoke all on orders, ouds, site, settings, admin_sessions, rate_log from anon, authenticated;
 grant select on ouds, site to anon, authenticated;
-grant insert (oud_country,oud_id,oud_name,nama,email,phone,gender,alamat) on orders to anon, authenticated;
+grant insert on orders to anon, authenticated;
+grant select (id) on orders to anon, authenticated;
 drop policy if exists "anon insert" on orders;
 drop policy if exists "order insert" on orders;
 create policy "order insert" on orders for insert to anon, authenticated with check (true);
+drop policy if exists "order select id" on orders;
+create policy "order select id" on orders for select to anon, authenticated using (true);
 drop policy if exists "read ouds" on ouds;  create policy "read ouds" on ouds for select to anon, authenticated using (true);
 drop policy if exists "read site" on site;  create policy "read site" on site for select to anon, authenticated using (true);
 
