@@ -544,8 +544,8 @@ export const detail = (c, id) => {
         [countryVal, postalVal ? `(Postal: ${postalVal})` : ''].filter(Boolean).join(' ')
       ].filter(Boolean).join('\n')
 
-      // 1. Data standar yang dijamin selalu ada di skema orders
-      const basePayload = {
+      // 1. Data lengkap pemesanan
+      const payload = {
         oud_country: c,
         oud_id: +id,
         oud_name: (o.sub ? `${o.sub} - ${o.name}` : o.name).substring(0, 150),
@@ -553,17 +553,26 @@ export const detail = (c, id) => {
         email: form.email.value.trim(),
         phone: fullPhone,
         gender: form.gender.value,
-        alamat: fullAddress // Memuat jalan, kota, provinsi, negara & kode pos secara lengkap
-      }
-
-      // 2. Data lengkap jika kolom tambahan (negara, kode_pos, kota, provinsi) tersedia di database
-      const fullPayload = {
-        ...basePayload,
+        alamat: fullAddress, // Memuat jalan, kota, provinsi, negara & kode pos secara lengkap
         negara: countryVal,
         kode_pos: postalVal,
         kota: cityVal,
         provinsi: provVal
       }
+
+      // 2. Data standar pokok jika skema database belum memiliki kolom destinasi terpisah
+      const basePayload = {
+        oud_country: payload.oud_country,
+        oud_id: payload.oud_id,
+        oud_name: payload.oud_name,
+        nama: payload.nama,
+        email: payload.email,
+        phone: payload.phone,
+        gender: payload.gender,
+        alamat: payload.alamat
+      }
+
+      const fullPayload = payload
 
       let error = null
       let data = null
